@@ -2214,7 +2214,7 @@ bool ChatHandler::HandleAddItemCommand(char* args)
     {
         std::string itemName = cId;
         WorldDatabase.escape_string(itemName);
-        QueryResult *result = WorldDatabase.PQuery("SELECT entry FROM item_template WHERE name = '%s'", itemName.c_str());
+		QueryResult *result = WorldDatabase.PQuery("SELECT A.entry FROM item_template A LEFT JOIN locales_item B ON A.entry=B.entry WHERE A.name = '%s' or B.name_loc4 = '%s'  order by rand() limit 1", itemName.c_str(), itemName.c_str());
         if (!result)
         {
             PSendSysMessage(LANG_COMMAND_COULDNOTFIND, cId);

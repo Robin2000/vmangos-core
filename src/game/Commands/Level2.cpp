@@ -747,7 +747,7 @@ bool ChatHandler::HandleGoObjectCommand(char* args)
             {
                 std::string name = pParam1;
                 WorldDatabase.escape_string(name);
-                QueryResult *result = WorldDatabase.PQuery("SELECT guid FROM gameobject, gameobject_template WHERE gameobject.id = gameobject_template.entry AND gameobject_template.name " _LIKE_ " " _CONCAT3_("'%%'", "'%s'", "'%%'"), name.c_str());
+				QueryResult *result = WorldDatabase.PQuery("SELECT guid FROM gameobject A LEFT JOIN gameobject_template B ON A.id = B.entry LEFT JOIN locales_gameobject C ON A.id = C.entry  WHERE B.name " _LIKE_ " " _CONCAT3_("'%%'", "'%s'", "'%%'") " OR C.name_loc4 " _LIKE_ " " _CONCAT3_("'%%'", "'%s'", "'%%'"), name.c_str(), name.c_str());
                 if (!result)
                 {
                     SendSysMessage(LANG_COMMAND_GOOBJNOTFOUND);

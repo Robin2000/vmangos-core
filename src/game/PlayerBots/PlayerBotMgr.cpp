@@ -468,14 +468,14 @@ bool ChatHandler::HandleBotAddRandomCommand(char * args)
 bool ChatHandler::HandleBotStopCommand(char * args)
 {
     sPlayerBotMgr.deleteAll();
-    SendSysMessage("Tous les bots ont ete decharges.");
+	SendSysMessage("All bots have been decharges.");
     return true;
 }
 
 bool ChatHandler::HandleBotAddAllCommand(char * args)
 {
     sPlayerBotMgr.addAllBots();
-    SendSysMessage("Tous les bots ont ete connecte");
+	SendSysMessage("All bots have been connected");
     return true;
 }
 

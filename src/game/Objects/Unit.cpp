@@ -726,7 +726,7 @@ void Unit::DealDamageMods(Unit *victim, uint32 &damage, uint32* absorb)
         *absorb += (originalDamage - damage);
 }
 
-uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDamage, DamageEffectType damagetype, SpellSchoolMask damageSchoolMask, SpellEntry const *spellProto, bool durabilityLoss, Spell* spell)
+uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDamage, DamageEffectType damagetype, SpellSchoolMask damageSchoolMask, SpellEntry const *spellProto, bool durabilityLoss, Spell* spell, bool godCanDie)
 {
     // remove affects from victim (including from 0 damage and DoTs)
     if (pVictim != this)
@@ -910,7 +910,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
     {
         // Can't kill gods
         if (Player* pPlayer = pVictim->ToPlayer())
-            if (pPlayer->IsGod())
+			if (!godCanDie && pPlayer->IsGod())
                 return 0;
 
         DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE, "DealDamage: victim just died");

@@ -3906,7 +3906,7 @@ bool ChatHandler::HandleDieCommand(char* /*args*/)
     if (target->isAlive())
     {
         if (sWorld.getConfig(CONFIG_BOOL_DIE_COMMAND_CREDIT))
-            m_session->GetPlayer()->DealDamage(target, target->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+			m_session->GetPlayer()->DealDamage(target, target->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false, nullptr, true);
         else
         {
             Creature* targetCreature = target->ToCreature();

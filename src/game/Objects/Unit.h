@@ -209,15 +209,15 @@ enum Swing
 
 enum VictimState
 {
-    VICTIMSTATE_UNAFFECTED     = 0,                         // seen in relation with HITINFO_MISS
-    VICTIMSTATE_NORMAL         = 1,
-    VICTIMSTATE_DODGE          = 2,
-    VICTIMSTATE_PARRY          = 3,
-    VICTIMSTATE_INTERRUPT      = 4,
-    VICTIMSTATE_BLOCKS         = 5,
-    VICTIMSTATE_EVADES         = 6,
-    VICTIMSTATE_IS_IMMUNE      = 7,
-    VICTIMSTATE_DEFLECTS       = 8
+    VICTIMSTATE_UNAFFECTED     = 0,//Œﬁ…À                        // seen in relation with HITINFO_MISS
+    VICTIMSTATE_NORMAL         = 1,//∆’Õ®
+    VICTIMSTATE_DODGE          = 2,//∂„…¡
+    VICTIMSTATE_PARRY          = 3,//∂‹∑¿
+    VICTIMSTATE_INTERRUPT      = 4,//¥Ú∂œƒø±Í
+    VICTIMSTATE_BLOCKS         = 5,//◊Ë∂œ
+    VICTIMSTATE_EVADES         = 6,//πÊ±‹
+    VICTIMSTATE_IS_IMMUNE      = 7,//√‚“ﬂ
+    VICTIMSTATE_DEFLECTS       = 8//∆´–±
 };
 
 enum HitInfo

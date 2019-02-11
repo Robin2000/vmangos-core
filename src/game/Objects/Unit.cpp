@@ -5931,15 +5931,15 @@ void Unit::CombatStop(bool includingCast)
     if (AI() && isInCombat())
         AI()->OnCombatStop();
 
-    if (GetTypeId() == TYPEID_PLAYER)
-        ((Player*)this)->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel
-    else if (GetTypeId() == TYPEID_UNIT)
+    if (Player* pPlayer = ToPlayer())
+        pPlayer->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel
+    else if (Creature* pCreature = ToCreature())
     {
-        ((Creature*)this)->UpdateCombatState(false);
-        ((Creature*)this)->UpdateCombatWithZoneState(false);
-        ((Creature*)this)->m_TargetNotReachableTimer = 0;
-        if (((Creature*)this)->GetTemporaryFactionFlags() & TEMPFACTION_RESTORE_COMBAT_STOP)
-            ((Creature*)this)->ClearTemporaryFaction();
+        pCreature->UpdateCombatState(false);
+        pCreature->UpdateCombatWithZoneState(false);
+        pCreature->m_TargetNotReachableTimer = 0;
+        if (pCreature->GetTemporaryFactionFlags() & TEMPFACTION_RESTORE_COMBAT_STOP)
+            pCreature->ClearTemporaryFaction();
     }
 
     ClearInCombat();
@@ -6470,6 +6470,9 @@ int32 Unit::SpellBonusWithCoeffs(SpellEntry const *spellProto, int32 total, int3
 uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, uint32 pdamage, DamageEffectType damagetype, uint32 stack, Spell* spell)
 {
     if (!spellProto || !pVictim || damagetype == DIRECT_DAMAGE)
+        return pdamage;
+
+    if (spellProto->Custom & SPELL_CUSTOM_FIXED_DAMAGE)
         return pdamage;
 
     // Ignite damage already includes modifiers

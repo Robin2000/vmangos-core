@@ -910,7 +910,8 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
         {
             if (!GetPlayer()->GetQuestRewardStatus(9121) && !GetPlayer()->GetQuestRewardStatus(9122) && !GetPlayer()->GetQuestRewardStatus(9123))
             {
-                SendAreaTriggerMessage("You must complete The Dread Citadel to enter Naxxramas");
+                //SendAreaTriggerMessage("You must complete The Dread Citadel to enter Naxxramas");
+				SendAreaTriggerMessage(GetMangosString(-2000001));
                 return;
             }
         }

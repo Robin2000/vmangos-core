@@ -470,18 +470,14 @@ CreatureAI* GetAI_npc_dashel_stonefist(Creature* pCreature)
 ## npc_lady_katrana_prestor
 ######*/
 
-#define GOSSIP_ITEM_KAT_1 "Pardon the intrusion, Lady Prestor, but Highlord Bolvar suggested that I seek your advice."
-#define GOSSIP_ITEM_KAT_2 "My apologies, Lady Prestor."
-#define GOSSIP_ITEM_KAT_3 "Begging your pardon, Lady Prestor. That was not my intent."
-#define GOSSIP_ITEM_KAT_4 "Thank you for your time, Lady Prestor."
-
 bool GossipHello_npc_lady_katrana_prestor(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
-    if (pPlayer->GetQuestStatus(4185) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KAT_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+	if (pPlayer->GetQuestStatus(4185) == QUEST_STATUS_INCOMPLETE)
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000003), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//"Pardon the intrusion, Lady Prestor, but Highlord Bolvar suggested that I seek your advice."
+	
 
     pPlayer->SEND_GOSSIP_MENU(2693, pCreature->GetGUID());
 
@@ -493,15 +489,15 @@ bool GossipSelect_npc_lady_katrana_prestor(Player* pPlayer, Creature* pCreature,
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KAT_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000004), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"My apologies, Lady Prestor."
             pPlayer->SEND_GOSSIP_MENU(2694, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KAT_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000005), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"Begging your pardon, Lady Prestor. That was not my intent."
             pPlayer->SEND_GOSSIP_MENU(2695, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KAT_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000006), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"Thank you for your time, Lady Prestor."
             pPlayer->SEND_GOSSIP_MENU(2696, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:

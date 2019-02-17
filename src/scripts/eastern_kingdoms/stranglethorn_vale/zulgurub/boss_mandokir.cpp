@@ -445,7 +445,7 @@ struct boss_mandokirAI : public ScriptedAI
                     }
                     if (spirit)
                     {
-                        spirit->MonsterWhisper("I am released through you! Avenge me!", killedPlayer);
+                        spirit->MonsterWhisper(killedPlayer->GetSession()->GetMangosString(-2000448), killedPlayer);//I am released through you! Avenge me!
                         spirit->AI()->SpellHitTarget(killedPlayer, NULL);
                     }
                 }

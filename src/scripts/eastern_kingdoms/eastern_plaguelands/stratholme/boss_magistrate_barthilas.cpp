@@ -1,8 +1,6 @@
 #include "scriptPCH.h"
 #include "stratholme.h"
 
-#define TEXTE_PORTE_SERVICE "Intruders at the service gate! Baron Rivendare must be warned!"
-
 #define SPELL_DRAININGBLOW      16793
 #define SPELL_CROWDPUMMEL       10887
 #define SPELL_MIGHTYBLOW        14099
@@ -56,7 +54,7 @@ struct boss_magistrate_barthilasAI : public ScriptedAI
             float y = yDest - m_creature->GetPositionY();
             float speed = m_creature->GetSpeed(MOVE_RUN) * 0.001f;
 
-            m_creature->MonsterYell(TEXTE_PORTE_SERVICE, LANG_UNIVERSAL);
+            m_creature->MonsterYell(pPlayer->GetSession()->GetMangosString(-2000379), LANG_UNIVERSAL);//Intruders at the service gate! Baron Rivendare must be warned!
 
             if (m_creature->IsWalking())
                 m_creature->SetWalk(false);

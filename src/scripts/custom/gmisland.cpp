@@ -76,13 +76,13 @@ struct boss_gmislandAI : public ScriptedAI
                 std::vector<uint32>::iterator it;
                 for (it = gmSpells.begin(); it != gmSpells.end(); ++it)
                     plr->CastSpell(plr, (*it), true);
-                m_creature->MonsterSay("Bienvenu a la maison, Maitre Supreme !", LANG_UNIVERSAL, 0);
+                m_creature->MonsterSay(plr->GetSession()->GetMangosString(-2000285), LANG_UNIVERSAL, 0);//"Bienvenu a la maison, Maitre Supreme !"
             }
             else
             {
                 if (!urand(0, 200))
                 {
-                    m_creature->MonsterSay("Alerte, intrus ! Alerte intrus ! IN-TRU-SION !!", LANG_UNIVERSAL, 0);
+                    m_creature->MonsterSay(plr->GetSession()->GetMangosString(-2000286), LANG_UNIVERSAL, 0);//"Alerte, intrus ! Alerte intrus ! IN-TRU-SION !!"
                     m_creature->Attack(plr, true);
                 }
             }
@@ -109,7 +109,7 @@ struct boss_gmislandAI : public ScriptedAI
 
         if (m_creature->GetHealthPercent() < 20.0f)
         {
-            m_creature->MonsterSay("Sans rire, vous pensiez me tuer ? Me revoici en plein forme !", LANG_UNIVERSAL, 0);
+			m_creature->MonsterSay(GetMangosString(-2000287), LANG_UNIVERSAL, 0);//"Sans rire, vous pensiez me tuer ? Me revoici en plein forme !"
             m_creature->SetHealth(m_creature->GetMaxHealth());
             // Sort visuel "tout rouge"
             m_creature->CastSpell(m_creature, 28330, false);
@@ -123,16 +123,16 @@ struct boss_gmislandAI : public ScriptedAI
             switch (urand(0, 20))
             {
                 case 0:
-                    m_creature->MonsterYell("Prendez garde au Gardien !", LANG_UNIVERSAL, 0);
+					m_creature->MonsterYell(GetMangosString(-2000288), LANG_UNIVERSAL, 0);//"Prendez garde au Gardien !"
                     break;
                 case 1:
-                    m_creature->MonsterSay("N'insistez pas, vous ne passerez pas.", LANG_UNIVERSAL, 0);
+					m_creature->MonsterSay(GetMangosString(-2000289), LANG_UNIVERSAL, 0);//"N'insistez pas, vous ne passerez pas."
                     break;
                 case 2:
-                    m_creature->MonsterYell("ILE DES MJS ATTAQUEE ! Demande Renforts immediatement !", LANG_UNIVERSAL, 0);
+					m_creature->MonsterYell(GetMangosString(-2000290), LANG_UNIVERSAL, 0);//"ILE DES MJS ATTAQUEE ! Demande Renforts immediatement !"
                     break;
                 case 3:
-                    m_creature->MonsterSay("Vous ne derangerez pas les MJs : ils sont en reunion !", LANG_UNIVERSAL, 0);
+					m_creature->MonsterSay(GetMangosString(-2000291), LANG_UNIVERSAL, 0);//"Vous ne derangerez pas les MJs : ils sont en reunion !"
                     break;
                 case 4:
                     if (Unit* mort = m_creature->getVictim())
@@ -141,7 +141,7 @@ struct boss_gmislandAI : public ScriptedAI
                         {
                             // "Presque" mort :p
                             mort->DealDamage(mort, mort->GetHealth() - 50, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-                            m_creature->MonsterSay("Tiens, toi t'es mort !", LANG_UNIVERSAL, 0);
+							m_creature->MonsterSay(GetMangosString(-2000292), LANG_UNIVERSAL, 0);//"Tiens, toi t'es mort !"
                         }
                     }
                     break;

@@ -25,8 +25,6 @@ EndScriptData */
 #include "scriptPCH.h"
 #include "ruins_of_ahnqiraj.h"
 
-#define GOSSIP_START  "Let's find out."
-
 enum
 {
     SAY_ANDOROV_READY   =   -1509003,
@@ -552,7 +550,7 @@ struct npc_andorovAI : public ScriptedAI
 
 bool GossipHello_npc_andorov(Player* pPlayer, Creature* pCreature)
 {
-    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START , GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000404), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Let's find out.
     pPlayer->SEND_GOSSIP_MENU(14442, pCreature->GetGUID());
 
     return true;

@@ -471,8 +471,10 @@ struct instance_blackwing_lair : public ScriptedInstance
             case NPC_RAZORGORE:
                 if (m_auiEncounter[TYPE_RAZORGORE] == FAIL)
                 {
-                    if (Creature* pRazorgore = instance->GetCreature(m_auiData[DATA_RAZORGORE_GUID]))
-                        pRazorgore->MonsterYell("If I fall into the abyss, I'll take all of you mortals with me!",0,0);
+					if (Creature* pRazorgore = instance->GetCreature(m_auiData[DATA_RAZORGORE_GUID])) {
+						if(Player* player=GetPlayerInMap())
+							pRazorgore->MonsterYell(player->GetSession()->GetMangosString(-2000329), 0, 0);//"If I fall into the abyss, I'll take all of you mortals with me!"
+					}
                 }
                 break;
         }
@@ -930,7 +932,14 @@ struct go_oeuf_razAI: public GameObjectAI
     {
         if (!pUser)
             return true;
-        if (ScriptedInstance* pInstance = (ScriptedInstance*)me->GetInstanceData())
+
+		Player* pPlayer = nullptr;
+		Map::PlayerList const& pList = pUser->GetMap()->GetPlayers();
+		Map::PlayerList::const_iterator it = pList.begin();
+		if (it != pList.end())
+			pPlayer = (*it).getSource();
+
+		if (ScriptedInstance* pInstance = (ScriptedInstance*)me->GetInstanceData())
         {
             pInstance->SetData(DATA_EGG, IN_PROGRESS);
             //char sMessage[200];
@@ -942,15 +951,18 @@ struct go_oeuf_razAI: public GameObjectAI
                 switch (urand(0, 5))
                 {
                     case 0:
-                        pUser->MonsterYell("No! Not another one! I'll have your heads for this atrocity!", LANG_UNIVERSAL);
+						if(pPlayer)
+							pUser->MonsterYell(pPlayer->GetSession()->GetMangosString(-2000330), LANG_UNIVERSAL);//"No! Not another one! I'll have your heads for this atrocity!"
                         pUser->PlayDirectSound(8277);
                         break;
                     case 1:
-                        pUser->MonsterYell("Fools! These eggs are more precious than you know!", LANG_UNIVERSAL);
+						if (pPlayer)
+							pUser->MonsterYell(pPlayer->GetSession()->GetMangosString(-2000331), LANG_UNIVERSAL);//"Fools! These eggs are more precious than you know!"
                         pUser->PlayDirectSound(8276);
                         break;
                     case 2:
-                        pUser->MonsterYell("You'll pay for forcing me to do this!", LANG_UNIVERSAL);
+						if (pPlayer)
+							pUser->MonsterYell(pPlayer->GetSession()->GetMangosString(-2000332), LANG_UNIVERSAL);//"You'll pay for forcing me to do this!"
                         pUser->PlayDirectSound(8275);
                         break;
                 }

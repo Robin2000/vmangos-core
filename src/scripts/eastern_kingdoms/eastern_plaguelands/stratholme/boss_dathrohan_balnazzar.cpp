@@ -144,7 +144,7 @@ struct boss_dathrohan_balnazzarAI : public ScriptedAI
 
     void JustDied(Unit* Victim)
     {
-        m_creature->MonsterSay("Damn you mortals! All my plans of revenge, all my hate... all burned to ash...");
+		m_creature->MonsterSay(GetMangosString(-2000296));//"Damn you mortals! All my plans of revenge, all my hate... all burned to ash..."
         
         static uint32 uiCount = sizeof(m_aSummonPoint) / sizeof(SummonDef);
 
@@ -168,7 +168,7 @@ struct boss_dathrohan_balnazzarAI : public ScriptedAI
 
     void Aggro(Unit* /*pWho*/)
     {
-        m_creature->MonsterYell("Today you have unmade what took me years to create! For this you shall all die by my hand!");
+        m_creature->MonsterYell(GetMangosString(-2000334));//"Today you have unmade what took me years to create! For this you shall all die by my hand!"
     }
 
     void UpdateAI(const uint32 uiDiff)
@@ -231,7 +231,7 @@ struct boss_dathrohan_balnazzarAI : public ScriptedAI
             {
                 if (m_uiTransform_Timer <= uiDiff)
                 {
-                    m_creature->MonsterYell("You fools think you can defeat me so easily? Face the true might of the Nathrezim!");
+                    m_creature->MonsterYell(GetMangosString(-2000335));//"You fools think you can defeat me so easily? Face the true might of the Nathrezim!"
                     m_uiTransform_Timer = 0;
                 }
                 else

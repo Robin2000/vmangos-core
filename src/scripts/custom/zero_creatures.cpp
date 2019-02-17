@@ -35,7 +35,6 @@ EndScriptData */
 #define SAY_EGGS_BROKEN2        -1469023
 #define SAY_EGGS_BROKEN3        -1469024
 #define SAY_DEATH               -1469025
-#define SAY_AGGRO  "Intruders have breached the Hatchery! Sound the alarm! Protect the eggs at all costs!"
 
 // Razorgore The Untamed Spells
 #define SPELL_CLEAVE             22540

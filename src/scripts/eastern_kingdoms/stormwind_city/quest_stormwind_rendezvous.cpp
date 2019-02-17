@@ -1,4 +1,4 @@
-﻿/*
+/*
  *
  */
 
@@ -293,7 +293,7 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
                 pMercutio->GetMotionMaster()->MovePoint(0, -9148.395508f, 371.322174f, 90.543655f);
                 pMercutio->ForcedDespawn(12000);
                 m_creature->SetFacingToObject(pMercutio);
-                m_creature->MonsterSay("Yawww!");
+				m_creature->MonsterSay(GetMangosString(-2000297));//"Yawww!"
                 m_creature->HandleEmote(EMOTE_ONESHOT_ATTACKUNARMED);
             }
 
@@ -397,7 +397,7 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
             {
                 DoTalk(General, false);
                 General->HandleEmote(EMOTE_ONESHOT_TALK);
-                General->MonsterTextEmote("General Marcus Jonathan appears lost in contemplation.", nullptr);
+                General->MonsterTextEmote(GetMangosString(-2000443), nullptr);
             }
             Timer = 10000;
             break;
@@ -561,7 +561,7 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
             Timer = 7000;
             break;
         case 54:
-            m_creature->MonsterTextEmote("Reginald Windsor reaches into his pack and pulls out the encoded tablets.");
+			m_creature->MonsterTextEmote(GetMangosString(-2000298));//"Reginald Windsor reaches into his pack and pulls out the encoded tablets."
             Timer = 4000;
             break;
         case 55:
@@ -575,7 +575,7 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
             Timer = 4000;
             break;
         case 57:
-            m_creature->MonsterTextEmote("Reginald Windsor reads from the tablets. Unknown, unheard sounds flow through your consciousness.");
+			m_creature->MonsterTextEmote(GetMangosString(-2000299));//"Reginald Windsor reads from the tablets. Unknown, unheard sounds flow through your consciousness."
             Timer = 2000;
             break;
         case 58:
@@ -589,8 +589,9 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
                 Onyxia->CastSpell(Onyxia, SPELL_ONYXIA_TRANS, true);
                 Onyxia->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
             }
-            if (Creature* Bolvar = m_creature->FindNearestCreature(NPC_BOLVAR_FORDRAGON, 150.0f))
-                Bolvar->MonsterTextEmote("Highlord Bolvar Fordragon gasps.");
+			if (Creature* Bolvar = m_creature->FindNearestCreature(NPC_BOLVAR_FORDRAGON, 150.0f)) {
+				Bolvar->MonsterTextEmote(GetMangosString(-2000300));//"Highlord Bolvar Fordragon gasps."
+			}
             Timer = 2000;
             break;
         case 60:
@@ -618,14 +619,15 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
             Timer = 1000;
             break;
         case 62:
-            if (Creature* Onyxia = m_creature->FindNearestCreature(NPC_KATRANA_PRESTOR, 150.0f))
-                Onyxia->MonsterTextEmote("Lady Onyxia laughs.");
+            if (Creature* Onyxia = m_creature->FindNearestCreature(NPC_KATRANA_PRESTOR, 150.0f)){
+				Onyxia->MonsterTextEmote(GetMangosString(-2000301));//"Lady Onyxia laughs."
+			}
             Timer = 2000;
             break;
         case 63:
             if (Creature* Onyxia = m_creature->FindNearestCreature(NPC_KATRANA_PRESTOR, 150.0f))
             {
-                Onyxia->MonsterSay("Yesss... Guards, come to your lord's aid!");
+				Onyxia->MonsterSay(GetMangosString(-2000302));//"Yesss... Guards, come to your lord's aid!"
                 int Var = 0;
                 GetCreatureListWithEntryInGrid(DragListe, Onyxia, NPC_STORMWIND_ROYAL_GUARD, 25.0f);
                 for (auto itr = DragListe.begin(); itr != DragListe.end(); ++itr)
@@ -634,8 +636,9 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
                     (*itr)->UpdateEntry(NPC_ONYXIA_ELITE_GUARD);
                     (*itr)->AIM_Initialize();
                     (*itr)->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                    if (!urand(0, 2))
-                        (*itr)->MonsterTextEmote("Onyxia's Elite Guard hisses.");
+					if (!urand(0, 2)) {
+						(*itr)->MonsterTextEmote(GetMangosString(-2000303));//"Onyxia's Elite Guard hisses."
+					}
                     Var++;
                 }
             }
@@ -650,7 +653,7 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
             DoTalk(m_creature, false);
             if (Creature* Onyxia = m_creature->FindNearestCreature(NPC_KATRANA_PRESTOR, 150.0f))
             {
-                Onyxia->MonsterSay("Was this fated, Windsor? If it was death that you came for then the prophecy has been fulfilled. May your consciousness rot in the Twisting Nether. Finish the rest of these meddlesome insects, children. Bolvar, you have been a pleasurable puppet.");
+				Onyxia->MonsterSay(GetMangosString(-2000304));//"Was this fated, Windsor? If it was death that you came for then the prophecy has been fulfilled. May your consciousness rot in the Twisting Nether. Finish the rest of these meddlesome insects, children. Bolvar, you have been a pleasurable puppet."
                 Onyxia->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PASSIVE);
                 if (Creature* Bolvar = m_creature->FindNearestCreature(NPC_BOLVAR_FORDRAGON, 150.0f))
                 {
@@ -673,11 +676,12 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
         case 66:
             if (Creature* Onyxia = m_creature->FindNearestCreature(NPC_KATRANA_PRESTOR, 150.0f))
             {
-                Onyxia->MonsterYell("You have failed him, mortalsss... Farewell!");
+				Onyxia->MonsterYell(GetMangosString(-2000305));//"You have failed him, mortalsss... Farewell!"
                 Onyxia->CastSpell(Onyxia, SPELL_PRESTOR_DESPAWNS, true);
             }
-            if (Creature* Bolvar = m_creature->FindNearestCreature(NPC_BOLVAR_FORDRAGON, 150.0f))
-                Bolvar->MonsterTextEmote("Highlord Bolvar Fordragon's medallion shatters.");
+			if (Creature* Bolvar = m_creature->FindNearestCreature(NPC_BOLVAR_FORDRAGON, 150.0f)) {
+				Bolvar->MonsterTextEmote(GetMangosString(-2000306));//"Highlord Bolvar Fordragon's medallion shatters."
+			}
             Timer = 1000;
             PhaseFinale = true;
             break;
@@ -704,7 +708,7 @@ void npc_reginald_windsorAI::UpdateAI(const uint32 uiDiff)
         case 69:
             SituationFinale();
             BeginQuest = false;
-            m_creature->MonsterTextEmote("Reginald Windsor dies.");
+	        m_creature->MonsterTextEmote(GetMangosString(-2000307));//"Reginald Windsor dies."
             m_creature->CastSpell(m_creature, 5, true);
             break;
         }
@@ -767,7 +771,7 @@ bool QuestAccept_npc_reginald_windsor(Player* pPlayer, Creature* pCreature, cons
     {
         if (auto pWindsorEventAI = dynamic_cast<npc_reginald_windsorAI*>(pCreature->AI()))
         {
-            pCreature->MonsterSay("On guard, friend. The lady dragon will not give in without a fight.");
+            pCreature->MonsterSay(pPlayer->GetSession()->GetMangosString(-2000308));//"On guard, friend. The lady dragon will not give in without a fight."
             pCreature->HandleEmote(EMOTE_ONESHOT_TALK);
             pWindsorEventAI->BeginQuest = true;
             pWindsorEventAI->QuestAccepted = true;
@@ -931,7 +935,7 @@ bool GossipHello_npc_squire_rowe(Player* pPlayer, Creature* pCreature)
 
         if (!pSquireRoweAI->m_bWindsorUp)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Let Marshal Windsor know that I am ready.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000216), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//"Let Marshal Windsor know that I am ready."
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_ROWE_READY, pCreature->GetGUID());
         }
         else

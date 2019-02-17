@@ -131,6 +131,9 @@ struct MANGOS_DLL_DECL ScriptedAI : CreatureAI
     // Get the nearest player target within range
     Player* GetNearestPlayer(float range);
 
+	const char* GetMangosString(uint32 entry);
+	int GetLocaleIdx();
+
     // Spawns a creature relative to m_creature
     Creature* DoSpawnCreature(uint32 uiId, float fX, float fY, float fZ, float fAngle, uint32 uiType, uint32 uiDespawntime);
 
@@ -159,6 +162,7 @@ struct MANGOS_DLL_DECL ScriptedAI : CreatureAI
 
         bool m_bEvadeOutOfHomeArea;
         uint32 m_uiHomeArea;
+		int localeIdx = -2;
 };
 
 struct MANGOS_DLL_DECL Scripted_NoMovementAI : ScriptedAI

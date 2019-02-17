@@ -37,9 +37,9 @@ bool GossipHello_npc_mountaineer_pebblebitty(Player* pPlayer, Creature* pCreatur
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
-    if (!pPlayer->GetQuestRewardStatus(3181) == 1)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Open the gate please, i need to get to Searing Gorge", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-
+    if (!pPlayer->GetQuestRewardStatus(3181) == 1){
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000044), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Open the gate please, i need to get to Searing Gorge"
+	}
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 
     return true;
@@ -50,27 +50,27 @@ bool GossipSelect_npc_mountaineer_pebblebitty(Player* pPlayer, Creature* pCreatu
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "But i need to get there, now open the gate!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000045), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"But i need to get there, now open the gate!"
             pPlayer->SEND_GOSSIP_MENU(1833, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Ok, so what is this other way?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000046), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"Ok, so what is this other way?"
             pPlayer->SEND_GOSSIP_MENU(1834, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Doesn't matter, i'm invulnerable.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000047), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//"Doesn't matter, i'm invulnerable."
             pPlayer->SEND_GOSSIP_MENU(1835, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Yes...", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000048), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"Yes..."
             pPlayer->SEND_GOSSIP_MENU(1836, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+5:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Ok, i'll try to remember that.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000049), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);//"Ok, i'll try to remember that."
             pPlayer->SEND_GOSSIP_MENU(1837, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+6:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "A key? Ok!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000050), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);//"A key? Ok!"
             pPlayer->SEND_GOSSIP_MENU(1838, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+7:

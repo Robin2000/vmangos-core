@@ -293,7 +293,7 @@ bool GOHello_go_book_celebras(Player* pPlayer, GameObject* pGo)
 {
     if (pPlayer->GetQuestStatus(QUEST_SCEPTER) == QUEST_STATUS_INCOMPLETE)
     {
-        pPlayer->Say("Shal myrinan ishnu daldorah...", 0);
+        pPlayer->Say(pPlayer->GetSession()->GetMangosString(-2000452), 0);//Shal myrinan ishnu daldorah...
         pGo->Delete();
 
         std::list<Creature*> celebrasList;

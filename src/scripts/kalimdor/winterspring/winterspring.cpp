@@ -39,7 +39,7 @@ bool GossipHello_npc_lorax(Player* pPlayer, Creature* pCreature)
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
     if (pPlayer->GetQuestStatus(5126) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Talk to me", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000255), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//"Talk to me"
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 
@@ -51,23 +51,23 @@ bool GossipSelect_npc_lorax(Player* pPlayer, Creature* pCreature, uint32 uiSende
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What do you do here?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000256), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"What do you do here?"
             pPlayer->SEND_GOSSIP_MENU(3759, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I can help you", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000257), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"I can help you"
             pPlayer->SEND_GOSSIP_MENU(3760, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What deal?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000258), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"What deal?"
             pPlayer->SEND_GOSSIP_MENU(3761, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Then what happened?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000259), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//"Then what happened?"
             pPlayer->SEND_GOSSIP_MENU(3762, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "He is not safe, i'll make sure of that.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000260), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"He is not safe, i'll make sure of that."
             pPlayer->SEND_GOSSIP_MENU(3763, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+5:
@@ -114,7 +114,7 @@ bool GossipHello_npc_witch_doctor_mauari(Player* pPlayer, Creature* pCreature)
 
     if (pPlayer->GetQuestRewardStatus(975))
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I'd like you to make me a new Cache of Mau'ari please.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000261), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"I'd like you to make me a new Cache of Mau'ari please."
         pPlayer->SEND_GOSSIP_MENU(3377, pCreature->GetGUID());
     }
     else
@@ -150,8 +150,6 @@ enum
     
     QUEST_STAVE_OF_THE_ANCIENTS     = 7636
 };
-
-#define GOSSIP_ITEM                 "Show me your real face, demon."
 
 /*######
 ## npc_artorius_the_amiable
@@ -366,7 +364,7 @@ struct npc_artoriusAI : public ScriptedAI
 bool GossipHello_npc_artorius(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(QUEST_STAVE_OF_THE_ANCIENTS) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(0, GOSSIP_ITEM , GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(0, pPlayer->GetSession()->GetMangosString(-2000421), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//Show me your real face, demon.
     
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetObjectGuid());
     return true;
@@ -552,13 +550,13 @@ struct npc_ranshallaAI : public npc_escortAI
                 //m_creature->MonsterSay("The priestesses have been invoked.");//test
             }
             else
-                m_creature->MonsterSay("Navr�, les pr�tresses n'en font qu'a leur t�te...");
+                m_creature->MonsterSay(GetMangosString(-2000449));//Navr , the priests are only at their head ...
         }
         else
         {
             wpInvoqueAtteint = 0;
             pretressesInvoque = 0;
-            m_creature->MonsterSay("Navr�, les pretresses ne veulent pas pop...");
+            m_creature->MonsterSay(GetMangosString(-2000450));//Navr , the priests do not want to pop ...
         }
 
         return invoked;
@@ -624,7 +622,7 @@ struct npc_ranshallaAI : public npc_escortAI
             case 0:
                 m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
                 if (pretressesRepartent != 0 ||  wpInvoqueAtteint != 0 || guidPriestess1 != 0 || guidPriestess2 != 0 ||  guidMoonkin != 0 ||  guidVoice != 0 || pretressesInvoque != 0)
-                    m_creature->MonsterSay("WTF values have not been reset properly !");
+                    m_creature->MonsterSay(pPlayer->GetSession()->GetMangosString(-2000324));//"WTF values have not been reset properly !"
                 DoScriptText(RANSHALLA_BEGIN, m_creature, pPlayer);
                 break;
             case 2:
@@ -878,7 +876,6 @@ bool GOHello_go_altar_of_elune(Player* pPlayer, GameObject* pGo)
     return true;
 }
 //---
-
 enum
 {
     SPELL_UNSUMMON_YETI         = 17163

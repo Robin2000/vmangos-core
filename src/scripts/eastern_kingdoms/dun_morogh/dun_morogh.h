@@ -57,21 +57,6 @@ enum
     SOUND_RIFLEMAN_5 = 6250,
 };
 
-#define SHOOT1EMOTE1 "Rifleman Middlecamp picks the orc target..."
-#define SHOOT1EMOTE2 "Rifleman Middlecamp misses..."
-#define SHOOT2EMOTE1 "Rifleman Middlecamp takes a more careful aim..."
-#define SHOOT2EMOTE2 "Rifleman Middlecamp misses again..."
-#define SHOOT3EMOTE1 "Rifleman Wheeler casually points at the orc target..."
-#define SHOOT3EMOTE2 "Rifleman Wheeler hits!"
-#define SHOOT4EMOTE1 "Rifleman Middlecamp takes aim at the bottles..."
-#define SHOOT5EMOTE1 "Rifleman Middlecamp takes aim at the bottles again..."
-#define SHOOT6EMOTE1 "Rifleman Wheeler quickly shoots the middle target dead center..."
-#define SHOOT7EMOTE1 "Rifleman Wheeler then takes aim at the bottles..."
-#define SHOOT7EMOTE2 "Rifleman Wheeler only hits the side of the box!"
-#define SHOOT8EMOTE1 "Rifleman Middlecamp quickly shoots the orc dummy..."
-#define SHOOT9EMOTE1 "Rifleman Middlecamp turns to the paper target..."
-#define SHOOT10EMOTE1 "Rifleman Middlecamp shoots from the hip at the bottles..."
-
 static const float AngusMove[3][3] =
 {
     { -6008.86f,  -203.437f, 407.109f },

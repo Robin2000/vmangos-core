@@ -281,8 +281,6 @@ enum
     SPELL_PLUCKY_CHICKEN    = 9220
 };
 
-#define GOSSIP_ITEM_QUEST   "Please tell me the Phrase.."
-
 struct npc_plucky_johnsonAI : public ScriptedAI
 {
     npc_plucky_johnsonAI(Creature* pCreature) : ScriptedAI(pCreature)
@@ -364,8 +362,9 @@ CreatureAI* GetAI_npc_plucky_johnson(Creature* pCreature)
 
 bool GossipHello_npc_plucky_johnson(Player* pPlayer, Creature* pCreature)
 {
-    if (pPlayer->GetQuestStatus(QUEST_SCOOP) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_QUEST, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+	if (pPlayer->GetQuestStatus(QUEST_SCOOP) == QUEST_STATUS_INCOMPLETE)
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000002), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//"Please tell me the Phrase.."
+
 
     pPlayer->SEND_GOSSIP_MENU(720, pCreature->GetGUID());
     return true;

@@ -119,7 +119,7 @@ bool GOHello_go_barov_journal(Player* pPlayer, GameObject* pGo)
         {
             if (!pPlayer->HasSpell(26086))
             {
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Learn recipe Felcloth Bag", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000262), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//"Learn recipe Felcloth Bag"
                 pPlayer->SEND_GOSSIP_MENU(8121, pGo->GetObjectGuid());
             }
             else
@@ -355,7 +355,7 @@ bool GOHello_go_Hive_Glyphed_Crystal(Player* pPlayer, GameObject* pGo)
     if (pPlayer->GetQuestStatus(QUEST_GLYPH_CHASING) == QUEST_STATUS_INCOMPLETE &&
         pPlayer->HasItemCount(ITEM_GEOLOGIST_TRANSCRIPTION_KIT, 1) &&
         !pPlayer->HasItemCount(REWARD_ITEM, 1))
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "<Use the transcription device to gather a rubbing.>", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000263), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//"<Use the transcription device to gather a rubbing.>"
 
     pPlayer->SEND_GOSSIP_MENU(7770, pGo->GetGUID());
     return true;

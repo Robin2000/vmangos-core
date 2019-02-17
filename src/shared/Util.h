@@ -217,6 +217,8 @@ inline bool isEastAsianCharacter(wchar_t wchar)
 
 inline bool isWhiteSpace(char c)
 {
+	if (c < 0)
+		return false;
     return ::isspace(int(c)) != 0;
 }
 

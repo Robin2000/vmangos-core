@@ -117,10 +117,10 @@ bool GossipHello_npc_loramus_thalipedes(Player* pPlayer, Creature* pCreature)
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
     if (pPlayer->GetQuestStatus(2744) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Can you help me?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000052), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Can you help me?
+	
     if (pPlayer->GetQuestStatus(3141) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Tell me your story", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000053), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//Tell me your story
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 
@@ -137,23 +137,23 @@ bool GossipSelect_npc_loramus_thalipedes(Player* pPlayer, Creature* pCreature, u
             break;
 
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Please continue", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 21);
-            pPlayer->SEND_GOSSIP_MENU(1813, pCreature->GetGUID());
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000054), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 21);//Please continue
+			pPlayer->SEND_GOSSIP_MENU(1813, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+21:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I do not understand", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 22);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000055), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 22);//I do not understand
             pPlayer->SEND_GOSSIP_MENU(1814, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+22:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Indeed", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 23);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000056), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 23);//Indeed
             pPlayer->SEND_GOSSIP_MENU(1815, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+23:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I will do this with or your help, Loramus", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 24);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000057), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 24);//I will do this with or your help, Loramus
             pPlayer->SEND_GOSSIP_MENU(1816, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+24:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Yes", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 25);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000058), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 25);//Yes
             pPlayer->SEND_GOSSIP_MENU(1817, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+25:

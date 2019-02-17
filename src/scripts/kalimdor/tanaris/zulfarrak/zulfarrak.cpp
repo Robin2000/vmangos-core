@@ -55,9 +55,6 @@ enum blySpells
     SPELL_REVENGE              = 12170
 };
 
-#define GOSSIP_BLY                  "That's it! I'm tired of helping you out.  It's time we settled things on the battlefield!"
-
-
 struct npc_sergeant_blyAI : public ScriptedAI
 {
     npc_sergeant_blyAI(Creature* pCreature) : ScriptedAI(pCreature)
@@ -181,7 +178,7 @@ bool OnGossipHello_npc_sergeant_bly(Player* pPlayer, Creature* pCreature)
     {
         if (pInstance->GetData(EVENT_PYRAMID) == PYRAMID_KILLED_ALL_TROLLS)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_BLY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000415), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//That's it! I'm tired of helping you out.  It's time we settled things on the battlefield!
             pPlayer->SEND_GOSSIP_MENU(1517, pCreature->GetGUID());
         }
         else if (pInstance->GetData(EVENT_PYRAMID) == PYRAMID_NOT_STARTED)
@@ -270,9 +267,6 @@ enum weegliSays
     SAY_WEEGLI_OK_I_GO   = -1209001,
     SAY_CHIEF_UKORZ_DOOR = -1209004
 };
-
-#define GOSSIP_WEEGLI               "Will you blow up that door now?"
-
 
 struct npc_weegli_blastfuseAI : public ScriptedAI
 {
@@ -494,7 +488,7 @@ bool OnGossipHello_npc_weegli_blastfuse(Player* pPlayer, Creature* pCreature)
         switch (pInstance->GetData(EVENT_PYRAMID))
         {
             case PYRAMID_KILLED_ALL_TROLLS:
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_WEEGLI, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000416), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Will you blow up that door now?
                 pPlayer->SEND_GOSSIP_MENU(1514, pCreature->GetGUID());  //if event can proceed to end
                 break;
             case PYRAMID_NOT_STARTED:

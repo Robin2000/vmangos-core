@@ -45,7 +45,7 @@ bool GossipHello_npc_beaten_corpse(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(QUEST_LOST_IN_BATTLE) == QUEST_STATUS_INCOMPLETE ||
             pPlayer->GetQuestStatus(QUEST_LOST_IN_BATTLE) == QUEST_STATUS_COMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Examine corpse in detail...", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000051), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Examine corpse in detail..."
 
     pPlayer->SEND_GOSSIP_MENU(3557, pCreature->GetGUID());
     return true;
@@ -128,8 +128,8 @@ struct npc_pollyAI : public ScriptedAI
     {
         if (b_text == false)
         {
-            m_creature->MonsterSay("MmmmmMmmmm... Enormous chemically altered cracker...", 0, 0);
-            m_creature->MonsterSay("What the squawk? Squawk squawk, squawk? SQUAWK!", 0, 0);
+			m_creature->MonsterSay(GetMangosString(-2000322), 0, 0);//"MmmmmMmmmm... Enormous chemically altered cracker..."
+			m_creature->MonsterSay(GetMangosString(-2000323), 0, 0);//"What the squawk? Squawk squawk, squawk? SQUAWK!"
             b_text = true;
         }
     }

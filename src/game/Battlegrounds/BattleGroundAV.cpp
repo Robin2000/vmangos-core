@@ -518,7 +518,7 @@ void BattleGroundAV::HandleQuestComplete(Unit* questGiver, uint32 questid, Playe
 //            setReinforcementLevelGroundUnit(teamIdx, m_Team_QuestStatus[teamIdx][0]);
 
             if((m_Team_QuestStatus[teamIdx][0]%100) == 0 && (m_Team_QuestStatus[teamIdx][0]%500) != 0&& questGiver->GetTypeId() == TYPEID_UNIT)
-                ((Creature*)questGiver)->MonsterSay("Great! Let's keep those supplies coming, people!", 0, 0);
+                ((Creature*)questGiver)->MonsterSay(player->GetSession()->GetMangosString(-2000281), 0, 0);//"Great! Let's keep those supplies coming, people!"
 
 /*            if(m_Team_QuestStatus[teamIdx][0]%500 == 0 && m_Team_QuestStatus[teamIdx][0] != 0 && questGiver->GetTypeId() == TYPEID_UNIT)
             {
@@ -701,9 +701,9 @@ void BattleGroundAV::HandleQuestComplete(Unit* questGiver, uint32 questid, Playe
             reputation = 1;
 
             if (m_Team_QuestStatus[teamIdx][8]%25 == 0 && m_Team_QuestStatus[teamIdx][8] !=0 )
-                questGiver->MonsterYell("The stables are filled up!", 0, 0);
+                questGiver->MonsterYell(player->GetSession()->GetMangosString(-2000282), 0, 0);//"The stables are filled up!"
             if ((m_Team_QuestStatus[teamIdx][8]%5) == 0)
-                questGiver->PMonsterSay("Thanks for the supplies, %s",player->GetName());
+                questGiver->PMonsterSay(player->GetSession()->GetMangosString(-2000283),player->GetName());//"Thanks for the supplies, %s"
 
 
             /** Adding visual mount each time 5 ressources are added */

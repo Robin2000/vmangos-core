@@ -26,10 +26,10 @@ bool GossipHello_npcs_dithers_and_arbington(Player* pPlayer, Creature* pCreature
 
     if (pPlayer->GetQuestRewardStatus(5237) || pPlayer->GetQuestRewardStatus(5238))
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What does the Felstone Field Cauldron need?",      GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What does the Dalson's Tears Cauldron need?",      GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What does the Writhing Haunt Cauldron need?",      GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What does the Gahrron's Withering Cauldron need?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000233),      GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"What does the Felstone Field Cauldron need?"
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000234),      GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"What does the Dalson's Tears Cauldron need?"
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000235),      GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"What does the Writhing Haunt Cauldron need?"
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000236), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//"What does the Gahrron's Withering Cauldron need?"
         pPlayer->SEND_GOSSIP_MENU(3985, pCreature->GetGUID());
     }
     else
@@ -46,19 +46,19 @@ bool GossipSelect_npcs_dithers_and_arbington(Player* pPlayer, Creature* pCreatur
             pPlayer->SEND_VENDORLIST(pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Thanks, i need a Vitreous Focuser", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000237), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"Thanks, i need a Vitreous Focuser"
             pPlayer->SEND_GOSSIP_MENU(3980, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Thanks, i need a Vitreous Focuser", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000238), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"Thanks, i need a Vitreous Focuser"
             pPlayer->SEND_GOSSIP_MENU(3981, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Thanks, i need a Vitreous Focuser", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000239), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"Thanks, i need a Vitreous Focuser"
             pPlayer->SEND_GOSSIP_MENU(3982, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Thanks, i need a Vitreous Focuser", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000240), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"Thanks, i need a Vitreous Focuser"
             pPlayer->SEND_GOSSIP_MENU(3983, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+5:
@@ -80,8 +80,6 @@ enum
     SPELL_SCARLET_ILLUSION  = 17961
 };
 
-#define GOSSIP_ITEM_ILLUSION    "I am ready for the illusion, Myranda."
-
 bool GossipHello_npc_myranda_the_hag(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->isQuestGiver())
@@ -90,7 +88,7 @@ bool GossipHello_npc_myranda_the_hag(Player* pPlayer, Creature* pCreature)
     if (pPlayer->GetQuestStatus(QUEST_SUBTERFUGE) == QUEST_STATUS_COMPLETE &&
             !pPlayer->GetQuestRewardStatus(QUEST_IN_DREAMS) && !pPlayer->HasAura(SPELL_SCARLET_ILLUSION))
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ILLUSION, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000391), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//I am ready for the illusion, Myranda.
         pPlayer->SEND_GOSSIP_MENU(4773, pCreature->GetGUID());
         return true;
     }

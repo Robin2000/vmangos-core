@@ -35,14 +35,6 @@
  ## npc_highlord_demitrian
  ###*/
 
-#define GOSSIP_ITEM_DEMITRIAN1 "What do you know of it?"
-#define GOSSIP_ITEM_DEMITRIAN2 "I am listening , Demitrian."
-#define GOSSIP_ITEM_DEMITRIAN3 "Continue, please."
-#define GOSSIP_ITEM_DEMITRIAN4 "A battle?"
-#define GOSSIP_ITEM_DEMITRIAN5 "<Nod>"
-#define GOSSIP_ITEM_DEMITRIAN6 "Caught unaware? How?"
-#define GOSSIP_ITEM_DEMITRIAN7 "So what did Ragnaros do next?"
-
 enum
 {
     QUEST_EXAMINE_THE_VESSEL        =   7785,
@@ -71,7 +63,7 @@ bool GossipHello_npc_highlord_demitrian(Player* pPlayer, Creature* pCreature)
 
     if (pPlayer->GetQuestStatus(QUEST_EXAMINE_THE_VESSEL) == QUEST_STATUS_NONE &&
             (pPlayer->HasItemCount(ITEM_BINDINGS_WINDSEEKER_LEFT, 1, false) || pPlayer->HasItemCount(ITEM_BINDINGS_WINDSEEKER_RIGHT, 1, false)))
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_DEMITRIAN1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000405), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//What do you know of it?
 
     if (pPlayer->GetQuestStatus(QUEST_THUNDERAAN_WINDSEEKER) == QUEST_STATUS_COMPLETE && pPlayer->GetQuestStatus(QUEST_RISE_THUNDERFURY) == QUEST_STATUS_NONE &&
         !pPlayer->HasItemCount(ITEM_DORMANT_BLADE, 1, true))
@@ -87,27 +79,27 @@ bool GossipSelect_npc_highlord_demitrian(Player* pPlayer, Creature* pCreature, u
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_DEMITRIAN2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000406), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//I am listening , Demitrian.
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DEMITRIAN1, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_DEMITRIAN3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000407), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//Continue, please.
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DEMITRIAN2, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_DEMITRIAN4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000408), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//A battle?
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DEMITRIAN3, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_DEMITRIAN5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000409), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//<Nod>
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DEMITRIAN4, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_DEMITRIAN6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000410), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//Caught unaware? How?
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DEMITRIAN5, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+5:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_DEMITRIAN7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000411), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);//So what did Ragnaros do next?
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DEMITRIAN6, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+6:
@@ -425,8 +417,6 @@ enum
     QUEST_STAVE_OF_THE_ANCIENTS     = 7636
 };
 
-#define GOSSIP_ITEM                 "Show me your real face, demon."
-
 /*#####
  ## npc_nelson_the_nice
  ######*/
@@ -678,7 +668,7 @@ struct npc_solenorAI : public ScriptedAI
 bool GossipHello_npc_solenor(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(QUEST_STAVE_OF_THE_ANCIENTS) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(0, GOSSIP_ITEM , GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(0, pPlayer->GetSession()->GetMangosString(-2000412), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//Show me your real face, demon.
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetObjectGuid());
     return true;
@@ -766,7 +756,7 @@ struct npc_prince_thunderaanAI : public ScriptedAI
     {
         if (!engaged)
         {
-            m_creature->MonsterYell("My power is discombobulatingly devastating! It is ludicrous that these mortals even attempt to enter my realm!", 0);
+            m_creature->MonsterYell(GetMangosString(-2000344), 0);//"My power is discombobulatingly devastating! It is ludicrous that these mortals even attempt to enter my realm!"
             engaged = true;
         }
     }
@@ -885,7 +875,7 @@ struct npc_colossusAI : public ScriptedAI
         {
             if (DoCastSpellIfCan(m_creature, SPELL_COLOSSAL_SMASH) == CAST_OK) // Maxi KB
             {
-                m_creature->MonsterTextEmote("Colossus begins to cast Colossus Smash", NULL);
+                m_creature->MonsterTextEmote(GetMangosString(-2000446), NULL);//Colossus begins to cast Colossus Smash
                 m_uiColossalSmashTimer = firstSmash ? 10000 : 60000;
                 m_uiColossalSmashEmoteTimer = 5000;
 
@@ -900,7 +890,7 @@ struct npc_colossusAI : public ScriptedAI
 
         if (m_uiColossalSmashEmoteTimer && m_uiColossalSmashEmoteTimer < uiDiff)
         {
-            m_creature->MonsterTextEmote("Colossus lets loose a massive attack", NULL);
+            m_creature->MonsterTextEmote(GetMangosString(-2000447), NULL);//Colossus lets loose a massive attack
             m_uiColossalSmashEmoteTimer = 0;
         }
         else
@@ -2609,9 +2599,6 @@ bool QuestRewarded_scarab_gong(Player* player, GameObject* go, Quest const* ques
  ## npc_Krug_SkullSplit ##
  ########################*/
 
-#define GOSSIP_ITEM_KRUG_SKULLSPLIT_1 "Continue."
-#define GOSSIP_ITEM_KRUG_SKULLSPLIT_2 "Very well, let's go!"
-
 /* Hunterkiller */
 #define HUNTERKILLER_SPAWN_POS_X -7765.0f
 #define HUNTERKILLER_SPAWN_POS_Y 536.0f
@@ -3126,7 +3113,7 @@ bool GossipHello_npc_Krug_SkullSplit(Player* pPlayer, Creature* pCreature)
     if ((pPlayer->GetQuestStatus(QUEST_FIELD_DUTY) == QUEST_STATUS_INCOMPLETE)
             && (eEventStatus == EVENT_NOT_STARTED))
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KRUG_SKULLSPLIT_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000413), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Continue.
         pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
     }
     else if ((pPlayer->GetQuestStatus(QUEST_FIELD_DUTY) == QUEST_STATUS_INCOMPLETE)
@@ -3146,7 +3133,7 @@ bool GossipSelect_npc_Krug_SkullSplit(Player* pPlayer, Creature* pCreature, uint
 {
     if (uiAction == GOSSIP_ACTION_INFO_DEF + 1)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KRUG_SKULLSPLIT_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000414), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//Very well, let's go!
         pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
     }
 
@@ -3262,8 +3249,8 @@ enum
 bool GossipHello_npc_chris_starlightshadow(Player* pPlayer, Creature* pCreature)
 {
 
-    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Guide me to the Ruins of Ahn'Qiraj", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Guide me to the Temple of Ahn'Qiraj", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000252), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Guide me to the Ruins of Ahn'Qiraj"
+    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000253), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"Guide me to the Temple of Ahn'Qiraj"
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 
     return true;

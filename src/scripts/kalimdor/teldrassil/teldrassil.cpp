@@ -105,7 +105,7 @@ struct npc_sethirAI : public ScriptedAI
 
     void Aggro(Unit* pUnit)
     {
-        m_creature->MonsterSay("Filfh! Filfh everywhere! The forests must be cleansed!");
+		m_creature->MonsterSay(GetMangosString(-2000321));//"Filfh! Filfh everywhere! The forests must be cleansed!"
         for (uint32 counter = 0; counter < 6; counter++)
         {
             if (Creature* summoned = DoSpawnCreature(6911, 8.0f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 1000))

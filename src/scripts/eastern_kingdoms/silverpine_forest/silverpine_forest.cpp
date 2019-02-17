@@ -59,7 +59,7 @@ CreatureAI* GetAI_npc_astor_hadren(Creature *_creature)
 bool GossipHello_npc_astor_hadren(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(1886) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "You're Astor Hadren, right?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000214), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"You're Astor Hadren, right?"
 
     pPlayer->SEND_GOSSIP_MENU(623, pCreature->GetGUID());
 
@@ -71,7 +71,7 @@ bool GossipSelect_npc_astor_hadren(Player* pPlayer, Creature* pCreature, uint32 
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF + 1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "You've got something I need, Astor. And I'll be taking it now.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000215), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"You've got something I need, Astor. And I'll be taking it now."
             pPlayer->SEND_GOSSIP_MENU(624, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF + 2:
@@ -713,8 +713,6 @@ enum
     QUEST_ARUGAL_FOLLY          = 422,
 };
 
-#define DARKRUNNER_SAY "The Sons of Arugal will rise against all who challenge the power of the Moonrage!"
-
 struct go_dusty_spellbooksAI : GameObjectAI
 {
     explicit go_dusty_spellbooksAI(GameObject* pGo) : GameObjectAI(pGo)
@@ -738,7 +736,7 @@ struct go_dusty_spellbooksAI : GameObjectAI
         {
             if (auto pCreature = me->SummonCreature(NPC_MOONRAGE_DARKRUNNER, 875.38f, 1232.43f, 52.6f, 3.16f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 90000))
             {
-                pCreature->MonsterSay(DARKRUNNER_SAY);
+                pCreature->MonsterSay(pPlayer->GetSession()->GetMangosString(-2000385));//The Sons of Arugal will rise against all who challenge the power of the Moonrage!
                 pCreature->AddThreat(pCaster);
                 m_bJustUsed = true;
                 m_uiJustUsedTimer = 1000;

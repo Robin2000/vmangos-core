@@ -56,16 +56,6 @@ enum
     NPC_MASTER_ADD2            = 16428,
 };
 
-// Textes
-// Phase 1
-#define SAY_PORTAL_FINISHED_1            "Le portail est en place."
-#define SAY_PORTAL_FINISHED_2            "Travail termine, Maitre."
-#define SAY_PORTAL_FINISHED_3            "Nous pouvons commencer."
-#define SAY_PORTAL_FINISHED_MASTER_SAY   "Tres bien."
-#define SAY_PORTAL_FINISHED_MASTER_YELL  "Cette ville n'existera bientot plus !"
-// Phase 2
-#define SAY_WAVE_MOB_AT_NEW_WAVE         "Les renforts arrivents !"
-
 // 1 jour : utilise si le script plante, pour se mettre "en pause"
 #define CD_INFINY                        60*60*24*1000
 
@@ -119,7 +109,7 @@ struct npc_attack_masterAI : public ScriptedAI
         fCityBossPositionX   = -8958.0f;
         fCityBossPositionY   = 517.0f;
         fCityBossPositionZ   = 96.9f;
-        // Retourné
+        // Retourn?
         fCityBossOrientation = pCreature->GetOrientation() + M_PI;
         Reset();
     }
@@ -235,16 +225,16 @@ struct npc_attack_masterAI : public ScriptedAI
                     ++num;
                     SetAttackable(invoc, false);
                     if (num == 1)
-                        invoc->MonsterSay(SAY_PORTAL_FINISHED_1, 0, 0);
+                        invoc->MonsterSay(GetMangosString(-2000345), 0, 0);//Le portail est en place.
                     else if (num == 2)
-                        invoc->MonsterSay(SAY_PORTAL_FINISHED_2, 0, 0);
+                        invoc->MonsterSay(GetMangosString(-2000346), 0, 0);//Travail termine, Maitre.
                     else if (num == 3)
-                        invoc->MonsterSay(SAY_PORTAL_FINISHED_3, 0, 0);
+                        invoc->MonsterSay(GetMangosString(-2000347), 0, 0);//Nous pouvons commencer.
                 }
             }
         }
-        MasterSay(SAY_PORTAL_FINISHED_MASTER_SAY);
-        MasterYell(SAY_PORTAL_FINISHED_MASTER_YELL);
+        MasterSay(GetMangosString(-2000348));//Tres bien.
+        MasterYell(GetMangosString(-2000349));//Cette ville n'existera bientot plus !
         // Le maitre ne peut plus etre tue
         SetAttackable(ME, false);
     }
@@ -343,7 +333,7 @@ struct npc_attack_masterAI : public ScriptedAI
                     {
                         if (!waveMob->HasAura(SPELL_AURA_RED))
                         {
-                            waveMob->MonsterYell("Moi tout casser !", 0, 0);
+                            waveMob->MonsterYell(GetMangosString(-2000325), 0, 0);//"Moi tout casser !"
                             waveMob->CastSpell(waveMob, SPELL_AURA_RED, true);
                         }
                     }
@@ -376,7 +366,7 @@ struct npc_attack_masterAI : public ScriptedAI
     // ################################
     // Certaines vagues sont encore dans la ville.
     // Le BOSS de la capitale intervient dans la bataille, avec des gardes.
-    // Le PNJ qui a invoqué le portail invoque des adds.
+    // Le PNJ qui a invoqu?le portail invoque des adds.
     // Les invocateurs disparaissent.
     // Les 2 camps se rentrent l'un dans l'autre
     Unit* GetCityBoss()
@@ -472,7 +462,7 @@ struct npc_attack_masterAI : public ScriptedAI
             {
                 // Le boss dit un truc
                 if (Unit* boss = GetCityBoss())
-                    boss->MonsterYell("Gardes, venez defendre votre ville !", 0, 0);
+                    boss->MonsterYell(GetMangosString(-2000326), 0, 0);//"Gardes, venez defendre votre ville !"
 
                 uiCD = 3000;
                 return;
@@ -494,14 +484,14 @@ struct npc_attack_masterAI : public ScriptedAI
                     CityBossSummonCreature(NPC_BOSS_CAPITAL_ADD2);
                 // Pendant ce temps, notre maitre sombre envoit des attaques avec de jolis visuels (bis)
                 ME->CastSpell(ME, 8609, false);
-                MasterYell("J'appelle les forces des profondeurs : transformez moi cette ville en ruine.");
+                MasterYell(GetMangosString(-2000352));//"J'appelle les forces des profondeurs : transformez moi cette ville en ruine."
                 uiCD = 3000;
                 return;
             }
             case 5:
             {
                 // Le maitre sombre invoque des adds lui aussi
-                CityBossYell("A l'attaque, mes braves !");
+                CityBossYell(GetMangosString(-2000353));//A l'attaque, mes braves !
                 for (uint8 i = 0; i <= MASTER_ADD1_COUNT; ++i)
                     MasterSummonCreatureAndAttack(NPC_MASTER_ADD1);
                 uiCD = 3000;
@@ -517,7 +507,7 @@ struct npc_attack_masterAI : public ScriptedAI
             }
             case 7:
             {
-                MasterSay("La bataille peut commencer.");
+                MasterSay(GetMangosString(-2000354));//"La bataille peut commencer."
                 // Tout le monde redevient attaquable
                 SetAllAttackable();
                 return;
@@ -578,9 +568,6 @@ enum
     NEAR_DEATH_SPELL       = 13914,
 };
 
-#define YELL_AT_DESTRUCTION_1 "Booom !"
-#define YELL_AT_DESTRUCTION_2 "Moi tout casser !"
-
 struct npc_event_wave_mobAI : public ScriptedAI
 {
     npc_event_wave_mobAI(Creature* pCreature, bool isBad) : ScriptedAI(pCreature)
@@ -589,15 +576,15 @@ struct npc_event_wave_mobAI : public ScriptedAI
         // Les textes
         if (bIsBad)
         {
-            m_lSayStr.push_back("Moi tuer !");
-            m_lSayStr.push_back("Moi obeir.");
-            m_lSayStr.push_back("Moi te voir, moi te chercher, moi te tuer.");
+            m_lSayStr.push_back(GetMangosString(-2000355));//Moi tuer !
+            m_lSayStr.push_back(GetMangosString(-2000356));//Moi obeir.
+            m_lSayStr.push_back(GetMangosString(-2000357));//Moi te voir, moi te chercher, moi te tuer.
         }
         else
         {
-            m_lSayStr.push_back("Stormwind ne tombera pas.");
-            m_lSayStr.push_back("Nous repousserons vos attaques une par une.");
-            m_lSayStr.push_back("La garde meurt, et ne se rend pas !");
+            m_lSayStr.push_back(GetMangosString(-2000358));//Stormwind ne tombera pas.
+            m_lSayStr.push_back(GetMangosString(-2000359));//Nous repousserons vos attaques une par une.
+            m_lSayStr.push_back(GetMangosString(-2000360));//La garde meurt, et ne se rend pas !
         }
 
         // Les sorts
@@ -681,9 +668,9 @@ struct npc_event_wave_mobAI : public ScriptedAI
         if (rnd % 2 == 0)
         {
             if (rnd <= 2)
-                ME->MonsterYell(YELL_AT_DESTRUCTION_1, 0, 0);
+                ME->MonsterYell(GetMangosString(-2000350), 0, 0);//Booom !
             else
-                ME->MonsterYell(YELL_AT_DESTRUCTION_2, 0, 0);
+                ME->MonsterYell(GetMangosString(-2000351), 0, 0);//Moi tout casser !
         }
     }
     void DoRandomAction()
@@ -947,7 +934,7 @@ struct npc_guard_masterAI : public ScriptedAI
         }
         else
         {
-            DoAllSay("Garde prete !");
+            DoAllSay(GetMangosString(-2000451));//Garde prete !
             uiPhase = PHASE_IN_ATTACK;
             uiCD    = 0;
         }
@@ -986,7 +973,7 @@ struct npc_guard_masterAI : public ScriptedAI
         switch (uiCurrentPhaseStep)
         {
             case 1:
-                MasterYell("A l'attaaaaaqqqquuueeeeee !!!");
+                MasterYell(GetMangosString(-2000361));//A l'attaaaaaqqqquuueeeeee !!!
                 break;
             default:
             {

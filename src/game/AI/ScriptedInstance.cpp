@@ -174,7 +174,8 @@ void ScriptedInstance_PTR::OnCreatureEnterCombat(Creature* creature)
         if (it == boss_expirations.end())
         {
             boss_expirations[creature->GetObjectGuid()] = time(nullptr);
-            creature->MonsterSay("Remaining time before despawn: 30 minutes.");
+			if (Player *player = GetPlayerInMap())
+				creature->MonsterSay(player->GetSession()->GetMangosString(-2000284));//"Remaining time before despawn: 30 minutes."
         }
     }
     ScriptedInstance::OnCreatureEnterCombat(creature);

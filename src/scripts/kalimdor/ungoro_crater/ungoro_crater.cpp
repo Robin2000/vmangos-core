@@ -486,8 +486,6 @@ enum
     QUEST_STAVE_OF_THE_ANCIENTS     = 7636
 };
 
-#define GOSSIP_ITEM                 "Show me your real face, demon."
-
 /*######
 ## npc_precious_the_devourer 14538
 ######*/
@@ -948,7 +946,7 @@ struct npc_simone_the_inconspicuousAI : public ScriptedAI
 bool GossipHello_npc_simone_the_inconspicuous(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(QUEST_STAVE_OF_THE_ANCIENTS) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(0, GOSSIP_ITEM , GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(0, pPlayer->GetSession()->GetMangosString(-2000420), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//Show me your real face, demon.
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetObjectGuid());
     return true;

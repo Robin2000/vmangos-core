@@ -171,8 +171,10 @@ void instance_dire_maul::OnCreatureDeath(Creature* pCreature)
             SetData(TYPE_ALZZIN, DONE);
             break;
         case NPC_IMMOL_THAR:
-            if (Creature* pTortheldrin = instance->GetCreature(m_uiTortheldrinGUID))
-                pTortheldrin->MonsterYell("Who dares disrupt the sanctity of Eldre'Thalas? Face me, cowards!");
+			if (Creature* pTortheldrin = instance->GetCreature(m_uiTortheldrinGUID)) {
+				if(Player* pPlayer = GetPlayerInMap())
+					pTortheldrin->MonsterYell(pPlayer->GetSession()->GetMangosString(-2000339));//"Who dares disrupt the sanctity of Eldre'Thalas? Face me, cowards!"
+			}
             break;
         case NPC_GUARD_MOLDAR:
             SetData(TYPE_MOLDAR, DONE); 
@@ -1028,15 +1030,15 @@ bool GossipHello_npc_knot_thimblejack(Player* pPlayer, Creature* pCreature)
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetObjectGuid());
 
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Why should I bother fixing the trap? Why not just eliminate the guard the old fashioned way?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000241), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);//"Why should I bother fixing the trap? Why not just eliminate the guard the old fashioned way?"
 
         if (pPlayer->GetQuestRewardStatus(QUEST_GORDOK_OGRE_SUIT) && pPlayer->GetQuestStatus(QUEST_GORDOK_OGRE_SUIT) == QUEST_STATUS_COMPLETE)
         {
             if (pPlayer->GetSkillValueBase(SKILL_LEATHERWORKING) >= 275 && !pPlayer->HasSpell(SPELL_GORDOK_OGRE_SUIT_L))
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Please teach me how to make a Gordok Ogre Suit!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000242), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);//"Please teach me how to make a Gordok Ogre Suit!"
 
             if (pPlayer->GetSkillValueBase(SKILL_TAILORING) >= 275 && !pPlayer->HasSpell(SPELL_GORDOK_OGRE_SUIT_T))
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Please teach me how to make a Gordok Ogre Suit!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000243), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);//"Please teach me how to make a Gordok Ogre Suit!"
         }
 
         pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_1, pCreature->GetObjectGuid());
@@ -1122,14 +1124,14 @@ struct GordokBruteAI : public ScriptedAI
         switch (yellChance)
         {
             case 0:
-                m_creature->MonsterSay("Me smash! You die!");
+				m_creature->MonsterSay(GetMangosString(-2000312));//"Me smash! You die!"
                 break;
             case 1:
-                m_creature->MonsterSay("The Great One will smash you!");
+				m_creature->MonsterSay(GetMangosString(-2000313));//"The Great One will smash you!"
                 break;
             case 2:
                 char eMessage[100];
-                sprintf(eMessage, "Raaar!!! Me smash %s!",pWho->GetName());
+				sprintf(eMessage, GetMangosString(-2000314),pWho->GetName());//"Raaar!!! Me smash %s!"
                 m_creature->MonsterSay(eMessage);
                 break;
             default:
@@ -1165,7 +1167,7 @@ struct GordokBruteAI : public ScriptedAI
         if (m_creature->GetHealthPercent() < 30.0f && !m_bEnrage)
         {
             char eMessage[100];
-            sprintf(eMessage, "Gordok Brute puts his club away and begins swinging wildly!");
+			sprintf(eMessage, GetMangosString(-2000315));//"Gordok Brute puts his club away and begins swinging wildly!"
             m_creature->LoadEquipment(0, true);
             m_creature->MonsterTextEmote(eMessage, NULL, false);
 
@@ -1262,7 +1264,7 @@ struct boss_guardsAI : public ScriptedAI
         // Guards no longer drop loot after contributing to the Tribute
         if (pInstance->GetData(TYPE_GORDOK_TRIBUTE) == DONE)
         {
-            m_creature->MonsterSay("Why... Boss.. betray.. us...?", 0, 0);
+			m_creature->MonsterSay(GetMangosString(-2000316), 0, 0);//"Why... Boss.. betray.. us...?"
             m_creature->SetLootRecipient(NULL);
         }
     }
@@ -1544,7 +1546,7 @@ struct boss_kromcrushAI : public ScriptedAI
         // Kromcrush no longer drops loot after contributing to the Tribute
         if (pInstance->GetData(TYPE_GORDOK_TRIBUTE) == DONE)
         {
-            m_creature->MonsterSay("Why... Boss.. betray.. us...?", 0, 0);
+			m_creature->MonsterSay(GetMangosString(-2000316), 0, 0);//"Why... Boss.. betray.. us...?"
             m_creature->SetLootRecipient(NULL);
         }
     }

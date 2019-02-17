@@ -1026,8 +1026,6 @@ enum
     SPELL_JAINAS_AUTOGRAPH       = 23122
 };
 
-#define GOSSIP_ITEM_JAINA "I know this is rather silly but i have a young ward who is a bit shy and would like your autograph."
-
 struct npc_lady_jaina_proudmooreAI : public ScriptedAI
 {
     npc_lady_jaina_proudmooreAI(Creature* pCreature) : ScriptedAI(pCreature)
@@ -1123,7 +1121,7 @@ bool GossipHello_npc_lady_jaina_proudmoore(Player* pPlayer, Creature* pCreature)
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
     if (pPlayer->GetQuestStatus(QUEST_JAINAS_AUTOGRAPH) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_JAINA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000393), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//I know this is rather silly but i have a young ward who is a bit shy and would like your autograph.
 
     // Correct gossip text depends on The Missing Diplomat quest chain progression.
     if (pPlayer->GetQuestStatus(QUEST_MISSING_DIPLO_PT17) == QUEST_STATUS_COMPLETE)
@@ -1156,12 +1154,10 @@ enum
     SPELL_ALCAZ_SURVEY          = 42295
 };
 
-#define GOSSIP_RIDE             "<Ride the gryphons to Survey Alcaz Island>"
-
 bool GossipHello_npc_cassa_crimsonwing(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(QUEST_SURVEY_ALCAZ) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_RIDE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000394), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//<Ride the gryphons to Survey Alcaz Island>
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
     return true;

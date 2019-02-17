@@ -106,7 +106,7 @@ struct npc_escort_genericAI : public npc_escortAI
         if (pQuest->GetQuestId() == m_pEscortData->uiQuestEntry)
         {
             Start(false, pPlayer->GetGUID(), pQuest);
-            m_creature->MonsterTextEmote("quest accepted", NULL);
+            m_creature->MonsterTextEmote(pPlayer->GetSession()->GetMangosString(-2000438), NULL);//quest accepted
         }
     }
 

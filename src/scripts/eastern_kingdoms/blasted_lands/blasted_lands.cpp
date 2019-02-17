@@ -105,7 +105,7 @@ struct ThadiusGrimshadeAI : public ScriptedAI
         {
             if (!sentence)
             {
-                m_creature->MonsterSay("...Cage...temple...trolls...", 0, 0);
+				m_creature->MonsterSay(GetMangosString(-2000293), 0, 0);//"...Cage...temple...trolls..."
                 sentence = true;
             }
             if (m_uiSpeakTimer < uiDiff)

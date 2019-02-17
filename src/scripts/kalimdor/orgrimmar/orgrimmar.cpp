@@ -351,7 +351,7 @@ struct npc_overlord_saurfangAI : public ScriptedAI
     {
         if (isInCombat == false)
         {
-            m_creature->MonsterTextEmote("Saurfang's eyes glow red for a brief moment");
+			m_creature->MonsterTextEmote(GetMangosString(-2000319));//"Saurfang's eyes glow red for a brief moment"
             isInCombat = true;
             m_creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
         }
@@ -360,7 +360,7 @@ struct npc_overlord_saurfangAI : public ScriptedAI
     void KilledUnit(Unit* pVictim)
     {
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
-            m_creature->MonsterSay("Is that the best you can do?", 0, 0);
+            m_creature->MonsterSay(GetMangosString(-2000320), 0, 0);//"Is that the best you can do?"
     }
 
     void StartRallyEvent(ObjectGuid playerGuid)

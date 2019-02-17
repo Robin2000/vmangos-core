@@ -41,9 +41,6 @@ enum
     TAXI_PATH_ID_HORDE          = 316
 };
 
-#define GOSSIP_ITEM_THUNDER     "I'd like to fly to Thunder Bluff."
-#define GOSSIP_ITEM_AQ_END      "Do you know where I can find Half Pendant of Aquatic Endurance?"
-
 bool GossipHello_npc_bunthen_plainswind(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->getClass() != CLASS_DRUID)
@@ -51,16 +48,16 @@ bool GossipHello_npc_bunthen_plainswind(Player* pPlayer, Creature* pCreature)
     else if (pPlayer->GetTeam() != HORDE)
     {
         if (pPlayer->GetQuestStatus(QUEST_SEA_LION_ALLY) == QUEST_STATUS_INCOMPLETE)
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_AQ_END, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000397), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//Do you know where I can find Half Pendant of Aquatic Endurance?
 
         pPlayer->SEND_GOSSIP_MENU(4917, pCreature->GetGUID());
     }
     else if (pPlayer->getClass() == CLASS_DRUID && pPlayer->GetTeam() == HORDE)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_THUNDER, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000396), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//I'd like to fly to Thunder Bluff.
 
         if (pPlayer->GetQuestStatus(QUEST_SEA_LION_HORDE) == QUEST_STATUS_INCOMPLETE)
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_AQ_END, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000397), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);// Do you know where I can find Half Pendant of Aquatic Endurance ?
 
         pPlayer->SEND_GOSSIP_MENU(4918, pCreature->GetGUID());
     }
@@ -92,17 +89,12 @@ bool GossipSelect_npc_bunthen_plainswind(Player* pPlayer, Creature* pCreature, u
  ## npc_great_bear_spirit
  ######*/
 
-#define GOSSIP_BEAR1 "What do you represent, spirit?"
-#define GOSSIP_BEAR2 "I seek to understand the importance of strength of the body."
-#define GOSSIP_BEAR3 "I seek to understand the importance of strength of the heart."
-#define GOSSIP_BEAR4 "I have heard your words, Great Bear Spirit, and I understand. I now seek your blessings to fully learn the way of the Claw."
-
 bool GossipHello_npc_great_bear_spirit(Player* pPlayer, Creature* pCreature)
 {
     //ally or horde quest
     if (pPlayer->GetQuestStatus(5929) == QUEST_STATUS_INCOMPLETE || pPlayer->GetQuestStatus(5930) == QUEST_STATUS_INCOMPLETE)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_BEAR1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000398), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//What do you represent, spirit?
         pPlayer->SEND_GOSSIP_MENU(4719, pCreature->GetGUID());
     }
     else
@@ -116,15 +108,15 @@ bool GossipSelect_npc_great_bear_spirit(Player* pPlayer, Creature* pCreature, ui
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_BEAR2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000399), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//I seek to understand the importance of strength of the body.
             pPlayer->SEND_GOSSIP_MENU(4721, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF + 1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_BEAR3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000400), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//I seek to understand the importance of strength of the heart.
             pPlayer->SEND_GOSSIP_MENU(4733, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF + 2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_BEAR4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000401), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//I have heard your words, Great Bear Spirit, and I understand. I now seek your blessings to fully learn the way of the Claw.
             pPlayer->SEND_GOSSIP_MENU(4734, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF + 3:
@@ -142,9 +134,6 @@ bool GossipSelect_npc_great_bear_spirit(Player* pPlayer, Creature* pCreature, ui
  ## npc_silva_filnaveth
  ######*/
 
-#define GOSSIP_ITEM_RUTHERAN    "I'd like to fly to Rut'theran Village."
-#define GOSSIP_ITEM_AQ_AGI      "Do you know where I can find Half Pendant of Aquatic Agility?"
-
 bool GossipHello_npc_silva_filnaveth(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->getClass() != CLASS_DRUID)
@@ -152,16 +141,16 @@ bool GossipHello_npc_silva_filnaveth(Player* pPlayer, Creature* pCreature)
     else if (pPlayer->GetTeam() != ALLIANCE)
     {
         if (pPlayer->GetQuestStatus(QUEST_SEA_LION_HORDE) == QUEST_STATUS_INCOMPLETE)
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_AQ_AGI, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000403), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//Do you know where I can find Half Pendant of Aquatic Agility?
 
         pPlayer->SEND_GOSSIP_MENU(4915, pCreature->GetGUID());
     }
     else if (pPlayer->getClass() == CLASS_DRUID && pPlayer->GetTeam() == ALLIANCE)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_RUTHERAN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000402), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//I'd like to fly to Rut'theran Village.
 
         if (pPlayer->GetQuestStatus(QUEST_SEA_LION_ALLY) == QUEST_STATUS_INCOMPLETE)
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_AQ_AGI, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000403), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);// Do you know where I can find Half Pendant of Aquatic Agility ?
 
         pPlayer->SEND_GOSSIP_MENU(4914, pCreature->GetGUID());
     }

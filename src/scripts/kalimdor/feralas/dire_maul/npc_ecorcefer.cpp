@@ -38,7 +38,7 @@ struct npc_ecorceferAI : public ScriptedAI
                 if (m_creature->GetEntry() == NPC_OLD_IRONBARK)
                 {
                     m_creature->UpdateEntry(NPC_IRONBARK_THE_REDEEMED);
-                    m_creature->MonsterYell("At last... Freed from his curse grasp!",0,0);
+                    m_creature->MonsterYell(GetMangosString(-2000340),0,0);//"At last... Freed from his curse grasp!"
                 }
                 m_bIsZevrimDead = true;
             }
@@ -54,7 +54,7 @@ struct npc_ecorceferAI : public ScriptedAI
                 if (GameObject* pGo = m_creature->FindNearestGameObject(GO_DOOR, 10.0f))
                 {
                     pGo->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
-                    m_creature->MonsterSay("My strength wanes, mortal. I have done as promised, the way is clear. I now return to whence I came", 0, 0);
+					m_creature->MonsterSay(GetMangosString(-2000317), 0, 0);//"My strength wanes, mortal. I have done as promised, the way is clear. I now return to whence I came"
                     m_creature->HandleEmoteCommand(EMOTE_ONESHOT_ATTACKUNARMED);
                     m_bHasBrokenDoor = true;
                     m_creature->DoKillUnit();
@@ -80,7 +80,7 @@ bool GossipSelect_npc_ecorcefer(Player *player, Creature *_Creature, uint32 send
 //        _Creature->MonsterSay("Cheater Spotted", 0, 0);
         return true;
     }
-    _Creature->MonsterSay("As you wish...", 0, 0);
+    _Creature->MonsterSay(player->GetSession()->GetMangosString(-2000318), 0, 0);//"As you wish..."
     _Creature->MonsterMoveWithSpeed(123.706f, -278.828f, -55.868f, -10.0f, 10, uint32(MOVE_PATHFINDING | MOVE_FORCE_DESTINATION));
     ((npc_ecorceferAI*)_Creature->AI())->m_uiCheckDoorTimer = 10000;
     pInstance->SetData(TYPE_SPEAK_ECORCEFER, DONE);
@@ -102,7 +102,7 @@ bool GossipHello_npc_ecorcefer(Player *player, Creature *_Creature)
         //player->SEND_GOSSIP_MENU(_Creature->GetEntry(),_Creature->GetGUID());
         return false;
     }
-    player->ADD_GOSSIP_ITEM(0, "Thank you, Ironbark. We are ready for you to open the door.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+    player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000244), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Thank you, Ironbark. We are ready for you to open the door."
     player->SEND_GOSSIP_MENU(6695, _Creature->GetGUID());
     return true;
 }

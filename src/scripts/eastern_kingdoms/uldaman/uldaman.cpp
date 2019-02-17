@@ -194,7 +194,7 @@ bool GossipHello_npc_lore_keeper_of_norgannon(Player* pPlayer, Creature* pCreatu
 {
     if (pPlayer->GetQuestStatus(2278) == QUEST_STATUS_INCOMPLETE)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Who are the Earthen?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000217), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Who are the Earthen?"
     }
 
 //    pPlayer->SEND_GOSSIP_MENU(1079, pCreature->GetGUID());
@@ -209,63 +209,63 @@ bool GossipSelect_npc_lore_keeper_of_norgannon(Player* pPlayer, Creature* pCreat
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What is a \"subterranean being matrix\"?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000218), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"What is a \"subterranean being matrix\"?"
             pPlayer->SEND_GOSSIP_MENU(1080, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What are the anomalies you speak of?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000219), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"What are the anomalies you speak of?"
             pPlayer->SEND_GOSSIP_MENU(1081, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What is a resilient foundation of construction?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000220), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//"What is a resilient foundation of construction?"
             pPlayer->SEND_GOSSIP_MENU(1082, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "So... the Earthen were made out of stone?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000221), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"So... the Earthen were made out of stone?"
             pPlayer->SEND_GOSSIP_MENU(1083, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+5:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Anything else I should know about the Earthen?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000222), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);//"Anything else I should know about the Earthen?"
             pPlayer->SEND_GOSSIP_MENU(1084, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+6:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I think I understand the Creators' design intent for the Earthen now. What are the Earthen's anomalies that you spoke of earlier?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000223), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);//"I think I understand the Creators' design intent for the Earthen now. What are the Earthen's anomalies that you spoke of earlier?"
             pPlayer->SEND_GOSSIP_MENU(1085, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+7:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What high-stress environments would cause the Earthen to destabilize?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000224), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);//"What high-stress environments would cause the Earthen to destabilize?"
             pPlayer->SEND_GOSSIP_MENU(1086, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+8:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "What happens when the Earthen destabilize?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000225), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);//"What happens when the Earthen destabilize?"
             pPlayer->SEND_GOSSIP_MENU(1087, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+9:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Troggs?! Are the troggs you mention the same as the ones in the world today?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000226), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);//"Troggs?! Are the troggs you mention the same as the ones in the world today?"
             pPlayer->SEND_GOSSIP_MENU(1088, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+10:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "You mentioned two results when the Earthen destabilize. What is the second?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000227), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);//"You mentioned two results when the Earthen destabilize. What is the second?"
             pPlayer->SEND_GOSSIP_MENU(1089, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+11:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Dwarves!!! Now you're telling me that dwarves originally came from the Earthen?!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000228), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);//"Dwarves!!! Now you're telling me that dwarves originally came from the Earthen?!"
             pPlayer->SEND_GOSSIP_MENU(1090, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+12:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "These dwarves are the same ones today, yes? Do the dwarves maintain any other links to the Earthen?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000229), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);//"These dwarves are the same ones today, yes? Do the dwarves maintain any other links to the Earthen?"
             pPlayer->SEND_GOSSIP_MENU(1091, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+13:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Who are the Creators?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000230), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);//"Who are the Creators?"
             pPlayer->SEND_GOSSIP_MENU(1092, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+14:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "This is a lot to think about.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 15);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000231), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 15);//"This is a lot to think about."
             pPlayer->SEND_GOSSIP_MENU(1093, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+15:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I will access the discs now.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 16);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000232), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 16);//"I will access the discs now."
             pPlayer->SEND_GOSSIP_MENU(1094, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+16:

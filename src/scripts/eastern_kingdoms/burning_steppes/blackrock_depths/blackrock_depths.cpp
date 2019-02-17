@@ -681,29 +681,17 @@ CreatureAI* GetAI_mob_phalanx(Creature* pCreature)
 #define QUEST_4001      4001
 #define QUEST_4342      4342
 
-#define GOSSIP_ITEM_KHARAN_1    "I need to know where the princess are, Kharan!"
-#define GOSSIP_ITEM_KHARAN_2    "All is not lost, Kharan!"
-
-#define GOSSIP_ITEM_KHARAN_3    "Gor'shak is my friend, you can trust me."
-#define GOSSIP_ITEM_KHARAN_4    "Not enough, you need to tell me more."
-#define GOSSIP_ITEM_KHARAN_5    "So what happened?"
-#define GOSSIP_ITEM_KHARAN_6    "Continue..."
-#define GOSSIP_ITEM_KHARAN_7    "So you suspect that someone on the inside was involved? That they were tipped off?"
-#define GOSSIP_ITEM_KHARAN_8    "Continue with your story please."
-#define GOSSIP_ITEM_KHARAN_9    "Indeed."
-#define GOSSIP_ITEM_KHARAN_10   "The door is open, Kharan. You are a free man."
-
 bool GossipHello_npc_kharan_mighthammer(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
     if (pPlayer->GetQuestStatus(QUEST_4001) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000023), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"I need to know where the princess are, Kharan!"
+	
     if (pPlayer->GetQuestStatus(4342) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000024), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"All is not lost, Kharan!"
+	
     if (pPlayer->GetTeam() == HORDE)
         pPlayer->SEND_GOSSIP_MENU(2473, pCreature->GetGUID());
     else
@@ -717,36 +705,36 @@ bool GossipSelect_npc_kharan_mighthammer(Player* pPlayer, Creature* pCreature, u
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000025), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"Gor'shak is my friend, you can trust me."
             pPlayer->SEND_GOSSIP_MENU(2475, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000026), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"Not enough, you need to tell me more."
             pPlayer->SEND_GOSSIP_MENU(2476, pCreature->GetGUID());
             break;
 
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000027), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//"So what happened?"
             pPlayer->SEND_GOSSIP_MENU(2477, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000007), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"Continue..."
             pPlayer->SEND_GOSSIP_MENU(2478, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+5:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000028), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);//"So you suspect that someone on the inside was involved? That they were tipped off?"
             pPlayer->SEND_GOSSIP_MENU(2479, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+6:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_8, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000029), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);//"Continue with your story please."
             pPlayer->SEND_GOSSIP_MENU(2480, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+7:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_9, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000030), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);//"Indeed."
             pPlayer->SEND_GOSSIP_MENU(2481, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+8:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_KHARAN_10, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000031), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);//"The door is open, Kharan. You are a free man."
             pPlayer->SEND_GOSSIP_MENU(2482, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+9:
@@ -769,21 +757,18 @@ bool GossipSelect_npc_kharan_mighthammer(Player* pPlayer, Creature* pCreature, u
 #define QUEST_A_BINDING_CONTRACT                         7604
 #define SPELL_CREATE_THORIUM_BROTHERHOOD_CONTRACT_DND    23059
 
-#define GOSSIP_ITEM_SHOW_ACCESS     "Show me what I have access to, Lothos."
-#define GOSSIP_ITEM_GET_CONTRACT    "Get Thorium Brotherhood Contract"
-
 bool GossipHello_npc_lokhtos_darkbargainer(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
     if (pCreature->isVendor() && pPlayer->GetReputationRank(59) >= REP_FRIENDLY)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_ITEM_SHOW_ACCESS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, pPlayer ->GetSession()->GetMangosString(-2000365), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);//Show me what I have access to, Lothos.
 
     if (pPlayer->GetQuestRewardStatus(QUEST_A_BINDING_CONTRACT) != 1 &&
             !pPlayer->HasItemCount(ITEM_THRORIUM_BROTHERHOOD_CONTRACT, 1, true) &&
             pPlayer->HasItemCount(ITEM_SULFURON_INGOT, 1))
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_GET_CONTRACT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000366), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Get Thorium Brotherhood Contract
 
     if (pPlayer->GetReputationRank(59) < REP_FRIENDLY)
         pPlayer->SEND_GOSSIP_MENU(3673, pCreature->GetGUID());
@@ -1462,7 +1447,7 @@ bool GOHello_go_relic_coffer_door(Player* pPlayer, GameObject* pGo)
             819.45f, -348.96f, -50.49f, 0.35f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 300000))
         {
             // pCreature->MonsterYell("Ne les laissez pas s'emparer du Coeur de la montagne!!", 0, pPlayer);
-            pCreature->MonsterYell("Don't let them take the moutain hearth!", 0, pPlayer);
+            pCreature->MonsterYell(pPlayer->GetSession()->GetMangosString(-2000327), 0, pPlayer);//"Don't let them take the moutain hearth!"
             // pCreature->MonsterYell(NOST_TEXT(153), 0, pPlayer); // seems to be custom
             pCreature->AI()->AttackStart(pPlayer);
         }
@@ -1571,7 +1556,6 @@ enum
 };
 
 //#define GOSSIP_ITEM_ATTAQUE  "On pay bien pour votre tête..."
-#define GOSSIP_ITEM_ATTAQUE "Your family says hello, Ribbly. And they want your head!"
 
 struct npc_ribbly_fermevanneAI : public ScriptedAI
 {
@@ -1622,7 +1606,7 @@ CreatureAI* GetAI_npc_ribbly_fermevanne(Creature* pCreature)
 bool GossipHello_npc_ribbly_fermevanne(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(4136) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_BATTLE, GOSSIP_ITEM_ATTAQUE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_BATTLE, pPlayer->GetSession()->GetMangosString(-2000367), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Your family says hello, Ribbly. And they want your head!
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 
@@ -2210,9 +2194,6 @@ enum
     SPELL_WINDSORS_FRENZY       = 15167
 };
 
-#define GOSSIP_DUGHAL           "You\'re free, Dughal! Get out of here!"
-#define GOSSIP_TOBIAS           "Get out of here, Tobias, you\'re free!"
-
 struct npc_dughal_stormwingAI : npc_escortAI
 {
     explicit npc_dughal_stormwingAI(Creature* m_creature) : npc_escortAI(m_creature)
@@ -2268,7 +2249,7 @@ bool GossipHello_npc_dughal_stormwing(Player* pPlayer, Creature* pCreature)
     ScriptedInstance * pInstance = static_cast<ScriptedInstance*>(pPlayer->GetInstanceData());
 
     if (pPlayer->GetQuestStatus(QUEST_JAIL_BREAK) == QUEST_STATUS_INCOMPLETE && pInstance->GetData(TYPE_QUEST_JAIL_BREAK) == IN_PROGRESS)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_DUGHAL, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000368), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//You\'re free, Dughal! Get out of here!
 
     pPlayer->SEND_GOSSIP_MENU(2846, pCreature->GetObjectGuid());
 
@@ -2737,7 +2718,7 @@ bool GossipHello_npc_tobias_seecher(Player* pPlayer, Creature* pCreature)
     auto pInstance = static_cast<ScriptedInstance*>(pPlayer->GetInstanceData());
 
     if (pPlayer->GetQuestStatus(QUEST_JAIL_BREAK) == QUEST_STATUS_INCOMPLETE && pInstance->GetData(TYPE_QUEST_JAIL_BREAK) == IN_PROGRESS)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TOBIAS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000369), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Get out of here, Tobias, you\'re free!
 
     pPlayer->SEND_GOSSIP_MENU(2847, pCreature->GetObjectGuid());
 

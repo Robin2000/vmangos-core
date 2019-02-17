@@ -19,11 +19,11 @@ enum
 /*
 INSERT INTO nostalrius_string (entry, content_default)
 VALUES
-(50, "Si vous voulez la clé, il va falloir m'attraper !"),
+(50, "Si vous voulez la cl? il va falloir m'attraper !"),
 (51, "Poursuivez moi si vous l'osez, je m'enfuis sans hésiter !"),
-(52, "Pourquoi voudriez vous me faire souffrir ? Venez. L'amitié peut nous réunir !"),
+(52, "Pourquoi voudriez vous me faire souffrir ? Venez. L'amiti?peut nous réunir !"),
 (53, "MEURS ? Vous faîtes pleurer Pusilin !"),
-(54, "Dites bonjour à mes petits amis !");
+(54, "Dites bonjour ?mes petits amis !");
 */
 struct npc_pusillinAI : public ScriptedAI
 {
@@ -90,23 +90,23 @@ struct npc_pusillinAI : public ScriptedAI
         switch (uiStep)
         {
             case 0:
-                player->ADD_GOSSIP_ITEM(0, "Game ? Are you crazy ?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000245), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Game ? Are you crazy ?"
                 player->SEND_GOSSIP_MENU(ME->GetEntry(), ME->GetGUID());
                 break;
             case 1:
-                player->ADD_GOSSIP_ITEM(0, "Why you little...", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000246), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Why you little..."
                 player->SEND_GOSSIP_MENU(ME->GetEntry() + 1, ME->GetGUID());
                 break;
             case 2:
-                player->ADD_GOSSIP_ITEM(0, "Mark my words, I will catch you, imp. And when I do!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000247), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Mark my words, I will catch you, imp. And when I do!"
                 player->SEND_GOSSIP_MENU(ME->GetEntry() + 2, ME->GetGUID());
                 break;
             case 3:
-                player->ADD_GOSSIP_ITEM(0, "DIE!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000248), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"DIE!"
                 player->SEND_GOSSIP_MENU(ME->GetEntry() + 3, ME->GetGUID());
                 break;
             case 4:
-                player->ADD_GOSSIP_ITEM(0, "Prepare to meet your maker.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000249), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Prepare to meet your maker."
                 player->SEND_GOSSIP_MENU(ME->GetEntry() + 4, ME->GetGUID());
                 break;
         }

@@ -69,8 +69,6 @@ enum
     POINT_LAST_POINT    = 0xFFFFFF
 };
 
-#define GOSSIP_ITEM_BEGIN   "Let the event begin!"
-
 float Position [10][3] =
 {
     {-52.9f, 269.8f, -92.8f},
@@ -601,7 +599,7 @@ bool GossipHello_npc_disciple_of_naralex(Player* pPlayer, Creature* pCreature)
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
     if (m_pInstance && m_pInstance->GetData(TYPE_DISCIPLE) == SPECIAL)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BEGIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000419), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Let the event begin!
         pPlayer->SEND_GOSSIP_MENU(699, pCreature->GetGUID());
     }
     else if (m_pInstance && m_pInstance->GetData(TYPE_DISCIPLE) != DONE)

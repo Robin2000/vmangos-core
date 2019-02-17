@@ -1783,13 +1783,6 @@ bool GossipHello_npc_ArchmageTarsis(Player* pPlayer, Creature* pCreature)
     return false;
 }
 
-static constexpr char* tailorText = "I am a master tailor, Omarion";
-static constexpr char* blacksmithText = "I am a master blacksmith, Omarion";
-static constexpr char* leatherworkerText = "I am a master leatherworker, Omarion";
-static constexpr char* nocraftText = "Omarion, I am not a craftsman. Can you still help me?";
-static constexpr char* close_nocrafter = "Thank you, Omarion. You have taken a fatal blow for the team on this day.";
-static constexpr char* close_crafter = "I need to go. Evil stirs. Die well, Omarion.";
-
 enum OmarionMisc {
     QUEST_OMARIONS_HANDBOOK = 9233,
 
@@ -1870,52 +1863,52 @@ bool GossipSelect_npc_MasterCraftsmanOmarion(Player* pPlayer, Creature* pCreatur
     case GOSSIP_SELECT_TAILOR:
         if (argentDawnRep >= CRACT1_REQ_RANK)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Glacial Gloves", GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_GLACIAL_GLOVES);
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Glacial Wrists", GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_GLACIAL_WRISTS);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000196), GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_GLACIAL_GLOVES);//"Glacial Gloves"
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000197), GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_GLACIAL_WRISTS);//"Glacial Wrists"
         }
         if (argentDawnRep >= CRAFT2_REQ_RANK)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Glacial Vest" , GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_GLACIAL_CHEST);
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Glacial Cloak", GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_GLACIAL_CLOAK);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000198) , GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_GLACIAL_CHEST);//"Glacial Vest"
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000199), GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_GLACIAL_CLOAK);//"Glacial Cloak"
         }
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, close_crafter, GOSSIP_SELECT_TAILOR, GOSSIP_CLOSE);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000453), GOSSIP_SELECT_TAILOR, GOSSIP_CLOSE);//I need to go. Evil stirs. Die well, Omarion.
         pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_CRAFTER, pCreature->GetGUID());
         return true;
     case GOSSIP_SELECT_BS:
         if (argentDawnRep >= CRACT1_REQ_RANK)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Icebane Gauntlets", GOSSIP_SELECT_BS, GOSSIP_SELECT_ICEBANE_GLOVES);
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Icebane Bracers", GOSSIP_SELECT_BS, GOSSIP_SELECT_ICEBANE_WRISTS);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000200), GOSSIP_SELECT_BS, GOSSIP_SELECT_ICEBANE_GLOVES);//"Icebane Gauntlets"
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000201), GOSSIP_SELECT_BS, GOSSIP_SELECT_ICEBANE_WRISTS);//"Icebane Bracers"
         }
         if (argentDawnRep >= CRAFT2_REQ_RANK)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Icebane Breastplate", GOSSIP_SELECT_BS, GOSSIP_SELECT_ICEBANE_CHEST);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000202), GOSSIP_SELECT_BS, GOSSIP_SELECT_ICEBANE_CHEST);//"Icebane Breastplate"
         }
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, close_crafter, GOSSIP_SELECT_BS, GOSSIP_CLOSE);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000453), GOSSIP_SELECT_BS, GOSSIP_CLOSE);//I need to go. Evil stirs. Die well, Omarion.
         pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_CRAFTER, pCreature->GetGUID());
         return true;
     case GOSSIP_SELECT_LW:
         if (argentDawnRep >= CRACT1_REQ_RANK)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Polar Gloves", GOSSIP_SELECT_LW, GOSSIP_SELECT_POLAR_GLOVES);
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Icy Scale Gauntlets", GOSSIP_SELECT_LW, GOSSIP_SELECT_ICYSCALE_GLOVES);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000203), GOSSIP_SELECT_LW, GOSSIP_SELECT_POLAR_GLOVES);//"Polar Gloves"
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000204), GOSSIP_SELECT_LW, GOSSIP_SELECT_ICYSCALE_GLOVES);//"Icy Scale Gauntlets"
 
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Polar Bracers", GOSSIP_SELECT_LW, GOSSIP_SELECT_POLAR_WRISTS);
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Icy Scale Bracers", GOSSIP_SELECT_LW, GOSSIP_SELECT_ICYSCALE_WRISTS);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000205), GOSSIP_SELECT_LW, GOSSIP_SELECT_POLAR_WRISTS);//"Polar Bracers"
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000206), GOSSIP_SELECT_LW, GOSSIP_SELECT_ICYSCALE_WRISTS);//"Icy Scale Bracers"
         }
         if (argentDawnRep >= CRAFT2_REQ_RANK)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Polar Tunic", GOSSIP_SELECT_LW, GOSSIP_SELECT_POLAR_CHEST);
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Icy Scale Breastplate", GOSSIP_SELECT_LW, GOSSIP_SELECT_ICYSCALE_CHEST);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000207), GOSSIP_SELECT_LW, GOSSIP_SELECT_POLAR_CHEST);//"Polar Tunic"
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000208), GOSSIP_SELECT_LW, GOSSIP_SELECT_ICYSCALE_CHEST);//"Icy Scale Breastplate"
         }
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, close_crafter, GOSSIP_SELECT_LW, GOSSIP_CLOSE);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000453), GOSSIP_SELECT_LW, GOSSIP_CLOSE);//I need to go. Evil stirs. Die well, Omarion.
         pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_CRAFTER, pCreature->GetGUID());
         return true;
     case GOSSIP_SELECT_NOCRAFT:
     {
         if (argentDawnRep >= BOOK_REQ_RANK)
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, close_nocrafter, GOSSIP_SENDER_MAIN, GOSSIP_CLOSE);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000454), GOSSIP_SENDER_MAIN, GOSSIP_CLOSE);//Thank you, Omarion. You have taken a fatal blow for the team on this day.
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_NOCRAFT, pCreature->GetGUID());
             if (!pPlayer->HasItemCount(22719, 1, true))
             {
@@ -1998,7 +1991,7 @@ bool GossipSelect_npc_MasterCraftsmanOmarion(Player* pPlayer, Creature* pCreatur
     }
     }
 
-    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, close_crafter, uiSender, GOSSIP_CLOSE);
+    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000453), uiSender, GOSSIP_CLOSE);//I need to go. Evil stirs. Die well, Omarion.
     pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_CRAFTER, pCreature->GetGUID());
     return true;
 }
@@ -2010,13 +2003,13 @@ bool GossipHello_npc_MasterCraftsmanOmarion(Player* pPlayer, Creature* pCreature
     uint32 leatherworkSkill = pPlayer->GetSkillValue(SKILL_LEATHERWORKING);
 
     if(tailorSkill >= 225)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, tailorText, GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_TAILOR);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000455), GOSSIP_SELECT_TAILOR, GOSSIP_SELECT_TAILOR);//I am a master tailor, Omarion
     if(blacksmithSkill >= 225)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, blacksmithText, GOSSIP_SELECT_BS, GOSSIP_SELECT_BS);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000456), GOSSIP_SELECT_BS, GOSSIP_SELECT_BS);//I am a master blacksmith, Omarion
     if(leatherworkSkill >= 225)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, leatherworkerText, GOSSIP_SELECT_LW, GOSSIP_SELECT_LW);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000457), GOSSIP_SELECT_LW, GOSSIP_SELECT_LW);//I am a master leatherworker, Omarion
 
-    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, nocraftText, GOSSIP_SENDER_MAIN, GOSSIP_SELECT_NOCRAFT);
+    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000458), GOSSIP_SENDER_MAIN, GOSSIP_SELECT_NOCRAFT);//Omarion, I am not a craftsman. Can you still help me?
 
     pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_INTRO, pCreature->GetGUID());
     pCreature->HandleEmote(EMOTE_ONESHOT_LAUGH);

@@ -42,16 +42,13 @@ enum
     GOSSIP_TEXT_POTION_ANSWER                   = 2115,
 };
 
-#define GOSSIP_ITEM_TEA     "Teach me the cooking recipe"
-#define GOSSIP_ITEM_POTION  "Teach me the alchemy recipe"
-
 bool GossipHello_npc_henry_stern(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetSkillValueBase(SKILL_COOKING) >= 175 && !pPlayer->HasSpell(SPELL_GOLDTHORN_TEA))
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TEA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000417), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Teach me the cooking recipe
 
     if (pPlayer->GetSkillValueBase(SKILL_ALCHEMY) >= 180 && !pPlayer->HasSpell(SPELL_MIGHT_TROLLS_BLOOD_POTION))
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_POTION, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000418), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//Teach me the alchemy recipe
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
     return true;

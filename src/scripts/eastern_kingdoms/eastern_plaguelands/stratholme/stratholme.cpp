@@ -843,7 +843,7 @@ struct npc_couloir_trigger1AI : public ScriptedAI
         if (who->GetTypeId() == TYPEID_PLAYER && m_creature->IsWithinDistInMap(who, 5.0f) && !CorridorEnded)
         {
             if (Creature* Crea = m_creature->FindNearestCreature(10812, 200.0f))
-                Crea->MonsterYell("Don't let them break our lines!", 0);
+                Crea->MonsterYell(GetMangosString(-2000336), 0);//"Don't let them break our lines!"
 
             m_creature->SummonCreature(NPC_CRIMSON_GALLANT, 3516.3f, -3067.8f, 135.08f, 0.837758f, TEMPSUMMON_DEAD_DESPAWN, HOUR * IN_MILLISECONDS);
             m_creature->SummonCreature(NPC_CRIMSON_GALLANT, 3512.3f, -3065.8f, 135.08f, 0.837758f, TEMPSUMMON_DEAD_DESPAWN, HOUR * IN_MILLISECONDS);
@@ -926,7 +926,7 @@ struct npc_couloir_trigger2AI : public ScriptedAI
         if (who->GetTypeId() == TYPEID_PLAYER && m_creature->IsWithinDistInMap(who, 5.0f) && !CorridorEnded)
         {
             if (Creature* Crea = m_creature->FindNearestCreature(10812, 200.0f))
-                Crea->MonsterYell("Don't let them break our lines!", 0);
+                Crea->MonsterYell(GetMangosString(-2000337), 0);//"Don't let them break our lines!"
 
             m_creature->SummonCreature(NPC_CRIMSON_GALLANT, 3470.86f, -3073.86f, 135.088f, 0.907571f, TEMPSUMMON_DEAD_DESPAWN, HOUR * IN_MILLISECONDS);
             m_creature->SummonCreature(NPC_CRIMSON_GALLANT, 3465.61f, -3065.72f, 135.084f, 0.20944f, TEMPSUMMON_DEAD_DESPAWN, HOUR * IN_MILLISECONDS);
@@ -961,7 +961,7 @@ struct npc_couloir_trigger3AI : public ScriptedAI
         if (who->GetTypeId() == TYPEID_PLAYER && m_creature->IsWithinDistInMap(who, 5.0f) && !CorridorEnded)
         {
             if (Creature* Crea = m_creature->FindNearestCreature(10997, 200.0f))
-                Crea->MonsterYell("Don't let them break our lines!", 0);
+                Crea->MonsterYell(GetMangosString(-2000338), 0);//"Don't let them break our lines!"
 
             m_creature->SummonCreature(NPC_CRIMSON_GALLANT, 3569.11f, -2970.55f, 124.999f, 5.36522f, TEMPSUMMON_DEAD_DESPAWN, HOUR * IN_MILLISECONDS);
             m_creature->SummonCreature(NPC_CRIMSON_GALLANT, 3577.11f, -2998.55f, 125.0011f, 5.36522f, TEMPSUMMON_DEAD_DESPAWN, HOUR * IN_MILLISECONDS);

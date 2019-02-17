@@ -231,6 +231,9 @@ Player* ScriptedAI::GetPlayerAtMinimumRange(float fMinimumRange)
 
     Cell::VisitWorldObjects(m_creature, searcher, fMinimumRange);
 
+	if (pPlayer) 
+		localeIdx = pPlayer->GetSession()->GetSessionDbLocaleIndex();
+	
     return pPlayer;
 }
 
@@ -249,7 +252,21 @@ Player* ScriptedAI::GetNearestPlayer(float range)
     MaNGOS::PlayerSearcher<MaNGOS::NearestHostileUnitCheck> searcher(target, check);
     Cell::VisitWorldObjects(m_creature, searcher, range);
 
+	if (target) {
+		localeIdx = target->GetSession()->GetSessionDbLocaleIndex();
+	}
+
     return target;
+}
+
+const char* ScriptedAI::GetMangosString(uint32 entry) {
+	return sObjectMgr.GetMangosString(entry, GetLocaleIdx());
+}
+int ScriptedAI::GetLocaleIdx() {
+	if (localeIdx == -2) 
+		GetNearestPlayer(30.0f);
+	
+	return localeIdx == -2 ? -1 : localeIdx;
 }
 
 void ScriptedAI::SetEquipmentSlots(bool bLoadDefault, int32 uiMainHand, int32 uiOffHand, int32 uiRanged)

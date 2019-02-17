@@ -250,7 +250,7 @@ void npc_rifleman_middlecampAI::UpdateAI(const uint32 uiDiff)
         {
         case 0:
             m_creature->HandleEmote(EMOTE_ONESHOT_POINT);
-            m_creature->MonsterTextEmote(SHOOT1EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000423));//Rifleman Middlecamp picks the orc target...
             m_uiDoTimer = 2000;
             ++m_uiAction;
             break;
@@ -260,7 +260,7 @@ void npc_rifleman_middlecampAI::UpdateAI(const uint32 uiDiff)
             break;
         case 2:
             DoCastSpellIfCan(m_creature, SPELL_SHOOT_1);
-            m_creature->MonsterTextEmote(SHOOT1EMOTE2);
+            m_creature->MonsterTextEmote(GetMangosString(-2000424));//Rifleman Middlecamp misses...
             m_creature->SetSheath(SHEATH_STATE_UNARMED);             
             m_uiDoTimer = 2000;
             ++m_uiAction;
@@ -271,14 +271,14 @@ void npc_rifleman_middlecampAI::UpdateAI(const uint32 uiDiff)
             ++m_uiAction;
             break;
         case 4:
-            m_creature->MonsterTextEmote(SHOOT2EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000425));//Rifleman Middlecamp takes a more careful aim...
             DoCastSpellIfCan(m_creature, SPELL_SHOOT_2);
             DoPlaySoundToSet(m_creature, SOUND_RIFLEMAN_2);
             m_uiDoTimer = 4000;
             ++m_uiAction;
             break;
         case 5:
-            m_creature->MonsterTextEmote(SHOOT2EMOTE2);
+            m_creature->MonsterTextEmote(GetMangosString(-2000426));//Rifleman Middlecamp misses again...
             m_creature->SetSheath(SHEATH_STATE_UNARMED);
             m_uiDoTimer = 2000;
             ++m_uiAction;
@@ -312,12 +312,12 @@ void npc_rifleman_middlecampAI::UpdateAI(const uint32 uiDiff)
             break;
         case 8:
             DoCastSpellIfCan(m_creature, SPELL_SHOOT_4);
-            m_creature->MonsterTextEmote(SHOOT4EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000429));//Rifleman Middlecamp takes aim at the bottles...
             m_uiDoTimer = 3000;
             ++m_uiAction;
             break;
         case 9:
-            m_creature->MonsterTextEmote(SHOOT1EMOTE2);
+            m_creature->MonsterTextEmote(GetMangosString(-2000424));//Rifleman Middlecamp misses...
             m_uiDoTimer = 2000;
             ++m_uiAction;
             break;
@@ -328,12 +328,12 @@ void npc_rifleman_middlecampAI::UpdateAI(const uint32 uiDiff)
             break;
         case 11:
             DoCastSpellIfCan(m_creature, SPELL_SHOOT_5);
-            m_creature->MonsterTextEmote(SHOOT5EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000430));//Rifleman Middlecamp takes aim at the bottles again...
             m_uiDoTimer = 2000;
             ++m_uiAction;
             break;
         case 12:
-            m_creature->MonsterTextEmote(SHOOT2EMOTE2);
+            m_creature->MonsterTextEmote(GetMangosString(-2000426));//Rifleman Middlecamp misses again...
             m_uiDoTimer = 1000;
             ++m_uiAction;
             break;
@@ -365,21 +365,21 @@ void npc_rifleman_middlecampAI::UpdateAI(const uint32 uiDiff)
         case 17:
             DoPlaySoundToSet(m_creature, SOUND_RIFLEMAN_5);
             DoCastSpellIfCan(m_creature, SPELL_SHOOT_8);
-            m_creature->MonsterTextEmote(SHOOT8EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000434));//Rifleman Middlecamp quickly shoots the orc dummy...
             m_uiDoTimer = 1000;
             ++m_uiAction;
             break;
         case 18:
             DoPlaySoundToSet(m_creature, SOUND_RIFLEMAN_5);
             DoCastSpellIfCan(m_creature, SPELL_SHOOT_9);
-            m_creature->MonsterTextEmote(SHOOT9EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000435));//Rifleman Middlecamp turns to the paper target...
             m_uiDoTimer = 1000;
             ++m_uiAction;
             break;
         case 19:
             DoPlaySoundToSet(m_creature, SOUND_RIFLEMAN_5);
             DoCastSpellIfCan(m_creature, SPELL_SHOOT_10);
-            m_creature->MonsterTextEmote(SHOOT10EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000436));//Rifleman Middlecamp shoots from the hip at the bottles...
             m_uiDoTimer = 1000;
             ++m_uiAction;
             break;
@@ -538,7 +538,7 @@ void npc_rifleman_wheelerAI::UpdateAI(const uint32 uiDiff)
         {
         case 0:
             m_creature->HandleEmote(EMOTE_ONESHOT_POINT);
-            m_creature->MonsterTextEmote(SHOOT3EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000427));//Rifleman Wheeler casually points at the orc target...
             m_uiDoTimer = 2000;
             ++m_uiAction;
             break;
@@ -548,7 +548,7 @@ void npc_rifleman_wheelerAI::UpdateAI(const uint32 uiDiff)
             ++m_uiAction;
             break;
         case 2:
-            m_creature->MonsterTextEmote(SHOOT3EMOTE2);
+            m_creature->MonsterTextEmote(GetMangosString(-2000428));//Rifleman Wheeler hits!
             m_uiDoTimer = 1000;
             ++m_uiAction;
             break;
@@ -606,14 +606,14 @@ void npc_rifleman_wheelerAI::UpdateAI(const uint32 uiDiff)
             ++m_uiAction;
             break;
         case 9: // 56 s
-            m_creature->MonsterTextEmote(SHOOT6EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000431));//Rifleman Wheeler quickly shoots the middle target dead center...
             DoCastSpellIfCan(m_creature, SPELL_SHOOT_7);
-            m_creature->MonsterTextEmote(SHOOT7EMOTE1);
+            m_creature->MonsterTextEmote(GetMangosString(-2000432));//Rifleman Wheeler then takes aim at the bottles...
             m_uiDoTimer = 5000;
             ++m_uiAction;
             break;
         case 10:
-            m_creature->MonsterTextEmote(SHOOT7EMOTE2);
+            m_creature->MonsterTextEmote(GetMangosString(-2000433));//Rifleman Wheeler only hits the side of the box!
             if (auto pMiddlecamp = m_creature->FindNearestCreature(NPC_RIFLEMAN_MIDDLECAMP, 30))
             {
                 m_creature->SetFacingToObject(pMiddlecamp);

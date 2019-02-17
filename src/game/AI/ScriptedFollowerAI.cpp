@@ -304,7 +304,7 @@ void FollowerAI::MovementInform(uint32 uiMotionType, uint32 uiPointId)
         }
         else
         {
-            // Ustaag <Nostalrius> : vilain fix des mobs qui voulaient pas respawn à leur point de spawn
+            // Ustaag <Nostalrius> : vilain fix des mobs qui voulaient pas respawn ?leur point de spawn
             SetFollowPaused(false);
             float x = 0.0f;
             float y = 0.0f;

@@ -36,10 +36,6 @@ enum
     GOSSIP_TEXTID_DOMO_3        = 5012,
 };
 
-#define GOSSIP_ITEM_1                "Tell me more."
-#define GOSSIP_ITEM_2                "What else do you have to say?"
-#define GOSSIP_ITEM_3                "You challenged us and and we have come. Where is this master that you speak of?"
-
 #define POINT_RESPAWN               1
 #define POINT_SUMMON1               2
 #define POINT_SUMMON2               3
@@ -413,12 +409,12 @@ bool GossipSelect_event_domo(Player* pPlayer, Creature* pCreature, uint32 uiSend
 {
     if (uiAction == GOSSIP_ACTION_INFO_DEF + 1)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000376), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//What else do you have to say?
         pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DOMO_2, pCreature->GetGUID());
     }
     else if (uiAction == GOSSIP_ACTION_INFO_DEF + 2)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000377), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//You challenged us and and we have come. Where is this master that you speak of?
         pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DOMO_3, pCreature->GetGUID());
     }
     else if (uiAction == GOSSIP_ACTION_INFO_DEF + 3)
@@ -443,7 +439,7 @@ bool GossipSelect_event_domo(Player* pPlayer, Creature* pCreature, uint32 uiSend
 
 bool GossipHello_event_domo(Player* pPlayer, Creature* pCreature)
 {
-    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000375), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);// Tell me more.
     pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXTID_DOMO_1, pCreature->GetGUID());
 
     return true;

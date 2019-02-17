@@ -73,7 +73,7 @@ bool GossipHello_npc_tirion_fordring(Player* pPlayer, Creature* pCreature)
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
     if (pPlayer->GetQuestStatus(5742) == QUEST_STATUS_INCOMPLETE && pPlayer->getStandState() == UNIT_STAND_STATE_SIT)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I am ready to hear your tale, Tirion.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000209), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"I am ready to hear your tale, Tirion."
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 
@@ -85,15 +85,15 @@ bool GossipSelect_npc_tirion_fordring(Player* pPlayer, Creature* pCreature, uint
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Thank you, Tirion.  What of your identity?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000210), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"Thank you, Tirion.  What of your identity?"
             pPlayer->SEND_GOSSIP_MENU(4493, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "That is terrible.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000211), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"That is terrible."
             pPlayer->SEND_GOSSIP_MENU(4494, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I will, Tirion.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000212), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//"I will, Tirion."
             pPlayer->SEND_GOSSIP_MENU(4495, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:
@@ -124,7 +124,7 @@ enum
     SPELL_INVOC_PAYSANTS    = 23119,
     SPELL_PORTE_MORT        = 23127,
     SPELL_FUFU              = 23196,
-    SPELL_SEE               = 23199,        // Pas sur de son utilité
+    SPELL_SEE               = 23199,        // Pas sur de son utilit?
 
     SAY_PEASANT_RANDOM_3    = -1900118,
     SAY_PEASANT_RANDOM_2    = -1900119,
@@ -1124,7 +1124,7 @@ struct npc_darrowshire_triggerAI : public ScriptedAI
 {
     explicit npc_darrowshire_triggerAI(Creature* pCreature) : ScriptedAI(pCreature), _cleanupDone(false), _initialized(false)
     {
-        DefenderFaction = 113;  // Faction Escortee : heal possible mais... n'attaque pas à vue malgré les bons flags :/
+        DefenderFaction = 113;  // Faction Escortee : heal possible mais... n'attaque pas ?vue malgr?les bons flags :/
         Reset();
         m_creature->SetCreatureSummonLimit(200);
     }
@@ -1143,7 +1143,7 @@ struct npc_darrowshire_triggerAI : public ScriptedAI
 
     void Reset()
     {
-        // Changement de faction nécessaire pour permettre l'aggro à vue
+        // Changement de faction nécessaire pour permettre l'aggro ?vue
         Map::PlayerList const &pl = m_creature->GetMap()->GetPlayers();
         uint32 myArea = m_creature->GetAreaId();
         if (!pl.isEmpty() && myArea)
@@ -1591,7 +1591,7 @@ struct npc_darrowshire_triggerAI : public ScriptedAI
                     }
                     break;
                 }
-                case 3: // Horgus the Ravager est tué, Davil disparait et Redpath pop
+                case 3: // Horgus the Ravager est tu? Davil disparait et Redpath pop
                 {
                     if (Creature* davil = m_creature->GetMap()->GetCreature(davilGuid))
                     {
@@ -1612,7 +1612,7 @@ struct npc_darrowshire_triggerAI : public ScriptedAI
                     }
                     break;
                 }
-                case 4: // Marduk spawn, Redpath est tué et Redpath corrompu pop
+                case 4: // Marduk spawn, Redpath est tu?et Redpath corrompu pop
                 {
                     Creature* marduk = m_creature->GetMap()->GetCreature(mardukGuid);
                     if (marduk)

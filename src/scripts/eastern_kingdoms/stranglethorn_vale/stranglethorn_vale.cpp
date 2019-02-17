@@ -114,13 +114,13 @@ struct mob_assistant_kryll : public ScriptedAI
             switch (urand(0, 2))
             {
                 case 0:
-                    m_creature->MonsterSay("Psst... go to Booty Bay, Kryll needs hands...");
+					m_creature->MonsterSay(GetMangosString(-2000309));//"Psst... go to Booty Bay, Kryll needs hands..."
                     break;
                 case 1:
-                    m_creature->MonsterSay("Kryll needs your help in Booty Bay!");
+					m_creature->MonsterSay(GetMangosString(-2000310));//"Kryll needs your help in Booty Bay!"
                     break;
                 case 2:
-                    m_creature->MonsterSay("Kryll's invention may drastically change your life... Help him in Booty Bay!");
+					m_creature->MonsterSay(GetMangosString(-2000311));//"Kryll's invention may drastically change your life... Help him in Booty Bay!"
                     break;
             }
             Speach_Timer = urand(15, 40)*60*1000;
@@ -513,8 +513,6 @@ const float ApesSummon[4] =
     -13773.6231f, -3.8856f, 41.5641f, 5.7f
 };
 
-#define UNBAGWA_EVENT_START "Get ready everyone! Here come de apes!"
-
 struct npc_witch_doctor_unbagwaAI : ScriptedAI
 {
     explicit npc_witch_doctor_unbagwaAI(Creature* pCreature) : ScriptedAI(pCreature)
@@ -582,7 +580,7 @@ struct npc_witch_doctor_unbagwaAI : ScriptedAI
 
     void StartEvent()
     {
-        m_creature->MonsterYell(UNBAGWA_EVENT_START);
+        m_creature->MonsterYell(GetMangosString(-2000386));//Get ready everyone! Here come de apes!
         m_creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
         m_creature->SetFactionTemporary(FACTION_ESCORT_N_NEUTRAL_PASSIVE, TEMPFACTION_NONE);
         m_bStartEvent = true;

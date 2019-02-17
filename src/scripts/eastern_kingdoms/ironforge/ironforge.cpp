@@ -31,12 +31,6 @@ EndContentData */
 ## npc_royal_historian_archesonus
 ######*/
 
-#define GOSSIP_ITEM_ROYAL   "I am ready to listen"
-#define GOSSIP_ITEM_ROYAL_1 "That is tragic. How did this happen?"
-#define GOSSIP_ITEM_ROYAL_2 "Interesting, continue please."
-#define GOSSIP_ITEM_ROYAL_3 "Unbelievable! How dare they??"
-#define GOSSIP_ITEM_ROYAL_4 "Of course I will help!"
-
 bool GossipHello_npc_royal_historian_archesonus(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->isQuestGiver())
@@ -44,7 +38,7 @@ bool GossipHello_npc_royal_historian_archesonus(Player* pPlayer, Creature* pCrea
 
     if (pPlayer->GetQuestStatus(3702) == QUEST_STATUS_INCOMPLETE)
     {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ROYAL, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000380), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//I am ready to listen
         pPlayer->SEND_GOSSIP_MENU(2235, pCreature->GetGUID());
     }
     else
@@ -58,19 +52,19 @@ bool GossipSelect_npc_royal_historian_archesonus(Player* pPlayer, Creature* pCre
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ROYAL_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000381), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//That is tragic. How did this happen?
             pPlayer->SEND_GOSSIP_MENU(2236, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ROYAL_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000382), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//Interesting, continue please.
             pPlayer->SEND_GOSSIP_MENU(2237, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ROYAL_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000383), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//Unbelievable! How dare they??
             pPlayer->SEND_GOSSIP_MENU(2238, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ROYAL_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000384), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//Of course I will help!
             pPlayer->SEND_GOSSIP_MENU(2239, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:

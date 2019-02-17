@@ -33,7 +33,7 @@ bool GossipHello_npc_gregan_brewspewer(Player* pPlayer, Creature* pCreature)
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
     if (pCreature->isVendor() && pPlayer->GetQuestStatus(3909) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Buy somethin', will ya?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000250), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Buy somethin', will ya?"
 
     pPlayer->SEND_GOSSIP_MENU(2433, pCreature->GetGUID());
     return true;
@@ -307,7 +307,7 @@ struct MushgogAI : public ScriptedAI
             for (std::list<Creature*>::iterator it = m_AggroList.begin(); it != m_AggroList.end(); ++it)
             {
                 if ((*it)->isAlive())
-                     (*it)->MonsterYell("Leaf him alone Mushgog!");
+                     (*it)->MonsterYell(GetMangosString(-2000341));//"Leaf him alone Mushgog!"
             }
             m_bAggro = true;
         }
@@ -425,7 +425,7 @@ struct TheRazzaAI : public ScriptedAI
             for (std::list<Creature*>::iterator it = m_AggroList.begin(); it != m_AggroList.end(); ++it)
             {
                 if ((*it)->isAlive())
-                     (*it)->MonsterYell("Woohoo! They are into it now!");
+                     (*it)->MonsterYell(GetMangosString(-2000342));//"Woohoo! They are into it now!"
             }
             m_bAggro = true;
         }
@@ -517,7 +517,7 @@ struct SkarrTheUnbreakableAI : public ScriptedAI
             for (std::list<Creature*>::iterator it = m_AggroList.begin(); it != m_AggroList.end(); ++it)
             {
                 if ((*it)->isAlive())
-                     (*it)->MonsterYell("Looks like Skarr has found his next challenger! Wouldn't want to be in that poor fool's shoes!");
+                     (*it)->MonsterYell(GetMangosString(-2000343));//"Looks like Skarr has found his next challenger! Wouldn't want to be in that poor fool's shoes!"
             }
             m_bAggro = true;
         }

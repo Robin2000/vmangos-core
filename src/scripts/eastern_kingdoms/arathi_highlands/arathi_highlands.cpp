@@ -138,10 +138,6 @@ enum
     NPC_DAGGERSPINE_SORCERESS  = 2596,
 };
 
-#define BREEN_YELL_1    "All hands to battle stations! Naga incoming!"
-#define NAGA_YELL_1     "You've plundered our treasures too long. Prepare to meet your watery grave!"
-#define BREEN_SAY_2     "If we can just hold them now, I am sure we will be in the clear."
-
 static float m_afNagaCoord[4][4] =
 {
     { -2154.049f, -1969.738f, 15.371f, 5.54f },
@@ -192,7 +188,7 @@ struct npc_shakes_o_breenAI : npc_escortAI
         ++m_uiWaveId;
 
         if (m_uiWaveId == 3)
-            m_creature->MonsterSay(BREEN_SAY_2);
+            m_creature->MonsterSay(GetMangosString(-2000362));//If we can just hold them now, I am sure we will be in the clear.
 
         switch (m_uiWaveId)
         {
@@ -229,7 +225,7 @@ struct npc_shakes_o_breenAI : npc_escortAI
     void JustSummoned(Creature* pSummoned) override
     {
         if (m_uiWaveId == 1 && pSummoned->GetEntry() == NPC_DAGGERSPINE_RAIDER && !m_uiNagaAlive)
-            pSummoned->MonsterYell(NAGA_YELL_1);
+            pSummoned->MonsterYell(GetMangosString(-2000363));// You've plundered our treasures too long. Prepare to meet your watery grave!
 
         ++m_uiNagaAlive;
 
@@ -298,7 +294,7 @@ bool QuestAccept_npc_shakes_o_breen(Player* pPlayer, Creature* pCreature, const 
     {
         if (auto pEscortAI = dynamic_cast<npc_shakes_o_breenAI*>(pCreature->AI()))
         {
-            pCreature->MonsterYell(BREEN_YELL_1);
+            pCreature->MonsterYell(pPlayer->GetSession()->GetMangosString(-2000364));//All hands to battle stations! Naga incoming!
             pEscortAI->Start(false, pPlayer->GetGUID(), pQuest);
             pEscortAI->SetEscortPaused(true);
             pCreature->SetOrientation(2.67f);

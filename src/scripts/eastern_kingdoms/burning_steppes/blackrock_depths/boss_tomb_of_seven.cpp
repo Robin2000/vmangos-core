@@ -35,10 +35,6 @@ enum
     SKILLPOINT_MIN              = 230
 };
 
-#define GOSSIP_ITEM_TEACH_1 "Teach me the art of smelting dark iron"
-#define GOSSIP_ITEM_TEACH_2 "Continue..."
-#define GOSSIP_ITEM_TRIBUTE "I want to pay tribute"
-
 bool GossipHello_boss_gloomrel(Player* pPlayer, Creature* pCreature)
 {
     if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
@@ -48,11 +44,11 @@ bool GossipHello_boss_gloomrel(Player* pPlayer, Creature* pCreature)
             if (pPlayer->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) &&
                     pPlayer->GetSkillValue(SKILL_MINING) >= SKILLPOINT_MIN &&
                     !pPlayer->HasSpell(SPELL_SMELT_DARK_IRON))
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TEACH_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000370), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Teach me the art of smelting dark iron
 
             if (!pPlayer->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) &&
                     pPlayer->GetSkillValue(SKILL_MINING) >= SKILLPOINT_MIN)
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TRIBUTE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000371), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//I want to pay tribute
         }
     }
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
@@ -64,7 +60,7 @@ bool GossipSelect_boss_gloomrel(Player* pPlayer, Creature* pCreature, uint32 uiS
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TEACH_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000007), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);//"Continue..."
             pPlayer->SEND_GOSSIP_MENU(2606, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+11:
@@ -72,7 +68,7 @@ bool GossipSelect_boss_gloomrel(Player* pPlayer, Creature* pCreature, uint32 uiS
             pCreature->CastSpell(pPlayer, SPELL_LEARN_SMELT, false);
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "[PH] Continue...", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 22);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000008), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 22);//"[PH] Continue..."
             pPlayer->SEND_GOSSIP_MENU(2604, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+22:
@@ -99,8 +95,6 @@ enum
 
     MAX_DWARF                           = 7
 };
-
-#define GOSSIP_ITEM_CHALLENGE   "Your bondage is at an end, Doom'rel. I challenge you!"
 
 struct boss_doomrelAI : public ScriptedAI
 {
@@ -307,7 +301,7 @@ bool GossipHello_boss_doomrel(Player* pPlayer, Creature* pCreature)
     if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == NOT_STARTED)
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_CHALLENGE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000372), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Your bondage is at an end, Doom'rel. I challenge you!
     }
 
     pPlayer->SEND_GOSSIP_MENU(2601, pCreature->GetGUID());

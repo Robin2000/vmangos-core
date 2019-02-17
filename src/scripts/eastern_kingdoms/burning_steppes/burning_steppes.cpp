@@ -66,8 +66,8 @@ bool GossipHello_npc_ragged_john(Player* pPlayer, Creature* pCreature)
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
     if (pPlayer->GetQuestStatus(4224) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Official business, John. I need some information about Marshal Windsor. Tell me about the last time you saw him.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
-
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000032), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//"Official business, John. I need some information about Marshal Windsor. Tell me about the last time you saw him."
+	
     pPlayer->SEND_GOSSIP_MENU(2713, pCreature->GetGUID());
     return true;
 }
@@ -77,47 +77,47 @@ bool GossipSelect_npc_ragged_john(Player* pPlayer, Creature* pCreature, uint32 u
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "So what did you do?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000033), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"So what did you do?"
             pPlayer->SEND_GOSSIP_MENU(2714, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Start making sense, dwarf. I don't want to have anything to do with your cracker, your pappy, or any sort of 'discreditin'.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000034), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"Start making sense, dwarf. I don't want to have anything to do with your cracker, your pappy, or any sort of 'discreditin'."
             pPlayer->SEND_GOSSIP_MENU(2715, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Ironfoe?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000035), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"Ironfoe?"
             pPlayer->SEND_GOSSIP_MENU(2716, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Interesting... continue John.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000036), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//"Interesting... continue John."
             pPlayer->SEND_GOSSIP_MENU(2717, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+4:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "So that's how Windsor died...", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000037), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"So that's how Windsor died..."
             pPlayer->SEND_GOSSIP_MENU(2718, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+5:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "So how did he die?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000038), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);//"So how did he die?"
             pPlayer->SEND_GOSSIP_MENU(2719, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+6:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Ok so where the hell is he? Wait a minute! Are you drunk?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000039), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);//"Ok so where the hell is he? Wait a minute! Are you drunk?"
             pPlayer->SEND_GOSSIP_MENU(2720, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+7:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "WHY is he in Blackrock Depths?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000040), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);//"WHY is he in Blackrock Depths?"
             pPlayer->SEND_GOSSIP_MENU(2721, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+8:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "300? So the Dark Irons killed him and dragged him into the Depths?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000041), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);//"300? So the Dark Irons killed him and dragged him into the Depths?"
             pPlayer->SEND_GOSSIP_MENU(2722, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+9:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Ahh... Ironfoe", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000042), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);//"Ahh... Ironfoe"
             pPlayer->SEND_GOSSIP_MENU(2723, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+10:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Thanks, Ragged John. Your story was very uplifting and informative", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000043), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);//"Thanks, Ragged John. Your story was very uplifting and informative"
             pPlayer->SEND_GOSSIP_MENU(2725, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+11:
@@ -529,8 +529,6 @@ enum
     QUEST_STAVE_OF_THE_ANCIENTS     = 7636
 };
 
-#define GOSSIP_ITEM                 "Show me your real face, demon."
-
 /*######
 ## npc_franklin_the_friendly
 ######*/
@@ -734,7 +732,7 @@ struct npc_klinfranAI : public ScriptedAI
 bool GossipHello_npc_klinfran(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(QUEST_STAVE_OF_THE_ANCIENTS) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(0, GOSSIP_ITEM , GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        pPlayer->ADD_GOSSIP_ITEM(0, pPlayer->GetSession()->GetMangosString(-2000378), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//Show me your real face, demon.
     
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetObjectGuid());
     return true;

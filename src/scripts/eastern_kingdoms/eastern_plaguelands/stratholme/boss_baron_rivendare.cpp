@@ -24,13 +24,6 @@ EndScriptData */
 #include "scriptPCH.h"
 #include "stratholme.h"
 
-#define SAY_0    "Intruders! More pawns of the Argent Dawn, no doubt. I already count one of their number among my prisoners. Withdraw from my domain before she is executed!"
-#define SAY_1    "You're still here? Your foolishness is amusing! The Argent Dawn wench needn't suffer in vain. Leave at once and she shall be spared!"
-#define SAY_2    "I shall take great pleasure in taking this poor wretch's life! It's not too late, she needn't suffer in vain. Turn back and her death shall be merciful!"
-#define SAY_3    "May this prisoner's death serve as a warning. None shall defy the Scourge and live!"
-#define SAY_4    "So you see fit to toy with the Lich King's creations? Ramstein, be sure to give the intruders a proper greeting."
-#define SAY_5    "Time to take matters into my own hands. Come. Enter my domain and challenge the might of the Scourge!"
-
 #define ADD_1X 4017.403809f
 #define ADD_1Y -3339.703369f
 #define ADD_1Z 115.057655f
@@ -141,11 +134,11 @@ struct boss_baron_rivendareAI : public ScriptedAI
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        GameObject* pCircle = m_creature->FindNearestGameObject(176631, 33.0f); // Menethil's Gift (cercle au milieu de la pièce du baron)
+        GameObject* pCircle = m_creature->FindNearestGameObject(176631, 33.0f); // Menethil's Gift (cercle au milieu de la pié‘“e du baron)
 
         if (!pCircle)
         {
-            m_creature->MonsterYell("Cheater ! Un ban, ca vous dit ?", 0);
+            m_creature->MonsterYell(GetMangosString(-2000333), 0);//"Cheater ! Un ban, ca vous dit ?"
             EnterEvadeMode();
         }
 
@@ -181,7 +174,7 @@ struct boss_baron_rivendareAI : public ScriptedAI
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_RAISEDEAD) == CAST_OK)
                 {
-                    m_creature->MonsterTextEmote("Baron Rivendare raises an undead servant back to life!");
+                    m_creature->MonsterTextEmote(GetMangosString(-2000442));//Baron Rivendare raises an undead servant back to life!
                     SummonSkeletons_Timer = 1000;
                     RaiseDeadCasted = true;
                 }

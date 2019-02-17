@@ -45,8 +45,6 @@ enum
     NPC_CORRUPT_SABER           = 10042
 };
 
-#define GOSSIP_ITEM_RELEASE     "I want to release the corrupted saber to Winna."
-
 struct npc_kittenAI : public FollowerAI
 {
     npc_kittenAI(Creature* pCreature) : FollowerAI(pCreature)
@@ -134,8 +132,10 @@ bool GossipHello_npc_corrupt_saber(Player* pPlayer, Creature* pCreature)
 {
     if (pPlayer->GetQuestStatus(QUEST_CORRUPT_SABER) == QUEST_STATUS_INCOMPLETE)
     {
-        if (GetClosestCreatureWithEntry(pCreature, NPC_WINNA, INTERACTION_DISTANCE))
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_RELEASE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        if (GetClosestCreatureWithEntry(pCreature, NPC_WINNA, INTERACTION_DISTANCE)){
+            //pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I want to release the corrupted saber to Winna.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000015), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+		}
     }
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
@@ -172,8 +172,6 @@ enum
     SPELL_CENARION_BEACON     = 15120
 };
 
-#define GOSSIP_ITEM_BEACON  "Please make me a Cenarion Beacon"
-
 bool GossipHello_npcs_riverbreeze_and_silversky(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->isQuestGiver())
@@ -184,7 +182,7 @@ bool GossipHello_npcs_riverbreeze_and_silversky(Player* pPlayer, Creature* pCrea
         case NPC_ARATHANDIS_SILVERSKY:
             if (pPlayer->GetQuestRewardStatus(QUEST_CLEANSING_FELWOOD_A))
             {
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BEACON, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000395), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Please make me a Cenarion Beacon
                 pPlayer->SEND_GOSSIP_MENU(2848, pCreature->GetGUID());
             }
             else if (pPlayer->GetTeam() == HORDE)
@@ -195,7 +193,7 @@ bool GossipHello_npcs_riverbreeze_and_silversky(Player* pPlayer, Creature* pCrea
         case NPC_MAYBESS_RIVERBREEZE:
             if (pPlayer->GetQuestRewardStatus(QUEST_CLEANSING_FELWOOD_H))
             {
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BEACON, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000395), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Please make me a Cenarion Beacon
                 pPlayer->SEND_GOSSIP_MENU(2849, pCreature->GetGUID());
             }
             else if (pPlayer->GetTeam() == ALLIANCE)

@@ -91,9 +91,6 @@ enum
 // Coords used to spawn Nefarius at the throne
 static const float aNefariusSpawnLoc[4] = { -7466.16f, -1040.80f, 412.053f, 2.14675f};
 
-#define GOSSIP_ITEM_VAEL_1         "I cannot, Vaelastrasz! Surely something can be done to heal you!"
-#define GOSSIP_ITEM_VAEL_2         "Vaelastrasz, no!!!"
-
 struct boss_vaelAI : public ScriptedAI
 {
     boss_vaelAI(Creature* pCreature) : ScriptedAI(pCreature)
@@ -447,7 +444,7 @@ bool GossipSelect_boss_vael(Player* pPlayer, Creature* pCreature, uint32 uiSende
     switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_VAEL_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000373), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//Vaelastrasz, no!!!
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXT_VAEL_2, pCreature->GetObjectGuid());
             break;
         case GOSSIP_ACTION_INFO_DEF+2: // Fight Time
@@ -474,7 +471,7 @@ bool GossipHello_boss_vael(Player* pPlayer, Creature* pCreature)
         if (m_pInstance->GetData(TYPE_SCEPTER_RUN) == NOT_STARTED)
             pPlayer->PrepareQuestMenu(pCreature->GetObjectGuid());
 
-    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_VAEL_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000374), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//I cannot, Vaelastrasz! Surely something can be done to heal you!
     pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXT_VAEL_1, pCreature->GetObjectGuid());
 
     return true;

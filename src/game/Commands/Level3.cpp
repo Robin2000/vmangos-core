@@ -5117,7 +5117,7 @@ bool ChatHandler::HandleServerShutDownCommand(char* args)
     // is not supported in many others
     if (exitcode > 125)
         return false;
-
+	sLog.outError("HandleServerShutDownCommand ShutdownServ");
     sWorld.ShutdownServ(delay, 0, exitcode);
     return true;
 }
@@ -5137,7 +5137,7 @@ bool ChatHandler::HandleServerRestartCommand(char* args)
     // is not supported in many others
     if (exitcode > 125)
         return false;
-
+	sLog.outError("HandleServerRestartCommand ShutdownServ");
     sWorld.ShutdownServ(delay, SHUTDOWN_MASK_RESTART, exitcode);
     return true;
 }
@@ -5157,7 +5157,7 @@ bool ChatHandler::HandleServerIdleRestartCommand(char* args)
     // is not supported in many others
     if (exitcode > 125)
         return false;
-
+	sLog.outError("HandleServerIdleRestartCommand ShutdownServ");
     sWorld.ShutdownServ(delay, SHUTDOWN_MASK_RESTART | SHUTDOWN_MASK_IDLE, exitcode);
     return true;
 }
@@ -5177,7 +5177,7 @@ bool ChatHandler::HandleServerIdleShutDownCommand(char* args)
     // is not supported in many others
     if (exitcode > 125)
         return false;
-
+	sLog.outError("HandleServerIdleShutDownCommand ShutdownServ");
     sWorld.ShutdownServ(delay, SHUTDOWN_MASK_IDLE, exitcode);
     return true;
 }

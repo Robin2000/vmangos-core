@@ -1,0 +1,2 @@
+update locales_creature set name_loc4='瓦塔拉克公爵' where entry=16042;
+update locales_creature set name_loc4='狂野的拉格佐尔' where entry=12435;

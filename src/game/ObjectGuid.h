@@ -26,8 +26,6 @@
 #include <queue>
 #include <unordered_set>
 
-#include "ace/Thread_Mutex.h"
-
 #include "Common.h"
 #include "ByteBuffer.h"
 
@@ -123,7 +121,7 @@ struct PackedGuidReader
     ObjectGuid* m_guidPtr;
 };
 
-class MANGOS_DLL_SPEC ObjectGuid
+class ObjectGuid
 {
     public:                                                 // constructors
         ObjectGuid() : m_guid(0) {}
@@ -247,7 +245,7 @@ namespace std {
     template <>
     struct hash<ObjectGuid>
     {
-        std::size_t operator()(const ObjectGuid& k) const
+        std::size_t operator()(ObjectGuid const& k) const
         {
             using std::hash;
             return hash<uint64>()(k.GetRawValue());
@@ -322,8 +320,8 @@ public:
         ObjectGuidGenerator<high>::GenerateRange(first, last);
     }
 protected:
-    typedef ACE_Thread_Mutex LockType;
-    typedef MaNGOS::GeneralLock<LockType > Guard;
+    using LockType = std::mutex;
+    using Guard = MaNGOS::GeneralLock<LockType>;
     LockType lock;
 };
 

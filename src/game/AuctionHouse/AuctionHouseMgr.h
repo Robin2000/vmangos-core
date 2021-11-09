@@ -23,12 +23,12 @@
 #define _AUCTION_HOUSE_MGR_H
 
 #include <vector>
+#include <memory>
 
 #include "Common.h"
 #include "SharedDefines.h"
 #include "Policies/Singleton.h"
 #include "DBCStructure.h"
-#include "Log.h"
 
 class Item;
 class Player;
@@ -86,7 +86,7 @@ struct AuctionEntry
     uint32 GetHouseFaction() const { return auctionHouseEntry->faction; }
     uint32 GetAuctionCut() const;
     uint32 GetAuctionOutBid() const;
-    bool BuildAuctionInfo(WorldPacket & data) const;
+    bool BuildAuctionInfo(WorldPacket& data) const;
     void DeleteFromDB() const;
     void SaveToDB() const;
     bool IsAvailableFor(Player* player);
@@ -111,8 +111,8 @@ class AuctionHouseObject
         AuctionHouseObject() {}
         ~AuctionHouseObject()
         {
-            for (AuctionEntryMap::const_iterator itr = AuctionsMap.begin(); itr != AuctionsMap.end(); ++itr)
-                delete itr->second;
+            for (const auto& itr : AuctionsMap)
+                delete itr.second;
         }
 
         typedef std::map<uint32, AuctionEntry*> AuctionEntryMap;
@@ -122,12 +122,12 @@ class AuctionHouseObject
 
         AuctionEntryMap *GetAuctions() { return &AuctionsMap; }
 
-        void AddAuction(AuctionEntry *ah);
+        void AddAuction(AuctionEntry* ah);
 
         AuctionEntry* GetAuction(uint32 id) const
         {
-            AuctionEntryMap::const_iterator itr = AuctionsMap.find( id );
-            return itr != AuctionsMap.end() ? itr->second : NULL;
+            AuctionEntryMap::const_iterator itr = AuctionsMap.find(id);
+            return itr != AuctionsMap.end() ? itr->second : nullptr;
         }
 
         bool RemoveAuction(AuctionEntry* entry);
@@ -166,15 +166,16 @@ class AuctionHouseMgr
             {
                 return itr->second;
             }
-            return NULL;
+            return nullptr;
         }
 
         //auction messages
-        void SendAuctionWonMail( AuctionEntry * auction );
-        void SendAuctionSuccessfulMail( AuctionEntry * auction );
-        void SendAuctionExpiredMail( AuctionEntry * auction );
-        static uint32 GetAuctionDeposit(AuctionHouseEntry const* entry, uint32 time, Item *pItem);
+        void SendAuctionWonMail(AuctionEntry* auction);
+        void SendAuctionSuccessfulMail(AuctionEntry* auction);
+        void SendAuctionExpiredMail(AuctionEntry* auction);
+        static uint32 GetAuctionDeposit(AuctionHouseEntry const* entry, uint32 time, Item* pItem);
 
+        static uint32 GetAuctionHouseId(uint32 factionTemplateId);
         static uint32 GetAuctionHouseTeam(AuctionHouseEntry const* house);
         static AuctionHouseEntry const* GetAuctionHouseEntry(Unit* unit);
         static AuctionHouseEntry const* GetAuctionHouseEntry(uint32 factionId);
@@ -183,6 +184,7 @@ class AuctionHouseMgr
         //load first auction items, because of check if item exists, when loading
         void LoadAuctionItems();
         void LoadAuctions();
+        void LoadAuctionHouses();
 
         void AddAItem(Item* it);
         bool RemoveAItem(uint32 id);
@@ -190,9 +192,9 @@ class AuctionHouseMgr
         void Update();
 
     private:
-        AuctionHouseObject  mHordeAuctions;
-        AuctionHouseObject  mAllianceAuctions;
-        AuctionHouseObject  mNeutralAuctions;
+        AuctionHouseObject* MakeNewAuctionHouseObject();
+        std::unordered_map<uint32, AuctionHouseObject*> m_mAuctionHouses;
+        std::vector<std::unique_ptr<AuctionHouseObject>> m_vRealAuctionHouses;
 
         ItemMap             mAitems;
 };

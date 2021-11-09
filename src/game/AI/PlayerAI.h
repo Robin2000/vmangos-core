@@ -21,11 +21,7 @@
 #define MANGOS_PLAYERAI_H
 
 #include "Common.h"
-#include "Platform/Define.h"
-#include "Policies/Singleton.h"
-#include "Dynamic/ObjectRegistry.h"
-#include "Dynamic/FactoryHolder.h"
-#include "CreatureAI.h" // Pour 'enum CanCastResult'
+#include "ObjectGuid.h"
 
 class WorldObject;
 class Unit;
@@ -33,7 +29,7 @@ class Creature;
 class Player;
 class SpellEntry;
 
-class MANGOS_DLL_SPEC PlayerAI
+class PlayerAI
 {
     public:
         explicit PlayerAI(Player* pPlayer) : me(pPlayer), enablePositiveSpells(false) {}
@@ -42,11 +38,11 @@ class MANGOS_DLL_SPEC PlayerAI
         virtual void Remove();
 
         // Called at World update tick
-        virtual void UpdateAI(const uint32 /*diff*/);
+        virtual void UpdateAI(uint32 const /*diff*/);
         virtual void MovementInform(uint32 MovementType, uint32 Data = 0) {}
 
-        ///== Helpeurs =====================================
-        CanCastResult CanCastSpell(Unit* pTarget, const SpellEntry *pSpell, bool isTriggered, bool checkControlled = true);
+        ///== Helpers =====================================
+        bool CanCastSpell(Unit* pTarget, SpellEntry const* pSpell, bool isTriggered, bool checkControlled = true);
 
         ///== Fields =======================================
 
@@ -55,15 +51,15 @@ class MANGOS_DLL_SPEC PlayerAI
         bool enablePositiveSpells;
 };
 
-class MANGOS_DLL_SPEC PlayerControlledAI: public PlayerAI
+class PlayerControlledAI: public PlayerAI
 {
     public:
-        explicit PlayerControlledAI(Player* pPlayer, Unit* caster = NULL);
+        explicit PlayerControlledAI(Player* pPlayer, Unit* caster = nullptr);
 
-        virtual ~PlayerControlledAI();
+        ~PlayerControlledAI() override;
 
         // Called at World update tick
-        virtual void UpdateAI(const uint32 /*diff*/);
+        void UpdateAI(uint32 const /*diff*/) override;
         Unit* FindController();
         void UpdateTarget(Unit* victim);
 

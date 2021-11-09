@@ -50,12 +50,20 @@ BarGoLink::BarGoLink(uint64 row_count)
     init((int)row_count);
 }
 
+#ifdef __APPLE__
+BarGoLink::BarGoLink(size_t row_count)
+{
+    //MANGOS_ASSERT(row_count < (uint64)ACE_INT32_MAX);
+    init((int)row_count);
+}
+#endif
+
 BarGoLink::~BarGoLink()
 {
     if (!m_showOutput)
         return;
 
-    printf( "\n" );
+    printf("\n");
     fflush(stdout);
 }
 
@@ -70,15 +78,15 @@ void BarGoLink::init(int row_count)
         return;
 
     #ifdef _WIN32
-    printf( "\x3D" );
+    printf("\x3D");
     #else
-    printf( "[" );
+    printf("[");
     #endif
-    for ( int i = 0; i < indic_len; i++ ) printf( empty );
+    for (int i = 0; i < indic_len; i++) printf(empty);
     #ifdef _WIN32
-    printf( "\x3D 0%%\r\x3D" );
+    printf("\x3D 0%%\r\x3D");
     #else
-    printf( "] 0%%\r[" );
+    printf("] 0%%\r[");
     #endif
     fflush(stdout);
 }
@@ -90,23 +98,23 @@ void BarGoLink::step()
 
     int i, n;
 
-    if ( num_rec == 0 ) return;
+    if (num_rec == 0) return;
     ++rec_no;
     n = rec_no * indic_len / num_rec;
-    if ( n != rec_pos )
+    if (n != rec_pos)
     {
         #ifdef _WIN32
-        printf( "\r\x3D" );
+        printf("\r\x3D");
         #else
-        printf( "\r[" );
+        printf("\r[");
         #endif
-        for ( i = 0; i < n; i++ ) printf( full );
-        for ( ; i < indic_len; i++ ) printf( empty );
+        for (i = 0; i < n; i++) printf(full);
+        for (; i < indic_len; i++) printf(empty);
         float percent = (((float)n/(float)indic_len)*100);
         #ifdef _WIN32
-        printf( "\x3D %i%%  \r\x3D", (int)percent);
+        printf("\x3D %i%%  \r\x3D", (int)percent);
         #else
-        printf( "] %i%%  \r[", (int)percent);
+        printf("] %i%%  \r[", (int)percent);
         #endif
         fflush(stdout);
 

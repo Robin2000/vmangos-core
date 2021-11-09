@@ -8,6 +8,7 @@
 enum
 {
     GO_GATE_KIRTONOS        = 175570,
+    GO_BRAZIER_KIRTONOS     = 175564,
     GO_GATE_GANDLING        = 177374,
     GO_GATE_MALICIA         = 177375,
     GO_GATE_THEOLEN         = 177377,
@@ -16,6 +17,8 @@ enum
     GO_GATE_BAROV           = 177373,
     GO_GATE_ILLUCIA         = 177371,
     GO_VIEWING_ROOM_DOOR    = 175167,
+
+    SOUND_SCREECH           = 557,
 
     NPC_KIRTONOS            = 10506,
     NPC_GANDLING            = 1853,
@@ -35,12 +38,6 @@ enum
     TYPE_POLKELT            = 5,
     TYPE_RAVENIAN           = 6,
     TYPE_KIRTONOS           = 7,
-    TYPE_BONEMINION0        = 8,
-    TYPE_BONEMINION1        = 9,
-    TYPE_BONEMINION2        = 10,
-    TYPE_BONEMINION3        = 11,
-    TYPE_BONEMINION4        = 12,
-    TYPE_BONEMINION5        = 13,
     TYPE_VIEWING_ROOM_DOOR  = 14,
     INSTANCE_SCHOLOMANCE_MAX_ENCOUNTER =15,
 

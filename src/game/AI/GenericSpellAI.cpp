@@ -1,7 +1,7 @@
-#include "ProgressBar.h"
-#include "SpellMgr.h"
 #include "ScriptedAI.h"
-#include "ScriptedInstance.h"
+#include "Creature.h"
+#include "SpellMgr.h"
+#include "ScriptMgr.h"
 #include "Util.h"
 
 #define DEFAULT_MIN_CD 5000
@@ -70,15 +70,12 @@ GenericAISpell BuildGenericAISpell(uint32 spellId, uint32 minCD, uint32 maxCD, u
 void LoadSpellCacheData(GenericAISpell* spellToModify, SpellEntry const* spellInfos);
 //void LoadGenericAISpellsData();
 
-struct MANGOS_DLL_DECL GenericSpellMob : public ScriptedAI
+struct GenericSpellMob : public ScriptedAI
 {
     GenericSpellMob(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     std::vector<GenericAISpell> m_uiSpells;
 
@@ -130,7 +127,6 @@ struct MANGOS_DLL_DECL GenericSpellMob : public ScriptedAI
     void Reset()
     {
         std::vector<GenericAISpell>::iterator it;
-        uint32 casterCD = 0;
         for (it = m_uiSpells.begin(); it != m_uiSpells.end(); ++it)
         {
 #ifdef DEBUG_ON
@@ -153,14 +149,14 @@ struct MANGOS_DLL_DECL GenericSpellMob : public ScriptedAI
         casterGCD = 0;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(uint32 const uiDiff)
     {
         m_creature->SelectHostileTarget();
-        if (!m_creature->getVictim())
+        if (!m_creature->GetVictim())
             return;
-        /*if(isDistanceCaster)
+        /*if (isDistanceCaster)
         { // Check du CoolDown global
-            if(casterGCD > uiDiff)
+            if (casterGCD > uiDiff)
             {
                 // Pas encore pret !
                 casterGCD -= uiDiff;
@@ -186,14 +182,14 @@ struct MANGOS_DLL_DECL GenericSpellMob : public ScriptedAI
 #endif
             if (it->timer  < uiDiff)
             {
-                Unit* target = NULL;
+                Unit* target = nullptr;
                 switch (it->target)
                 {
                     case GENERIC_TARGET_SELF:
                         target = m_creature;
                         break;
                     case GENERIC_TARGET_VICTIM:
-                        target = m_creature->getVictim();
+                        target = m_creature->GetVictim();
                         break;
                     case GENERIC_TARGET_HOSTILE_RAND:
                         target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
@@ -219,13 +215,12 @@ struct MANGOS_DLL_DECL GenericSpellMob : public ScriptedAI
                     }
                     case GENERIC_TARGET_FRIEND_NEED_HEAL:
                     {
-                        target = m_creature->DoSelectLowestHpFriendly(it->maxRange, it->healValue / 4);
+                        target = m_creature->FindLowestHpFriendlyUnit(it->maxRange, it->healValue / 4);
                         break;
                     }
                     case GENERIC_TARGET_FRIEND_DISPELL_CC:
                     {
                         std::list<Creature*> creaList = DoFindFriendlyCC(it->maxRange);
-                        uint32 size = creaList.size();
 
                         while (!creaList.empty())
                         {
@@ -267,7 +262,7 @@ struct MANGOS_DLL_DECL GenericSpellMob : public ScriptedAI
                 // Test CM
                 if (cast && it->spellFlags & SPELL_FLAG_CM)
                 {
-                    uint32 targetCounts = m_creature->getThreatManager().getThreatList().size();
+                    uint32 targetCounts = m_creature->GetThreatManager().getThreatList().size();
                     // On ne CM pas si il n'y a personne d'autre.
                     if (targetCounts <= 1)
                         cast = false;
@@ -284,13 +279,13 @@ struct MANGOS_DLL_DECL GenericSpellMob : public ScriptedAI
                 {
                     DoCastSpellIfCan(target, it->spellId);
                     it->timer = urand(it->minCD, it->maxCD);
-                    if (it->spellFlags & SPELL_FLAG_STOP_ATTACK_TARGET && target != m_creature->getVictim()) // Change de cible
+                    if (it->spellFlags & SPELL_FLAG_STOP_ATTACK_TARGET && target != m_creature->GetVictim()) // Change de cible
                     {
                         if (Unit* pSecondAggro = m_creature->SelectAttackingTarget(ATTACKING_TARGET_TOPAGGRO, 1))
                         {
                             if (pSecondAggro != target)
                             {
-                                m_creature->getThreatManager().modifyThreatPercent(target, -100);
+                                m_creature->GetThreatManager().modifyThreatPercent(target, -100);
                                 AttackStart(pSecondAggro);
                             }
                         }
@@ -423,7 +418,7 @@ void LoadSpellCacheData(GenericAISpell* spellToModify, SpellEntry const* spellIn
 #endif
 
     // Check de la portee
-    SpellRangeEntry const* rangeEntry = GetSpellRangeStore()->LookupEntry(spellInfos->rangeIndex);
+    SpellRangeEntry const* rangeEntry = sSpellRangeStore.LookupEntry(spellInfos->rangeIndex);
     if (spellInfos->rangeIndex != 0 && rangeEntry)
     {
         spellToModify->minRange = rangeEntry->minRange;
@@ -444,7 +439,7 @@ void LoadSpellCacheData(GenericAISpell* spellToModify, SpellEntry const* spellIn
         if (spellToModify->healValue != 0)
             spellToModify->target = GENERIC_TARGET_FRIEND_NEED_HEAL;
         // Autres sorts positifs
-        else if (IsPositiveSpell(spellToModify->spellId))
+        else if (Spells::IsPositiveSpell(spellToModify->spellId))
             spellToModify->target = GENERIC_TARGET_SELF;
         /* 2 : Sorts negatifs*/
         // Attaque a distance
@@ -503,7 +498,7 @@ void LoadSpellCacheData(GenericAISpell* spellToModify, SpellEntry const* spellIn
                 }
                 case SPELL_EFFECT_SUMMON_GUARDIAN:
                 {
-                    int32 duration = GetSpellDuration(spellInfos);
+                    int32 duration = spellInfos->GetDuration();
                     if (duration > 0) 
                     {
                         spellToModify->minCD = duration;
@@ -512,7 +507,7 @@ void LoadSpellCacheData(GenericAISpell* spellToModify, SpellEntry const* spellIn
                 }
             }
         }
-        if (spellInfos->AuraInterruptFlags & AURA_INTERRUPT_FLAG_DAMAGE)
+        if (spellInfos->HasAuraInterruptFlag(AURA_INTERRUPT_DAMAGE_CANCELS))
             spellToModify->spellFlags |= SPELL_FLAG_STOP_ATTACK_TARGET;
         // Bouclier divin, bene de protection, bloc de glace et autres : CD different
         // SELECT field0, field6, field7, field8, field122 FROM spells WHERE field8 & 0x200000 AND field6 & 0x50000 AND (field7 & 0x8000 OR field7=0) limit 0,50;

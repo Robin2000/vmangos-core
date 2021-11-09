@@ -27,12 +27,15 @@
 // Nostalrius : pour SD0.
 #define barGoLink BarGoLink
 
-class MANGOS_DLL_SPEC BarGoLink
+class BarGoLink
 {
     public:                                                 // constructors
         explicit BarGoLink(int row_count);
         explicit BarGoLink(uint32 row_count);               // row_count < ACE_INT32_MAX
         explicit BarGoLink(uint64 row_count);               // row_count < ACE_INT32_MAX
+#ifdef __APPLE__
+        explicit BarGoLink(size_t row_count);
+#endif
         ~BarGoLink();
 
     public:                                                 // modifiers

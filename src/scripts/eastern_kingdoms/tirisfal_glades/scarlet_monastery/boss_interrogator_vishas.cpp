@@ -26,11 +26,11 @@ EndScriptData */
 
 enum
 {
-    SAY_AGGRO               = -1189011,
-    SAY_HEALTH1             = -1189012,
-    SAY_HEALTH2             = -1189013,
-    SAY_KILL                = -1189014,
-    SAY_TRIGGER_VORREL      = -1189015,
+    SAY_AGGRO               = 6204, // Tell me... tell me everything!
+    SAY_HEALTH1             = 6206, // Naughty secrets!
+    SAY_HEALTH2             = 6207, // I'll rip the secrets from your flesh!
+    SAY_KILL                = 6205, // Purged by pain!
+    SAY_TRIGGER_VORREL      = 1376, // Finally. The bastard got what he deserved. 
 
     SPELL_SHADOWWORDPAIN    = 2767,
 };
@@ -49,24 +49,24 @@ struct boss_interrogator_vishasAI : public ScriptedAI
     bool Yell60;
     uint32 ShadowWordPain_Timer;
 
-    void Reset()
+    void Reset() override
     {
         Yell30 = false;
         Yell60 = false;
         ShadowWordPain_Timer = 5000;
     }
 
-    void Aggro(Unit *who)
+    void Aggro(Unit *who) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
     }
 
-    void KilledUnit(Unit* Victim)
+    void KilledUnit(Unit* Victim) override
     {
         DoScriptText(SAY_KILL, m_creature);
     }
 
-    void JustDied(Unit* Killer)
+    void JustDied(Unit* Killer) override
     {
         if (!m_pInstance)
             return;
@@ -76,9 +76,9 @@ struct boss_interrogator_vishasAI : public ScriptedAI
             DoScriptText(SAY_TRIGGER_VORREL, vorrel);
     }
 
-    void UpdateAI(const uint32 diff)
+    void UpdateAI(uint32 const diff) override
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         //If we are low on hp Do sayings
@@ -97,7 +97,7 @@ struct boss_interrogator_vishasAI : public ScriptedAI
         //ShadowWordPain_Timer
         if (ShadowWordPain_Timer < diff)
         {
-            DoCastSpellIfCan(m_creature->getVictim(), SPELL_SHADOWWORDPAIN);
+            DoCastSpellIfCan(m_creature->GetVictim(), SPELL_SHADOWWORDPAIN);
             ShadowWordPain_Timer = urand(5000, 15000);
         }
         else ShadowWordPain_Timer -= diff;
@@ -113,7 +113,7 @@ CreatureAI* GetAI_boss_interrogator_vishas(Creature* pCreature)
 
 void AddSC_boss_interrogator_vishas()
 {
-    Script *newscript;
+    Script* newscript;
     newscript = new Script;
     newscript->Name = "boss_interrogator_vishas";
     newscript->GetAI = &GetAI_boss_interrogator_vishas;

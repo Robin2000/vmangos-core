@@ -23,13 +23,12 @@
 #define MANGOSSERVER_QUEST_H
 
 #include "Platform/Define.h"
-#include "Database/DatabaseEnv.h"
 
 #include <string>
 #include <vector>
 
+class Field;
 class Player;
-
 class ObjectMgr;
 
 #define MAX_QUEST_LOG_SIZE 20
@@ -206,8 +205,8 @@ class Quest
 {
     friend class ObjectMgr;
     public:
-        Quest(Field * questRecord);
-        uint32 XPValue( Player *pPlayer ) const;
+        Quest(Field* questRecord);
+        uint32 XPValue(Player* pPlayer) const;
 
         uint32 GetQuestFlags() const { return m_QuestFlags; }
         bool HasQuestFlag(QuestFlags flag) const { return (m_QuestFlags & flag) != 0; }
@@ -226,6 +225,7 @@ class Quest
         uint32 GetRequiredRaces() const { return RequiredRaces; }
         uint32 GetRequiredSkill() const { return RequiredSkill; }
         uint32 GetRequiredSkillValue() const { return RequiredSkillValue; }
+        uint32 GetRequiredCondition() const { return RequiredCondition; }
         uint32 GetRepObjectiveFaction() const { return RepObjectiveFaction; }
         int32  GetRepObjectiveValue() const { return RepObjectiveValue; }
         uint32 GetRequiredMinRepFaction() const { return RequiredMinRepFaction; }
@@ -251,11 +251,13 @@ class Quest
         int32  GetRewOrReqMoney() const;
         uint32 GetRewMoneyMaxLevel() const { return RewMoneyMaxLevel; }
         int32 GetRewMoneyMaxLevelAtComplete() const;
+        uint32 GetRewXP() const { return RewXP; }
                                                             // use in XP calculation at client
         uint32 GetRewSpell() const { return RewSpell; }
         uint32 GetRewSpellCast() const { return RewSpellCast; }
-        uint32 GetRewMailTemplateId() const { return RewMailTemplateId; }
+        int32 GetRewMailTemplateId() const { return RewMailTemplateId; }
         uint32 GetRewMailDelaySecs() const { return RewMailDelaySecs; }
+        uint32 GetRewMailMoney() const { return RewMailMoney; }
         uint32 GetPointMapId() const { return PointMapId; }
         float  GetPointX() const { return PointX; }
         float  GetPointY() const { return PointY; }
@@ -325,6 +327,7 @@ class Quest
         uint32 RequiredRaces;
         uint32 RequiredSkill;
         uint32 RequiredSkillValue;
+        uint32 RequiredCondition;
         uint32 RepObjectiveFaction;
         int32  RepObjectiveValue;
         uint32 RequiredMinRepFaction;
@@ -348,12 +351,14 @@ class Quest
         std::string OfferRewardText;
         std::string RequestItemsText;
         std::string EndText;
+        uint32 RewXP;
         int32  RewOrReqMoney;
         uint32 RewMoneyMaxLevel;
         uint32 RewSpell;
         uint32 RewSpellCast;
-        uint32 RewMailTemplateId;
+        int32 RewMailTemplateId;
         uint32 RewMailDelaySecs;
+        uint32 RewMailMoney;
         uint32 PointMapId;
         float  PointX;
         float  PointY;

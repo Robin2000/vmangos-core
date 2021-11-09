@@ -16,24 +16,24 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 set(EXECUTABLE_NAME mangosd)
-set (EXECUTABLE_SRCS 
-	ChatSocket.h
-	CliRunnable.h
-	MaNGOSsoap.h
-	Master.h
-	RASocket.h
-	soapH.h
-	soapStub.h
-	WorldRunnable.h
-	ChatSocket.cpp
-	CliRunnable.cpp
-	Main.cpp
-	MaNGOSsoap.cpp
-	Master.cpp
-	RASocket.cpp
-	soapC.cpp
-	soapServer.cpp
-	WorldRunnable.cpp
+set(EXECUTABLE_SRCS 
+  ChatSocket.h
+  CliRunnable.h
+  MaNGOSsoap.h
+  Master.h
+  RASocket.h
+  soapH.h
+  soapStub.h
+  WorldRunnable.h
+  ChatSocket.cpp
+  CliRunnable.cpp
+  Main.cpp
+  MaNGOSsoap.cpp
+  Master.cpp
+  RASocket.cpp
+  soapC.cpp
+  soapServer.cpp
+  WorldRunnable.cpp
 
 )
 
@@ -56,7 +56,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/game/AI
   ${CMAKE_SOURCE_DIR}/src/game/Anticheat
   ${CMAKE_SOURCE_DIR}/src/game/AuctionHouse
-  ${CMAKE_SOURCE_DIR}/src/game/AutoTesting
   ${CMAKE_SOURCE_DIR}/src/game/Battlegrounds
   ${CMAKE_SOURCE_DIR}/src/game/Chat
   ${CMAKE_SOURCE_DIR}/src/game/Commands
@@ -66,7 +65,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/game/Handlers
   ${CMAKE_SOURCE_DIR}/src/game/LFG
   ${CMAKE_SOURCE_DIR}/src/game/Mail
-  ${CMAKE_SOURCE_DIR}/src/game/MapNodes
   ${CMAKE_SOURCE_DIR}/src/game/Maps
   ${CMAKE_SOURCE_DIR}/src/game/Maps/Pool
   ${CMAKE_SOURCE_DIR}/src/game/Movement
@@ -76,11 +74,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/game/PlayerBots
   ${CMAKE_SOURCE_DIR}/src/game/Protocol
   ${CMAKE_SOURCE_DIR}/src/game/Spells
-  ${CMAKE_SOURCE_DIR}/src/game/Texts
   ${CMAKE_SOURCE_DIR}/src/game/Threat
   ${CMAKE_SOURCE_DIR}/src/game/Transports
   ${CMAKE_SOURCE_DIR}/src/game/vmap
-  ${CMAKE_SOURCE_DIR}/src/game/Warden
   ${CMAKE_BINARY_DIR}/src/shared
   ${CMAKE_BINARY_DIR}
   ${ACE_INCLUDE_DIR}
@@ -90,7 +86,7 @@ include_directories(
 
 if(WIN32)
   include_directories(
-    ${CMAKE_SOURCE_DIR}/dep/include-windows
+    ${CMAKE_SOURCE_DIR}/dep/windows/include
   )
 endif()
 
@@ -105,7 +101,7 @@ add_executable(${EXECUTABLE_NAME}
   ${EXECUTABLE_SRCS}
 )
 
-if(SCRIPTS)
+if(USE_SCRIPTS)
   target_link_libraries(${EXECUTABLE_NAME}
     game
     scripts
@@ -135,6 +131,11 @@ if(WIN32)
     debug ${MYSQL_DEBUG_LIBRARY}
     debug ${OPENSSL_DEBUG_LIBRARIES}
   )
+  if(MINGW)
+    target_link_libraries(${EXECUTABLE_NAME}
+      -lws2_32
+    )
+  endif()
   if(PLATFORM MATCHES X86)
     target_link_libraries(${EXECUTABLE_NAME})
   endif()
@@ -169,5 +170,5 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mangosd.conf.dist.in ${CMAKE_CURRENT_
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mangosd.conf.dist DESTINATION ${CONF_DIR})
 
 if(WIN32 AND MSVC)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/\${BUILD_TYPE}/${EXECUTABLE_NAME}.pdb DESTINATION ${BIN_DIR} CONFIGURATIONS Debug)
+  install(FILES ${CMAKE_SOURCE_DIR}/bin/${EXECUTABLE_NAME}.pdb DESTINATION ${BIN_DIR} CONFIGURATIONS Debug)
 endif()

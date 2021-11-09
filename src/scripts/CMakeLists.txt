@@ -62,14 +62,11 @@ set (SCRIPTS_SRCS
     eastern_kingdoms/burning_steppes/blackrock_depths/boss_tomb_of_seven.cpp
     eastern_kingdoms/burning_steppes/blackrock_depths/instance_blackrock_depths.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_drakkisath.cpp
-    eastern_kingdoms/burning_steppes/blackrock_spire/boss_gyth.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_halycon.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_highlord_omokk.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_mother_smolderweb.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_overlord_wyrmthalak.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_pyroguard_emberseer.cpp
-    eastern_kingdoms/burning_steppes/blackrock_spire/boss_quartermaster_zigris.cpp
-    eastern_kingdoms/burning_steppes/blackrock_spire/boss_rend_blackhand.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_shadow_hunter_voshgajin.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_the_beast.cpp
     eastern_kingdoms/burning_steppes/blackrock_spire/boss_urok.cpp
@@ -121,7 +118,6 @@ set (SCRIPTS_SRCS
     eastern_kingdoms/eastern_plaguelands/naxxramas/boss_thaddius.cpp
     eastern_kingdoms/eastern_plaguelands/naxxramas/instance_naxxramas.cpp
     eastern_kingdoms/eastern_plaguelands/stratholme/boss_baroness_anastari.cpp
-    eastern_kingdoms/eastern_plaguelands/stratholme/boss_baron_rivendare.cpp
     eastern_kingdoms/eastern_plaguelands/stratholme/boss_cannon_master_willey.cpp
     eastern_kingdoms/eastern_plaguelands/stratholme/boss_dathrohan_balnazzar.cpp
     eastern_kingdoms/eastern_plaguelands/stratholme/boss_magistrate_barthilas.cpp
@@ -131,13 +127,11 @@ set (SCRIPTS_SRCS
     eastern_kingdoms/eastern_plaguelands/stratholme/boss_postmaster_malown.cpp
     eastern_kingdoms/eastern_plaguelands/stratholme/boss_ramstein_the_gorger.cpp
     eastern_kingdoms/eastern_plaguelands/stratholme/boss_timmy_the_cruel.cpp
-    eastern_kingdoms/eastern_plaguelands/stratholme/boss_atiesh.cpp
     eastern_kingdoms/eastern_plaguelands/stratholme/instance_stratholme.cpp
     eastern_kingdoms/eastern_plaguelands/stratholme/stratholme.cpp
     eastern_kingdoms/elwynn_forest/elwynn_forest.cpp
     eastern_kingdoms/hillsbrad_foothills/hillsbrad_foothills.cpp
     eastern_kingdoms/hinterlands/hinterlands.cpp
-    eastern_kingdoms/ironforge/ironforge.cpp
     eastern_kingdoms/loch_modan/loch_modan.cpp
     eastern_kingdoms/redridge_mountains/redridge_mountains.cpp
     eastern_kingdoms/searing_gorge/searing_gorge.cpp
@@ -164,17 +158,13 @@ set (SCRIPTS_SRCS
     eastern_kingdoms/swamp_of_sorrows/swamp_of_sorrows.cpp
     eastern_kingdoms/swamp_of_sorrows/sunken_temple/instance_sunken_temple.cpp
     eastern_kingdoms/swamp_of_sorrows/sunken_temple/sunken_temple.cpp
-    eastern_kingdoms/tirisfal_glades/tirisfal_glades.cpp
     eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_arcanist_doan.cpp
     eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_azshir_the_sleepless.cpp
-    eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_bloodmage_thalnos.cpp
-    eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_headless_horseman.cpp
     eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_herod.cpp
     eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_high_inquisitor_fairbanks.cpp
     eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_houndmaster_loksey.cpp
     eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_interrogator_vishas.cpp
     eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_mograine_and_whitemane.cpp
-    eastern_kingdoms/tirisfal_glades/scarlet_monastery/boss_scorn.cpp
     eastern_kingdoms/tirisfal_glades/scarlet_monastery/instance_scarlet_monastery.cpp
     eastern_kingdoms/uldaman/boss_archaedas.cpp
     eastern_kingdoms/uldaman/boss_ironaya.cpp
@@ -182,14 +172,12 @@ set (SCRIPTS_SRCS
     eastern_kingdoms/uldaman/uldaman.cpp
     eastern_kingdoms/undercity/undercity.cpp
     eastern_kingdoms/western_plaguelands/western_plaguelands.cpp
-    eastern_kingdoms/western_plaguelands/scholomance/boss_darkmaster_gandling.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_doctor_theolen_krastinov.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_illucia_barov.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_instructor_malicia.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_jandice_barov.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_kormok.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_lord_alexei_barov.cpp
-    eastern_kingdoms/western_plaguelands/scholomance/boss_lord_blackwood.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_lorekeeper_polkelt.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_ras_frostwhisper.cpp
     eastern_kingdoms/western_plaguelands/scholomance/boss_the_ravenian.cpp
@@ -209,7 +197,6 @@ set (SCRIPTS_SRCS
     kalimdor/desolace/maraudon/boss_celebras_the_cursed.cpp
     kalimdor/desolace/maraudon/boss_landslide.cpp
     kalimdor/desolace/maraudon/boss_noxxion.cpp
-    kalimdor/desolace/maraudon/boss_princess_theradras.cpp
     kalimdor/desolace/maraudon/instance_maraudon.cpp
     kalimdor/desolace/maraudon/maraudon.cpp
     kalimdor/durotar/durotar.cpp
@@ -224,8 +211,6 @@ set (SCRIPTS_SRCS
     kalimdor/feralas/dire_maul/boss_zevrim.cpp
     kalimdor/feralas/dire_maul/dreadsteed_ritual.cpp
     kalimdor/feralas/dire_maul/instance_dire_maul.cpp
-    kalimdor/feralas/dire_maul/npc_ecorcefer.cpp
-    kalimdor/feralas/dire_maul/npc_pusillin.cpp
     kalimdor/moonglade/boss_omen.cpp
     kalimdor/moonglade/moonglade.cpp
     kalimdor/mulgore/mulgore.cpp
@@ -264,21 +249,16 @@ set (SCRIPTS_SRCS
     kalimdor/the_barrens/wailing_caverns/instance_wailing_caverns.cpp
     kalimdor/the_barrens/wailing_caverns/wailing_caverns.cpp
     kalimdor/thousand_needles/thousand_needles.cpp
-    kalimdor/thunder_bluff/thunder_bluff.cpp
     kalimdor/ungoro_crater/ungoro_crater.cpp
     kalimdor/winterspring/winterspring.cpp
-    PrecompiledHeaders/scriptPCH.cpp
     world/areatrigger_scripts.cpp
-    world/boss_anachronos.cpp
-    world/boss_lord_kazzak.cpp
     world/elemental_invasions.cpp
-    world/event_scourge_invasion.cpp
+    world/fireworks_show.cpp
     world/go_scripts.cpp
     world/npcs_special.cpp
-    world/spell_scripts.cpp
     world/totems.cpp
-    world/world_event_naxxramas.cpp
-    world/world_event_naxxramas.h
+    world/scourge_invasion.cpp
+    world/scourge_invasion.h
     world/world_event_wareffort.cpp
     world/world_event_wareffort.h
     world/dragons_of_nightmare/boss_dragon_of_nightmare.cpp
@@ -289,6 +269,21 @@ set (SCRIPTS_SRCS
 
 )
 
+if((${CMAKE_VERSION} VERSION_LESS "3.16") OR USE_PCH_OLD)
+  list(APPEND SCRIPTS_SRCS
+        PrecompiledHeaders/scriptPCH.cpp
+    )
+  # Enable precompiled headers when using the GCC compiler.
+  if(USE_PCH)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR})
+  endif()
+endif()
+
+if(WIN32)
+  if(MINGW)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+  endif()
+endif()
 
 # Used in game ScriptMgr, not need here
 list(REMOVE_ITEM SCRIPTS_SRCS ScriptLoader.cpp)
@@ -314,7 +309,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/game/AI
   ${CMAKE_SOURCE_DIR}/src/game/Anticheat
   ${CMAKE_SOURCE_DIR}/src/game/AuctionHouse
-  ${CMAKE_SOURCE_DIR}/src/game/AutoTesting
   ${CMAKE_SOURCE_DIR}/src/game/Battlegrounds
   ${CMAKE_SOURCE_DIR}/src/game/Chat
   ${CMAKE_SOURCE_DIR}/src/game/Commands
@@ -333,25 +327,19 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/game/PlayerBots
   ${CMAKE_SOURCE_DIR}/src/game/Protocol
   ${CMAKE_SOURCE_DIR}/src/game/Spells
-  ${CMAKE_SOURCE_DIR}/src/game/Texts
   ${CMAKE_SOURCE_DIR}/src/game/Threat
   ${CMAKE_SOURCE_DIR}/src/game/Transports
   ${CMAKE_SOURCE_DIR}/src/game/vmap
-  ${CMAKE_SOURCE_DIR}/src/game/Warden
   ${CMAKE_SOURCE_DIR}/dep/include
   ${CMAKE_SOURCE_DIR}/dep/recastnavigation
   ${CMAKE_SOURCE_DIR}/dep/include/g3dlite
+  ${CMAKE_SOURCE_DIR}/dep/recastnavigation/Detour/Include
   ${CMAKE_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/src/shared
   ${TBB_INCLUDE_DIRS}
   ${ACE_INCLUDE_DIR}
   ${MYSQL_INCLUDE_DIR}
 )
-
-# Enable precompiled headers when using the GCC compiler.
-if (PCH)
-  include_directories(${CMAKE_CURRENT_BINARY_DIR})
-endif()
 
 add_library(${LIBRARY_NAME} STATIC
   ${SCRIPTS_SRCS}
@@ -365,14 +353,57 @@ target_link_libraries(scripts
 
 #add_dependencies(${LIBRARY_NAME} revision.h)
 
-# Generate precompiled header
-if(PCH)
-  if(MSVC OR XCODE)
-    if(MSVC)
-      set(scripts_pch "${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/scriptPCH.cpp")
+if((${CMAKE_VERSION} VERSION_LESS "3.16") OR USE_PCH_OLD)
+  if(USE_PCH)
+    if(MSVC OR XCODE)
+      if(MSVC)
+        set(scripts_pch "${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/scriptPCH.cpp")
+      endif()
+      add_native_precompiled_header(scripts ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/scriptPCH.h)
+    elseif(CMAKE_COMPILER_IS_GNUCXX)
+      add_precompiled_header(scripts ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/scriptPCH.h)
     endif()
-    add_native_precompiled_header(scripts ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/scriptPCH.h)
-  elseif(CMAKE_COMPILER_IS_GNUCXX)
-    add_precompiled_header(scripts ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/scriptPCH.h)
+  endif()
+else()
+  set(PCHS
+      ../game/Mail/Mail.h
+      ../game/ScriptMgr.h
+      ../game/Objects/Object.h
+      ../game/ObjectMgr.h
+      ../game/Objects/Unit.h
+      ../game/Spells/Spell.h
+      ../game/Objects/Creature.h
+      ../game/AI/CreatureAI.h
+      ../game/Objects/GameObject.h
+      ../game/GameEventMgr.h
+      ../game/AI/ScriptedAI.h
+      ../game/AI/ScriptedPetAI.h
+      ../game/AI/ScriptedGameObject.h
+      ../game/AI/ScriptedFollowerAI.h
+      ../game/AI/ScriptedEscortAI.h
+      ../game/ScriptedGossip.h
+      ../game/Maps/GridSearchers.h
+      ../game/AI/ScriptedInstance.h
+      ../game/Spells/SpellAuras.h
+      ../game/Objects/TemporarySummon.h
+      ../game/AI/NullCreatureAI.h
+      ../game/Chat/Chat.h
+      ../game/Battlegrounds/BattleGroundAV.h
+      ../game/World.h
+      ../game/Weather.h
+      ../game/AI/TotemAI.h
+      PrecompiledHeaders/scriptPCH.h
+      )
+
+  if(WIN32)
+      list(APPEND PCHS <windows.h>)
+  endif()
+
+  # Generate precompiled header
+  if(USE_PCH)
+      target_precompile_headers(${LIBRARY_NAME} PRIVATE
+          ${PCHS}
+          )
   endif()
 endif()
+

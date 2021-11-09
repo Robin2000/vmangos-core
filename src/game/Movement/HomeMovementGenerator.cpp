@@ -19,8 +19,6 @@
 #include "HomeMovementGenerator.h"
 #include "Creature.h"
 #include "CreatureAI.h"
-#include "ObjectMgr.h"
-#include "WorldPacket.h"
 #include "MoveSplineInit.h"
 #include "MoveSpline.h"
 
@@ -35,7 +33,7 @@ void HomeMovementGenerator<Creature>::Reset(Creature &)
 
 void HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
 {
-    if (owner.hasUnitState(UNIT_STAT_CAN_NOT_MOVE))
+    if (owner.HasUnitState(UNIT_STAT_CAN_NOT_MOVE))
         return;
 
     // Remove speed reductions from low hp
@@ -43,24 +41,38 @@ void HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
     owner.ModifyAuraState(AURA_STATE_HEALTHLESS_10_PERCENT, false);
     owner.ModifyAuraState(AURA_STATE_HEALTHLESS_5_PERCENT, false);
 
-    Movement::MoveSplineInit init(owner, "HomeMovementGenerator");
+    
     float x, y, z, o;
+    bool setFacing = false;
     // at apply we can select more nice return points base at current movegen
     if (owner.GetMotionMaster()->empty() || !owner.GetMotionMaster()->top()->GetResetPosition(owner, x, y, z))
     {
         owner.GetRespawnCoord(x, y, z, &o);
-        init.SetFacing(o);
+        setFacing = true;
     }
 
-    init.MoveTo(x, y, z, MOVE_PATHFINDING | MOVE_FORCE_DESTINATION);
-    init.SetWalk(false);
-    init.Launch();
+    PathFinder path(&owner);
+    path.calculate(x, y, z, true);
+    if (path.getPathType() & PATHFIND_NORMAL)
+    {
+        Movement::MoveSplineInit init(owner, "HomeMovementGenerator");
+
+        if (setFacing)
+            init.SetFacing(o);
+
+        init.Move(&path);
+        init.SetWalk(false);
+        init.Launch();
+    }
+    else // too far away or no path
+        owner.NearTeleportTo(x, y, z, setFacing ? o : owner.GetOrientation());
+    
     arrived = false;
 
-    owner.clearUnitState(UNIT_STAT_ALL_DYN_STATES);
+    owner.ClearUnitState(UNIT_STAT_ALL_DYN_STATES);
 }
 
-bool HomeMovementGenerator<Creature>::Update(Creature &owner, const uint32& time_diff)
+bool HomeMovementGenerator<Creature>::Update(Creature &owner, uint32 const& /*time_diff*/)
 {
     arrived = owner.movespline->Finalized();
     return !arrived;
@@ -73,7 +85,7 @@ void HomeMovementGenerator<Creature>::Finalize(Creature& owner)
         if (owner.GetTemporaryFactionFlags() & TEMPFACTION_RESTORE_REACH_HOME)
             owner.ClearTemporaryFaction();
 
-        owner.SetWalk(!owner.hasUnitState(UNIT_STAT_RUNNING) && !owner.IsLevitating(), false);
+        owner.SetWalk(!owner.HasUnitState(UNIT_STAT_RUNNING) && !owner.IsLevitating(), false);
         owner.LoadCreatureAddon(true);
         owner.AI()->JustReachedHome();
     }

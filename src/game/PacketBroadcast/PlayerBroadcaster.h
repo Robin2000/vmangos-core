@@ -3,14 +3,12 @@
 
 #include "ObjectGuid.h"
 #include "WorldPacket.h"
-#include "WorldSocket.h"
-#include "WorldPacket.h"
 #include "Opcodes.h"
-#include <mutex>
 #include <list>
 #include <vector>
 #include <cstddef>
 
+class WorldSocket;
 class MovementBroadcaster;
 class Player;
 
@@ -23,7 +21,7 @@ class PlayerBroadcaster final
         ObjectGuid except;
     };
 
-    const std::size_t MAX_QUEUE_SIZE;
+    std::size_t const MAX_QUEUE_SIZE;
 
     WorldSocket* m_socket;
     ObjectGuid m_self;
@@ -34,7 +32,7 @@ class PlayerBroadcaster final
     std::mutex m_queue_lock;
 
     void ProcessQueue(uint32& num_packets);
-    void SendPacket(const WorldPacket& packet);
+    void SendPacket(WorldPacket const& packet);
 
     static inline bool CanSkipPacket(uint32 opcode)
     {
@@ -47,7 +45,7 @@ class PlayerBroadcaster final
     uint32 lastUpdatePackets;
 
 public:
-    PlayerBroadcaster(WorldSocket* socket, const ObjectGuid& self, std::size_t max_queue = 500);
+    PlayerBroadcaster(WorldSocket* socket, ObjectGuid const& self, std::size_t max_queue = 500);
     ~PlayerBroadcaster();
 
     static uint32 num_bcaster_created;

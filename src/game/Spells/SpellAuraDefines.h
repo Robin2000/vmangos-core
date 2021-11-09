@@ -27,7 +27,13 @@
 
 enum AuraFlags
 {
-    AFLAG_MASK              = 0x09
+    AFLAG_NONE                  = 0x00,
+    AFLAG_CANCELABLE            = 0x01,
+    ALFAG_UNK2                  = 0x02,
+    AFLAG_UNK3                  = 0x04,
+    AFLAG_UNK4                  = 0x08,
+
+    AFLAG_MASK_ALL              = 0x0F
 };
 
 /**
@@ -107,7 +113,7 @@ enum AuraType
      */
     SPELL_AURA_MOD_STEALTH = 16,
     /**
-     * Not handled by the Aura class, implemented in Unit::isVisibleForOrDetect
+     * Not handled by the Aura class, implemented in Unit::IsVisibleForOrDetect
      * which does a lot of checks to determine whether the person is visible or not,
      * the SPELL_AURA_MOD_STEALTH seems to determine how in/visible ie a rogue is.
      */
@@ -175,9 +181,9 @@ enum AuraType
     SPELL_AURA_PROC_TRIGGER_DAMAGE = 43,
     SPELL_AURA_TRACK_CREATURES = 44,
     SPELL_AURA_TRACK_RESOURCES = 45,
-    SPELL_AURA_46 = 46,                                     // Ignore all Gear test spells
+    SPELL_AURA_MOD_PARRY_SKILL = 46,
     SPELL_AURA_MOD_PARRY_PERCENT = 47,
-    SPELL_AURA_48 = 48,                                     // One periodic spell
+    SPELL_AURA_MOD_DODGE_SKILL = 48,
     SPELL_AURA_MOD_DODGE_PERCENT = 49,
     SPELL_AURA_MOD_BLOCK_SKILL = 50,
     SPELL_AURA_MOD_BLOCK_PERCENT = 51,
@@ -333,7 +339,8 @@ enum AreaAuraType
     AREA_AURA_FRIEND,
     AREA_AURA_ENEMY,
     AREA_AURA_PET,
-    AREA_AURA_OWNER
+    AREA_AURA_OWNER,
+    AREA_AURA_CREATURE_GROUP,
 };
 
 #endif

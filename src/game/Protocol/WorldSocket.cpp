@@ -40,7 +40,7 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
     MANGOS_ASSERT(new_pct);
 
     // manage memory ;)
-    ACE_Auto_Ptr<WorldPacket> aptr(new_pct);
+    std::unique_ptr<WorldPacket> aptr(new_pct);
 
     const ACE_UINT16 opcode = new_pct->GetOpcode();
 
@@ -76,9 +76,9 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
                 return HandleAuthSession(*new_pct);
             default:
             {
-                ACE_GUARD_RETURN(LockType, Guard, m_SessionLock, -1);
+                GuardType lock(m_SessionLock);
 
-                if (m_Session != NULL)
+                if (m_Session != nullptr)
                 {
                     // OK ,give the packet to WorldSession
                     aptr.release();
@@ -163,9 +163,9 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     LoginDatabase.escape_string(safe_account);
     // No SQL injection, username escaped.
 
-    QueryResult *result = LoginDatabase.PQuery("SELECT a.id, aa.gmLevel, a.sessionkey, a.last_ip, a.locked, a.v, a.s, a.mutetime, a.locale, a.os, a.flags, "
-        "ab.unbandate > UNIX_TIMESTAMP() OR ab.unbandate = ab.bandate FROM account a LEFT JOIN account_access aa ON a.id = aa.id AND aa.RealmID IN (-1, %u) "
-        "LEFT JOIN account_banned ab ON a.id = ab.id AND ab.active = 1 WHERE a.username = '%s' ORDER BY aa.RealmID DESC LIMIT 1", realmID, safe_account.c_str());
+    QueryResult* result = LoginDatabase.PQuery("SELECT a.`id`, aa.`gmLevel`, a.`sessionkey`, a.`last_ip`, a.`locked`, a.`v`, a.`s`, a.`mutetime`, a.`locale`, a.`os`, a.`flags`, "
+        "ab.`unbandate` > UNIX_TIMESTAMP() OR ab.`unbandate` = ab.`bandate` FROM `account` a LEFT JOIN `account_access` aa ON a.`id` = aa.`id` AND aa.`RealmID` IN (-1, %u) "
+        "LEFT JOIN `account_banned` ab ON a.`id` = ab.`id` AND ab.`active` = 1 WHERE a.`username` = '%s' ORDER BY aa.`RealmID` DESC LIMIT 1", realmID, safe_account.c_str());
 
     // Stop if the account is not found
     if (!result)
@@ -187,8 +187,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     v.SetHexStr(fields[5].GetString());
     s.SetHexStr(fields[6].GetString());
 
-    const char* sStr = s.AsHexStr();                        //Must be freed by OPENSSL_free()
-    const char* vStr = v.AsHexStr();                        //Must be freed by OPENSSL_free()
+    char const* sStr = s.AsHexStr();                        //Must be freed by OPENSSL_free()
+    char const* vStr = v.AsHexStr();                        //Must be freed by OPENSSL_free()
 
     DEBUG_LOG("WorldSocket::HandleAuthSession: (s,v) check s: %s v: %s",
               sStr,
@@ -270,7 +270,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     sha.UpdateData((uint8 *) & t, 4);
     sha.UpdateData((uint8 *) & clientSeed, 4);
     sha.UpdateData((uint8 *) & seed, 4);
-    sha.UpdateBigNumbers(&K, NULL);
+    sha.UpdateBigNumbers(&K, nullptr);
     sha.Finalize();
 
     if (memcmp(sha.GetDigest(), digest, 20))
@@ -294,7 +294,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     // No SQL injection, username escaped.
     static SqlStatementID updAccount;
 
-    SqlStatement stmt = LoginDatabase.CreateStatement(updAccount, "UPDATE account SET last_ip = ? WHERE username = ?");
+    SqlStatement stmt = LoginDatabase.CreateStatement(updAccount, "UPDATE `account` SET `last_ip` = ? WHERE `username` = ?");
     stmt.PExecute(address.c_str(), account.c_str());
 
     ClientOSType clientOs;
@@ -336,11 +336,15 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 int WorldSocket::HandlePing(WorldPacket& recvPacket)
 {
     uint32 ping;
+#if SUPPORTED_CLIENT_BUILD > CLIENT_BUILD_1_8_4
     uint32 latency;
+#endif
 
     // Get the ping packet content
     recvPacket >> ping;
+#if SUPPORTED_CLIENT_BUILD > CLIENT_BUILD_1_8_4
     recvPacket >> latency;
+#endif
 
     if (m_LastPingTime == ACE_Time_Value::zero)
         m_LastPingTime = ACE_OS::gettimeofday();  // for 1st ping
@@ -359,7 +363,7 @@ int WorldSocket::HandlePing(WorldPacket& recvPacket)
 
             if (max_count && m_OverSpeedPings > max_count)
             {
-                ACE_GUARD_RETURN(LockType, Guard, m_SessionLock, -1);
+                GuardType lock(m_SessionLock);
 
                 if (m_Session && m_Session->GetSecurity() == SEC_PLAYER)
                 {
@@ -377,11 +381,15 @@ int WorldSocket::HandlePing(WorldPacket& recvPacket)
 
     // critical section
     {
-        ACE_GUARD_RETURN(LockType, Guard, m_SessionLock, -1);
+        GuardType lock(m_SessionLock);
 
+#if SUPPORTED_CLIENT_BUILD > CLIENT_BUILD_1_8_4
         if (m_Session)
             m_Session->SetLatency(latency);
         else
+#else
+        if (!m_Session)
+#endif
         {
             sLog.outError("WorldSocket::HandlePing: peer sent CMSG_PING, "
                           "but is not authenticated or got recently kicked,"

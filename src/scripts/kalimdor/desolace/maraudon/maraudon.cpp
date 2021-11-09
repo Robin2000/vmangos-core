@@ -34,12 +34,12 @@ struct npc_primordial_behemothAI : ScriptedAI
 
     void UpdateAI(uint32 const uiDiff) override
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
-        auto pMainTarget = m_creature->getVictim();
+        auto pMainTarget = m_creature->GetVictim();
 
-        if (pMainTarget->IsWithinMeleeRange(m_creature) && pMainTarget->IsWithinLOSInMap(m_creature))
+        if (pMainTarget->CanReachWithMeleeAutoAttack(m_creature) && pMainTarget->IsWithinLOSInMap(m_creature))
         {
             m_creature->SetCasterChaseDistance(0.0f);
 

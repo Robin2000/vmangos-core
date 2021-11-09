@@ -1,7 +1,7 @@
 /* ScriptData
  SDName: Szerelmes
  SD%Complete:
- Update 15/02/13 ?23h
+ Update 15/02/13 ‡ 23h
  SDComment: Quest support: (id=44)
  SDCategory: Arenes
  EndScriptData */
@@ -40,13 +40,13 @@
 //--------------------------------------------------------
 // QUETES :
 //--------------------------------------------------------
-// QuÈòæe 44
-INSERT INTO `quest_template` VALUES (44, 2, 1637, 60, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Defi : Szerelmes', 'Il est temps de rÈñ¢Èëúer votre talent, $N. Pensez vous Èòære a la hauteur du dÈñíi que je vous prÈñúares ?\r\n\r\nVous vous en sentez capable ? TrÈë£ bien, Èñèoutez moi alors ! je vais appeler notre champion en titre, mais attention vous n\'avez que trÈë£ peu de temps pour le dÈñíi?\r\n\r\nParlez ?Mac\'fly lorsque vous serez pret, il sera en mesure de vous tÈñòÈñúorter dans notre arÈñöe.', 'Combattre Szerelmes en moins de 2 minutes, et devenir le nouveau champion de l\'arÈòØe pour ainsi dÈñôontrer votre domination.', 'Quel magnifique combat ! J\'en ai eu le souffle coup?! $B$B Vous avez reÈêÑ toute ma gratitude $N !', 'Comment se porte Szerelmes ? Toujours en vie ?! ', '', 'Prouvez votre talent', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 250, 0, 0, 0, 0, 25, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+// QuÍte 44
+INSERT INTO `quest_template` VALUES (44, 2, 1637, 60, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Defi : Szerelmes', 'Il est temps de rÈvËler votre talent, $N. Pensez vous Ítre a la hauteur du dÈfi que je vous prÈpares ?\r\n\r\nVous vous en sentez capable ? TrËs bien, Ècoutez moi alors ! je vais appeler notre champion en titre, mais attention vous n\'avez que trËs peu de temps pour le dÈfiÈ.\r\n\r\nParlez ‡ Mac\'fly lorsque vous serez pret, il sera en mesure de vous tÈlÈporter dans notre arÈne.', 'Combattre Szerelmes en moins de 2 minutes, et devenir le nouveau champion de l\'arÍne pour ainsi dÈmontrer votre domination.', 'Quel magnifique combat ! J\'en ai eu le souffle coupÈ ! $B$B Vous avez reÁu toute ma gratitude $N !', 'Comment se porte Szerelmes ? Toujours en vie ?! ', '', 'Prouvez votre talent', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 250, 0, 0, 0, 0, 25, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 //--------------------------------------------------------
 // CREATURES :
 //--------------------------------------------------------
 // npc_szerelmes (id=31)
-INSERT INTO `creature_template` VALUES (31, 0, 0, 413, 413, 'Szerelmes', 'Champion de l\'arÈòØe', 0, 60, 60, 32800, 32800, 0, 0, 0, 14, 14, 0, 1, 1.14286, 4, 3, 0, 298, 127, 175, 1.4, 1500, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 'arena_szerelmes');
+INSERT INTO `creature_template` VALUES (31, 0, 0, 413, 413, 'Szerelmes', 'Champion de l\'arÍne', 0, 60, 60, 32800, 32800, 0, 0, 0, 14, 14, 0, 1, 1.14286, 4, 3, 0, 298, 127, 175, 1.4, 1500, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 'arena_szerelmes');
 // npc_Gladiateur (id=32)
 INSERT INTO `creature_template` VALUES (32, 0, 0, 10820, 0, 'Sbire asservis', '', 0, 60, 60, 1050, 1600, 0, 0, 0, 14, 14, 0, 1, 1.14286, 0, 0, 90, 150, 0, 27, 1, 2000, 1600, 0, 0, 0, 0, 0, 0, 0, 0, 20, 20, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'AggressorA', 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, '');
 // npc_hulrik (id=33)
@@ -163,12 +163,12 @@ INSERT INTO `gameobject` VALUES (3996187, 99540, 1, 2144.36, -4744.92, 51.5089, 
 
 /*
 Last Updated le 17/02/13 13h!
-      Reste ?faire :
-      - Si le joueur meurt, l'Èñ¢ent doit s'arrÈñ†er et le cadavre du joueur se fait teleporter hors de l'arene.
-      - Si le joueur est aid? l'Èñ¢ent doit s'arrÈñ†er et les joueurs se font teleporter hors de l'arene.
-      - Les adds doivent despawn ?la fin de l'event.
-      - Laska doit tÈñòÈë†orter les joueurs, si l'event est annul?ou complÈñ†? mais pas pendant que l'event est lanc?
-      - L'event doit se stopper pas si la quÈòæe est echou?ou complÈë§?
+      Reste ‡ faire :
+      - Si le joueur meurt, l'Èvent doit s'arrÈter et le cadavre du joueur se fait teleporter hors de l'arene.
+      - Si le joueur est aidÈ, l'Èvent doit s'arrÈter et les joueurs se font teleporter hors de l'arene.
+      - Les adds doivent despawn ‡ la fin de l'event.
+      - Laska doit tÈlËporter les joueurs, si l'event est annulÈ ou complÈtÈ, mais pas pendant que l'event est lancÈ.
+      - L'event doit se stopper pas si la quÍte est echouÈ ou complËtÈ.
 
 */
 // corner, sud
@@ -225,7 +225,7 @@ struct arena_szerelmesAI : public ScriptedAI
     uint32 Shoot_Timer;
     uint32 add_Timer;
 
-    void Reset()
+    void Reset() override
     {
         Shoot_Timer = 15000;
         Pummel_Timer = 7000;
@@ -233,26 +233,26 @@ struct arena_szerelmesAI : public ScriptedAI
         add_Timer = 60000;
     }
 
-    void Aggro(Unit* pPlayer)
+    void Aggro(Unit* pPlayer) override
     {
         add_Timer = 1000;
-        DoCastSpellIfCan(m_creature->getVictim(), SPELL_FAIL);
+        DoCastSpellIfCan(m_creature->GetVictim(), SPELL_FAIL);
     }
 
-    void JustDied(Unit* Victim)
+    void JustDied(Unit* Victim) override
     {
         while (Creature* Add = m_creature->FindNearestCreature(NPC_ADD, 100.0f))
             Add->DisappearAndDie();
     }
 
-    void UpdateAI(const uint32 diff)
+    void UpdateAI(uint32 const diff) override
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         if (Pummel_Timer < diff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_PUMMEL) == CAST_OK)
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_PUMMEL) == CAST_OK)
                 Pummel_Timer = 12000;
         }
         else
@@ -260,16 +260,16 @@ struct arena_szerelmesAI : public ScriptedAI
 
         if (KnockAway_Timer < diff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_KNOCKAWAY) == CAST_OK)
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_KNOCKAWAY) == CAST_OK)
                 KnockAway_Timer = 14000;
         }
         else
             KnockAway_Timer -= diff;
 
-        /* enlev?car trop dure!
+        /* enlevÈ car trop dure!
                 if (Shoot_Timer < diff)
                 {
-                    DoCastSpellIfCan(m_creature->getVictim(),SPELL_SHOOT);
+                    DoCastSpellIfCan(m_creature->GetVictim(),SPELL_SHOOT);
                     Shoot_Timer = 2000;
                 }
                 else
@@ -340,7 +340,7 @@ struct npc_karlekAI : public ScriptedAI
     ArenaBossSzerelmesStatus eEventStatus;
     uint32 m_uiEventResetTimer;
 
-    void Reset()
+    void Reset() override
     {
     }
 
@@ -370,7 +370,7 @@ struct npc_karlekAI : public ScriptedAI
         }
 
         // Verifier que le mob ne soit pas deja pop!
-        // Le Boss pop et depop 25 secondes aprÈñü si il reste hors combat.
+        // Le Boss pop et depop 25 secondes aprÈs si il reste hors combat.
         if (Creature * pSzerelmes = m_creature->SummonCreature(npc_szerelmes, 2206.47f, -4741.44f, 54.90f, 3.88f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000))
         {
             m_uiSzerelmesGUID = pSzerelmes->GetObjectGuid();
@@ -390,24 +390,24 @@ struct npc_karlekAI : public ScriptedAI
     }
 
     // L'event se reset si le boss despawn.
-    void SummonedCreatureDespawn(Creature* pSummoned)
+    void SummonedCreatureDespawn(Creature* pSummoned) override
     {
         if (pSummoned->GetObjectGuid() == m_uiSzerelmesGUID)
         {
-            m_creature->MonsterTextEmote(GetMangosString(-2000437), NULL);//Vous me faites perdre mon temps !
+            m_creature->MonsterTextEmote("Vous me faites perdre mon temps !", nullptr);
             ResetEvent();
         }
     }
 
     // L'event se complete si le boss meurt.
-    void SummonedCreatureJustDied(Creature* pSummoned)
+    void SummonedCreatureJustDied(Creature* pSummoned) override
     {
         if (pSummoned->GetObjectGuid() == m_uiSzerelmesGUID)
             CompleteEvent();
     }
 
 
-    void UpdateAI(const uint32 diff, Player *pPlayer)
+    void UpdateAI(uint32 const diff) override
     {
         if (Creature* pSzerelmes = m_creature->GetMap()->GetCreature(m_uiSzerelmesGUID))
         {
@@ -420,27 +420,26 @@ struct npc_karlekAI : public ScriptedAI
                 ResetEvent();
         }
 
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         DoMeleeAttackIfReady();
-
     }
 };
 
 bool GossipHello_npc_karlek(Player *player, Creature *pCreature)
 {
-    player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000191), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//Je suis pret ! Envoyez moi dans l'arene !
-    player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000192),   GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Non merci, je ne veut pas combattre."
+    player->ADD_GOSSIP_ITEM(0, "Je suis pret ! Envoyez moi dans l'arene !", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+    player->ADD_GOSSIP_ITEM(0, "Non merci, je ne veut pas combattre.",   GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     player->SEND_GOSSIP_MENU(npc_karlek_HELLO, pCreature->GetObjectGuid());
     return true;
 }
 
 bool GossipSelect_npc_karlek(Player* player, Creature* pCreature, uint32 sender, uint32 action)
 {
-    ArenaBossSzerelmesStatus eEventStatus; // Penser ?dÈñèlarer la variable
+    ArenaBossSzerelmesStatus eEventStatus; // Penser ‡ dÈclarer la variable
 
-    // RÈñèupÈñûer l'Èñ†at de la variable comme elle est dans l'IA (npc_karlekAI)
+    // RÈcupÈrer l'Ètat de la variable comme elle est dans l'IA (npc_karlekAI)
     npc_karlekAI* pKarlekAI = dynamic_cast<npc_karlekAI*>(pCreature->AI());
     if (pKarlekAI)
     {
@@ -507,7 +506,7 @@ enum
 
 bool GossipHello_npc_laska(Player *player, Creature *pCreature)
 {
-    player->ADD_GOSSIP_ITEM(0, player->GetSession()->GetMangosString(-2000193), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);//"Envoyez moi hors de l'arene Svp !"
+    player->ADD_GOSSIP_ITEM(0, "Envoyez moi hors de l'arene Svp !", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
     player->SEND_GOSSIP_MENU(npc_laska_HELLO, pCreature->GetObjectGuid());
     return true;
 }
@@ -542,7 +541,7 @@ bool GossipSelect_npc_laska(Player *player, Creature *pCreature, uint32 sender, 
 
 void AddSC_boss_arena_hardog()
 {
-    Script *newscript;
+    Script* newscript;
     newscript = new Script;
     newscript->Name = "arena_szerelmes";
     newscript->GetAI = &GetAI_arena_szerelmes;

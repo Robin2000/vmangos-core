@@ -147,7 +147,7 @@ void PoolObject::CheckEventLinkAndReport<GameObject>(uint32 poolId, int16 event_
 }
 
 template<>
-void PoolObject::CheckEventLinkAndReport<Pool>(uint32 poolId, int16 event_id, std::map<uint32, int16> const& creature2event, std::map<uint32, int16> const& go2event) const
+void PoolObject::CheckEventLinkAndReport<Pool>(uint32 /*poolId*/, int16 event_id, std::map<uint32, int16> const& creature2event, std::map<uint32, int16> const& go2event) const
 {
     sPoolMgr.CheckEventLinkAndReport(guid, event_id, creature2event, go2event);
 }
@@ -169,7 +169,7 @@ void PoolGroup<T>::AddEntry(PoolObject& poolitem, uint32 maxentries)
 template <class T>
 bool PoolGroup<T>::CheckPool() const
 {
-    if (EqualChanced.size() == 0)
+    if (EqualChanced.empty())
     {
         float chance = 0;
         for (uint32 i = 0; i < ExplicitlyChanced.size(); ++i)
@@ -246,7 +246,7 @@ PoolObject* PoolGroup<T>::RollOne(SpawnedPoolData& spawns, uint32 triggerFrom)
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // Main method to despawn a creature or gameobject in a pool
@@ -290,7 +290,7 @@ void PoolGroup<Creature>::Despawn1Object(MapPersistentState& mapState, uint32 gu
 {
     if (CreatureData const* data = sObjectMgr.GetCreatureData(guid))
     {
-        if (mapState.GetMapId() != data->mapid)
+        if (mapState.GetMapId() != data->position.mapId)
             return;
 
         mapState.RemoveCreatureFromGrid(guid, data);
@@ -307,7 +307,7 @@ void PoolGroup<GameObject>::Despawn1Object(MapPersistentState& mapState, uint32 
 {
     if (GameObjectData const* data = sObjectMgr.GetGOData(guid))
     {
-        if (mapState.GetMapId() != data->mapid)
+        if (mapState.GetMapId() != data->position.mapId)
             return;
 
         mapState.RemoveGameobjectFromGrid(guid, data);
@@ -456,7 +456,7 @@ void PoolGroup<Creature>::Spawn1Object(MapPersistentState& mapState, PoolObject*
 {
     if (CreatureData const* data = sObjectMgr.GetCreatureData(obj->guid))
     {
-        if (mapState.GetMapId() != data->mapid)
+        if (mapState.GetMapId() != data->position.mapId)
             return;
 
         mapState.AddCreatureToGrid(obj->guid, data);
@@ -464,7 +464,7 @@ void PoolGroup<Creature>::Spawn1Object(MapPersistentState& mapState, PoolObject*
         Map* dataMap = mapState.GetMap();
 
         // We use spawn coords to spawn
-        if (dataMap && dataMap->IsLoaded(data->posX, data->posY))
+        if (dataMap && dataMap->IsLoaded(data->position.x, data->position.y))
         {
             Creature* pCreature = new Creature;
             //DEBUG_LOG("Spawning creature %u",obj->guid);
@@ -487,7 +487,7 @@ void PoolGroup<Creature>::Spawn1Object(MapPersistentState& mapState, PoolObject*
         }
         // for not loaded grid just update respawn time (avoid work for instances until implemented support)
         else if (!instantly)
-            mapState.SaveCreatureRespawnTime(obj->guid, time(NULL) + data->GetRandomRespawnTime());
+            mapState.SaveCreatureRespawnTime(obj->guid, time(nullptr) + data->GetRandomRespawnTime());
     }
 }
 
@@ -497,7 +497,7 @@ void PoolGroup<GameObject>::Spawn1Object(MapPersistentState& mapState, PoolObjec
 {
     if (GameObjectData const* data = sObjectMgr.GetGOData(obj->guid))
     {
-        if (mapState.GetMapId() != data->mapid)
+        if (mapState.GetMapId() != data->position.mapId)
             return;
 
         mapState.AddGameobjectToGrid(obj->guid, data);
@@ -505,9 +505,11 @@ void PoolGroup<GameObject>::Spawn1Object(MapPersistentState& mapState, PoolObjec
         Map* dataMap = mapState.GetMap();
 
         // We use spawn coords to spawn
-        if (dataMap && dataMap->IsLoaded(data->posX, data->posY))
+        if (dataMap && dataMap->IsLoaded(data->position.x, data->position.y))
         {
-            GameObject* pGameobject = new GameObject;
+            GameObjectData const* data = sObjectMgr.GetGOData(obj->guid);
+            MANGOS_ASSERT(data);
+            GameObject* pGameobject = GameObject::CreateGameObject(data->id);
             //DEBUG_LOG("Spawning gameobject %u", obj->guid);
             if (!pGameobject->LoadFromDB(obj->guid, dataMap))
             {
@@ -537,7 +539,7 @@ void PoolGroup<GameObject>::Spawn1Object(MapPersistentState& mapState, PoolObjec
         {
             // for spawned by default object only
             if (data->spawntimesecsmin >= 0)
-                mapState.SaveGORespawnTime(obj->guid, time(NULL) + data->ComputeRespawnDelay(data->GetRandomRespawnTime()));
+                mapState.SaveGORespawnTime(obj->guid, time(nullptr) + data->ComputeRespawnDelay(data->GetRandomRespawnTime()));
         }
     }
 }
@@ -555,7 +557,7 @@ void PoolGroup<Creature>::ReSpawn1Object(MapPersistentState& mapState, PoolObjec
 {
     if (CreatureData const* data = sObjectMgr.GetCreatureData(obj->guid))
     {
-        if (mapState.GetMapId() != data->mapid)
+        if (mapState.GetMapId() != data->position.mapId)
             return;
 
         if (Map* dataMap = mapState.GetMap())
@@ -570,7 +572,7 @@ void PoolGroup<GameObject>::ReSpawn1Object(MapPersistentState& mapState, PoolObj
 {
     if (GameObjectData const* data = sObjectMgr.GetGOData(obj->guid))
     {
-        if (mapState.GetMapId() != data->mapid)
+        if (mapState.GetMapId() != data->position.mapId)
             return;
 
         if (Map* dataMap = mapState.GetMap())
@@ -641,7 +643,7 @@ struct PoolMapChecker
     }
 };
 
-bool CheckPoolAndChance(const char* table, uint16 pool_id, float chance)
+bool CheckPoolAndChance(char const* table, uint16 pool_id, float chance)
 {
     if (pool_id > sPoolMgr.GetMaxPoolId())
     {
@@ -658,7 +660,7 @@ bool CheckPoolAndChance(const char* table, uint16 pool_id, float chance)
 
 void PoolManager::LoadFromDB()
 {
-    QueryResult *result = WorldDatabase.Query("SELECT MAX(entry) FROM pool_template");
+    QueryResult* result = WorldDatabase.PQuery("SELECT MAX(`entry`) FROM `pool_template` WHERE %u BETWEEN `patch_min` AND `patch_max`", sWorld.GetWowPatch());
     if (!result)
     {
         sLog.outString(">> Table pool_template is empty.");
@@ -667,14 +669,14 @@ void PoolManager::LoadFromDB()
     }
     else
     {
-        Field *fields = result->Fetch();
+        Field* fields = result->Fetch();
         max_pool_id = fields[0].GetUInt16();
         delete result;
     }
 
     mPoolTemplate.resize(max_pool_id + 1);
 
-    result = WorldDatabase.PQuery("SELECT entry, max_limit, flags, description, instance FROM pool_template WHERE ((%u >= patch_min) && (%u <= patch_max))", sWorld.GetWowPatch(), sWorld.GetWowPatch());
+    result = WorldDatabase.PQuery("SELECT `entry`, `max_limit`, `flags`, `description`, `instance` FROM `pool_template` WHERE %u BETWEEN `patch_min` AND `patch_max`", sWorld.GetWowPatch());
     if (!result)
     {
         mPoolTemplate.clear();
@@ -689,7 +691,7 @@ void PoolManager::LoadFromDB()
     do
     {
         ++count;
-        Field *fields = result->Fetch();
+        Field* fields = result->Fetch();
 
         bar.step();
 
@@ -718,10 +720,10 @@ void PoolManager::LoadFromDB()
     mCreatureSearchMap.clear();
 
     result = WorldDatabase.PQuery(
-            "SELECT guid, pool_entry, chance, 0, flags FROM pool_creature WHERE ((%u >= patch_min) && (%u <= patch_max)) "
+            "SELECT `guid`, `pool_entry`, `chance`, 0, `flags`, `patch_min`, `patch_max` FROM `pool_creature` WHERE %u BETWEEN `patch_min` AND `patch_max` "
             "UNION "
-            " SELECT guid, pool_entry, chance, pool_creature_template.id, pool_creature_template.flags "
-                "FROM pool_creature_template LEFT JOIN creature ON creature.id = pool_creature_template.id;", sWorld.GetWowPatch(), sWorld.GetWowPatch());
+            " SELECT `guid`, `pool_entry`, `chance`, `pool_creature_template`.`id`, `pool_creature_template`.`flags`, `pool_creature_template`.`patch_min`, `pool_creature_template`.`patch_max` "
+            "FROM `pool_creature_template` LEFT JOIN `creature` ON `creature`.`id` = `pool_creature_template`.`id`;", sWorld.GetWowPatch());
 
     count = 0;
     if (!result)
@@ -738,7 +740,7 @@ void PoolManager::LoadFromDB()
         BarGoLink bar2(result->GetRowCount());
         do
         {
-            Field *fields = result->Fetch();
+            Field* fields = result->Fetch();
 
             bar2.step();
 
@@ -747,7 +749,13 @@ void PoolManager::LoadFromDB()
             float chance   = fields[2].GetFloat();
             uint32 entry_id= fields[3].GetUInt32();
             uint32 flags   = fields[4].GetUInt32();
-            const char* table = entry_id ? "pool_creature_template" : "pool_creature";
+            uint32 patch_min = fields[5].GetUInt8();
+            uint32 patch_max = fields[6].GetUInt8();
+
+            if ((patch_min > sWorld.GetWowPatch()) || (patch_max < sWorld.GetWowPatch()))
+                continue;
+
+            char const* table = entry_id ? "pool_creature_template" : "pool_creature";
 
             CreatureData const* data = sObjectMgr.GetCreatureData(guid);
             if (!data)
@@ -766,7 +774,7 @@ void PoolManager::LoadFromDB()
             }
             if (!CheckPoolAndChance(table, pool_id, chance))
                 continue;
-            if (!mapChecker.CheckAndRemember(data->mapid, pool_id, table, "creature guid"))
+            if (!mapChecker.CheckAndRemember(data->position.mapId, pool_id, table, "creature guid"))
                 continue;
 
             PoolTemplateData *pPoolTemplate = &mPoolTemplate[pool_id];
@@ -790,11 +798,11 @@ void PoolManager::LoadFromDB()
     // Gameobjects (guids and entries)
     mPoolGameobjectGroups.resize(max_pool_id + 1);
     mGameobjectSearchMap.clear();
-    //                                   1     2           3       4  5
-    result = WorldDatabase.PQuery("SELECT guid, pool_entry, chance, 0, flags FROM pool_gameobject WHERE ((%u >= patch_min) && (%u <= patch_max)) "
+    //                                     0       1             2        3   4        5            6
+    result = WorldDatabase.PQuery("SELECT `guid`, `pool_entry`, `chance`, 0, `flags`, `patch_min`, `patch_max` FROM `pool_gameobject` WHERE (%u BETWEEN `patch_min` AND `patch_max`) "
         "UNION "
-        "SELECT guid, pool_entry, chance, pool_gameobject_template.id, pool_gameobject_template.flags "
-        "FROM pool_gameobject_template LEFT JOIN gameobject ON gameobject.id = pool_gameobject_template.id", sWorld.GetWowPatch(), sWorld.GetWowPatch());
+        "SELECT `guid`, `pool_entry`, `chance`, `pool_gameobject_template`.`id`, `pool_gameobject_template`.`flags`, `pool_gameobject_template`.`patch_min`, `pool_gameobject_template`.`patch_max` "
+        "FROM `pool_gameobject_template` LEFT JOIN `gameobject` ON `gameobject`.`id` = `pool_gameobject_template`.`id`", sWorld.GetWowPatch());
 
     count = 0;
     if (!result)
@@ -811,7 +819,7 @@ void PoolManager::LoadFromDB()
         BarGoLink bar2(result->GetRowCount());
         do
         {
-            Field *fields = result->Fetch();
+            Field* fields = result->Fetch();
 
             bar2.step();
 
@@ -820,7 +828,13 @@ void PoolManager::LoadFromDB()
             float chance   = fields[2].GetFloat();
             uint32 entry_id= fields[3].GetUInt32();
             uint32 flags   = fields[4].GetUInt32();
-            const char* table = entry_id ? "pool_gameobject_template" : "pool_gameobject";
+            uint32 patch_min = fields[5].GetUInt8();
+            uint32 patch_max = fields[6].GetUInt8();
+
+            if ((patch_min > sWorld.GetWowPatch()) || (patch_max < sWorld.GetWowPatch()))
+                continue;
+
+            char const* table = entry_id ? "pool_gameobject_template" : "pool_gameobject";
 
             GameObjectData const* data = sObjectMgr.GetGOData(guid);
             if (!data)
@@ -847,7 +861,7 @@ void PoolManager::LoadFromDB()
             }
             if (!CheckPoolAndChance(table, pool_id, chance))
                 continue;
-            if (!mapChecker.CheckAndRemember(data->mapid, pool_id, table, "gameobject guid"))
+            if (!mapChecker.CheckAndRemember(data->position.mapId, pool_id, table, "gameobject guid"))
                 continue;
 
             PoolTemplateData *pPoolTemplate = &mPoolTemplate[pool_id];
@@ -870,8 +884,8 @@ void PoolManager::LoadFromDB()
 
     // Pool of pools
     mPoolPoolGroups.resize(max_pool_id + 1);
-    //                                   1        2            3       4
-    result = WorldDatabase.Query("SELECT pool_id, mother_pool, chance, flags FROM pool_pool");
+    //                                    1          2              3         4
+    result = WorldDatabase.Query("SELECT `pool_id`, `mother_pool`, `chance`, `flags` FROM `pool_pool`");
 
     count = 0;
     if (!result)
@@ -888,7 +902,7 @@ void PoolManager::LoadFromDB()
         BarGoLink bar2(result->GetRowCount());
         do
         {
-            Field *fields = result->Fetch();
+            Field* fields = result->Fetch();
 
             bar2.step();
 
@@ -950,8 +964,8 @@ void PoolManager::LoadFromDB()
                 {
                     std::ostringstream ss;
                     ss << "The pool(s) ";
-                    for (std::set<uint16>::const_iterator itr = checkedPools.begin(); itr != checkedPools.end(); ++itr)
-                        ss << *itr << " ";
+                    for (const auto checkedPool : checkedPools)
+                        ss << checkedPool << " ";
                     ss << "create(s) a circular reference, which can cause the server to freeze.\nRemoving the last link between mother pool "
                        << poolItr->first << " and child pool " << poolItr->second;
                     sLog.outErrorDb("%s", ss.str().c_str());

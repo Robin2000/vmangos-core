@@ -19,20 +19,21 @@
 #ifndef _MOVE_MAP_H
 #define _MOVE_MAP_H
 
-#include <ace/Guard_T.h>
-#include <ace/Thread_Mutex.h>
-#include <ace/RW_Mutex.h>
 
 #include "Platform/CompilerDefs.h"
 #include "Platform/Define.h"
 #include <unordered_map>
+#include <set>
 
 #include "Detour/Include/DetourAlloc.h"
 #include "Detour/Include/DetourNavMesh.h"
 #include "Detour/Include/DetourNavMeshQuery.h"
 
+#include <thread>
+#include <shared_mutex>
+
 //  memory management
-inline void* dtCustomAlloc(int size, dtAllocHint /*hint*/)
+inline void* dtCustomAlloc(size_t size, dtAllocHint /*hint*/)
 {
     return (void*)new unsigned char[size];
 }
@@ -46,7 +47,7 @@ inline void dtCustomFree(void* ptr)
 namespace MMAP
 {
     typedef std::unordered_map<uint32, dtTileRef> MMapTileSet;
-    typedef std::unordered_map<uint32, dtNavMeshQuery*> NavMeshQuerySet;
+    typedef std::unordered_map<std::thread::id, dtNavMeshQuery*> NavMeshQuerySet;
 
     // dummy struct to hold map's mmap data
     struct MMapData
@@ -54,8 +55,8 @@ namespace MMAP
         MMapData(dtNavMesh* mesh) : navMesh(mesh) {}
         ~MMapData()
         {
-            for (NavMeshQuerySet::iterator i = navMeshQueries.begin(); i != navMeshQueries.end(); ++i)
-                dtFreeNavMeshQuery(i->second);
+            for (const auto& itr : navMeshQueries)
+                dtFreeNavMeshQuery(itr.second);
 
             if (navMesh)
                 dtFreeNavMesh(navMesh);
@@ -65,9 +66,9 @@ namespace MMAP
 
         // we have to use single dtNavMeshQuery for every instance, since those are not thread safe
         NavMeshQuerySet navMeshQueries;     // threadId to query
-        ACE_RW_Mutex navMeshQueries_lock;
+        std::shared_timed_mutex navMeshQueries_lock;
         MMapTileSet mmapLoadedTiles;        // maps [map grid coords] to [dtTile]
-        ACE_Thread_Mutex tilesLoading_lock;
+        std::mutex tilesLoading_lock;
     };
 
     typedef std::unordered_map<uint32, MMapData*> MMapDataSet;
@@ -82,27 +83,30 @@ namespace MMAP
 
             bool loadMap(uint32 mapId, int32 x, int32 y);
             bool loadGameObject(uint32 displayId);
+            void loadAllGameObjectModels(std::set<uint32> const& displayIds);
             bool unloadMap(uint32 mapId, int32 x, int32 y);
             bool unloadMap(uint32 mapId);
-            bool unloadMapInstance(uint32 mapId, uint32 instanceId);
+            bool unloadMapInstance(uint32 mapId, std::thread::id instanceId);
 
             // The returned [dtNavMeshQuery const*] is NOT threadsafe
             // Returns a NavMeshQuery valid for current thread only.
             dtNavMeshQuery const* GetNavMeshQuery(uint32 mapId);
             dtNavMeshQuery const* GetModelNavMeshQuery(uint32 displayId);
             dtNavMesh const* GetNavMesh(uint32 mapId);
+            dtNavMesh const* GetGONavMesh(uint32 displayId);
 
             uint32 getLoadedTilesCount() const { return loadedTiles; }
             uint32 getLoadedMapsCount() const { return loadedMMaps.size(); }
         private:
             bool loadMapData(uint32 mapId);
-            uint32 packTileID(int32 x, int32 y);
+            static uint32 packTileID(int32 x, int32 y);
 
             MMapDataSet loadedMMaps;
-            ACE_RW_Mutex loadedMMaps_lock;
+            std::shared_timed_mutex loadedMMaps_lock;
             MMapDataSet loadedModels;
+
             uint32 loadedTiles;
-            ACE_Thread_Mutex lockForModels;
+            std::mutex lockForModels;
     };
 
     // static class

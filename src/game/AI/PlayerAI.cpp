@@ -20,10 +20,8 @@
 #include "PlayerAI.h"
 #include "Player.h"
 #include "DBCStores.h"
-#include "Log.h"
 #include "SpellMgr.h"
 #include "MotionMaster.h"
-#include "MoveSpline.h"
 #include "Spell.h"
 
 // Misc spells we dont want players to cast
@@ -40,7 +38,7 @@ static std::vector<uint32> hunterSkipSpells =
 
 void PlayerAI::Remove()
 {
-    me->setAI(NULL);
+    me->SetAI(nullptr);
     delete this;
 }
 
@@ -48,29 +46,30 @@ PlayerAI::~PlayerAI()
 {
 }
 
-CanCastResult PlayerAI::CanCastSpell(Unit* pTarget, const SpellEntry *pSpell, bool isTriggered, bool checkControlled)
+bool PlayerAI::CanCastSpell(Unit* pTarget, SpellEntry const* pSpell, bool isTriggered, bool checkControlled)
 {
     if (!pTarget)
-        return CAST_FAIL_OTHER;
+        return false;
+
     // If not triggered, we check
     if (!isTriggered)
     {
         // State does not allow
-        if (me->hasUnitState(checkControlled ? UNIT_STAT_CAN_NOT_REACT_OR_LOST_CONTROL : UNIT_STAT_CAN_NOT_REACT))
-            return CAST_FAIL_STATE;
+        if (me->HasUnitState(checkControlled ? UNIT_STAT_CAN_NOT_REACT_OR_LOST_CONTROL : UNIT_STAT_CAN_NOT_REACT))
+            return false;
 
         if (pSpell->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-            return CAST_FAIL_STATE;
+            return false;
 
         if (pSpell->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-            return CAST_FAIL_STATE;
+            return false;
 
         // Check for power (also done by Spell::CheckCast())
         if (me->GetPower((Powers)pSpell->powerType) < pSpell->manaCost)
-            return CAST_FAIL_POWER;
+            return false;
     }
 
-    if (const SpellRangeEntry *pSpellRange = sSpellRangeStore.LookupEntry(pSpell->rangeIndex))
+    if (SpellRangeEntry const* pSpellRange = sSpellRangeStore.LookupEntry(pSpell->rangeIndex))
     {
         if (pTarget != me)
         {
@@ -78,27 +77,27 @@ CanCastResult PlayerAI::CanCastSpell(Unit* pTarget, const SpellEntry *pSpell, bo
             float fDistance = me->GetCombatDistance(pTarget);
 
             if (fDistance > pSpellRange->maxRange)
-                return CAST_FAIL_TOO_FAR;
+                return false;
 
             float fMinRange = pSpellRange->minRange;
 
             if (fMinRange && fDistance < fMinRange)
-                return CAST_FAIL_TOO_CLOSE;
+                return false;
         }
-        return CAST_OK;
+        return true;
     }
-    else
-        return CAST_FAIL_OTHER;
+    
+    return false;
 }
 
-void PlayerAI::UpdateAI(const uint32 /*diff*/)
+void PlayerAI::UpdateAI(uint32 const /*diff*/)
 {
 }
 
-PlayerControlledAI::PlayerControlledAI(Player* pPlayer, Unit* caster) : uiGlobalCD(0), PlayerAI(pPlayer), controllerGuid(caster ? caster->GetObjectGuid() : ObjectGuid())
+PlayerControlledAI::PlayerControlledAI(Player* pPlayer, Unit* caster) : PlayerAI(pPlayer), controllerGuid(caster ? caster->GetObjectGuid() : ObjectGuid()), uiGlobalCD(0)
 {
     ASSERT(pPlayer);
-    switch (pPlayer->getClass())
+    switch (pPlayer->GetClass())
     {
         case CLASS_WARRIOR:
         case CLASS_ROGUE:
@@ -124,20 +123,20 @@ PlayerControlledAI::PlayerControlledAI(Player* pPlayer, Unit* caster) : uiGlobal
     }
     PlayerSpellMap spells = me->GetSpellMap();
     usableSpells.clear();
-    for (PlayerSpellMap::iterator itr = spells.begin(); itr != spells.end(); ++itr)
+    for (const auto& spell : spells)
     {
-        if (itr->second.state == PLAYERSPELL_REMOVED || itr->second.disabled)
+        if (spell.second.state == PLAYERSPELL_REMOVED || spell.second.disabled)
             continue;
-        SpellEntry const *spellInfo = sSpellMgr.GetSpellEntry(itr->first);
+        SpellEntry const* spellInfo = sSpellMgr.GetSpellEntry(spell.first);
         if (spellInfo->SpellFamilyName == SPELLFAMILY_GENERIC)
             continue;
         if (spellInfo->Attributes & (SPELL_ATTR_PASSIVE | 0x80))
             continue;
-        if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_FLAG_DAMAGE)
+        if (spellInfo->HasAuraInterruptFlag(AURA_INTERRUPT_DAMAGE_CANCELS))
             continue;
-        if (IsPositiveSpell(itr->first) && !enablePositiveSpells)
+        if (Spells::IsPositiveSpell(spell.first) && !enablePositiveSpells)
             continue;
-        switch (pPlayer->getClass())
+        switch (pPlayer->GetClass())
         {
         case CLASS_WARRIOR:
         case CLASS_ROGUE:
@@ -148,27 +147,27 @@ PlayerControlledAI::PlayerControlledAI(Player* pPlayer, Unit* caster) : uiGlobal
         case CLASS_WARLOCK:
             break;
         case CLASS_HUNTER:
-            if (std::find(hunterSkipSpells.begin(), hunterSkipSpells.end(), itr->first) != hunterSkipSpells.end())
+            if (std::find(hunterSkipSpells.begin(), hunterSkipSpells.end(), spell.first) != hunterSkipSpells.end())
                 continue;
             break;
         case CLASS_PRIEST:
-            if (std::find(priestSkipSpells.begin(), priestSkipSpells.end(), itr->first) != priestSkipSpells.end())
+            if (std::find(priestSkipSpells.begin(), priestSkipSpells.end(), spell.first) != priestSkipSpells.end())
                 continue;
             break;
         }
-        usableSpells.push_back(itr->first);
+        usableSpells.push_back(spell.first);
     }
     // Suppression des sorts dont on a deja des rangs superieurs
     for (std::vector<uint32>::iterator it = usableSpells.begin(); it != usableSpells.end();)
     {
         bool foundSupRank = false;
-        SpellEntry const *pCurrSpell_1 = sSpellMgr.GetSpellEntry(*(it));
-        for (std::vector<uint32>::iterator it2 = usableSpells.begin(); it2 != usableSpells.end(); ++it2)
+        SpellEntry const* pCurrSpell_1 = sSpellMgr.GetSpellEntry(*(it));
+        for (const auto& usableSpell : usableSpells)
         {
-            SpellEntry const *pCurrSpell_2 = sSpellMgr.GetSpellEntry(*(it2));
+            SpellEntry const* pCurrSpell_2 = sSpellMgr.GetSpellEntry(usableSpell);
             if (pCurrSpell_2->SpellFamilyName == pCurrSpell_1->SpellFamilyName && pCurrSpell_2->SpellIconID == pCurrSpell_1->SpellIconID && pCurrSpell_2->SpellVisual == pCurrSpell_1->SpellVisual) // Meme sort, rangs differents
             {
-                if (CompareAuraRanks(pCurrSpell_1->Id, pCurrSpell_2->Id) < 0) // pCurrSpell_1 < pCurrSpell_2
+                if (Spells::CompareAuraRanks(pCurrSpell_1->Id, pCurrSpell_2->Id) < 0) // pCurrSpell_1 < pCurrSpell_2
                 {
                     // Donc on supprime pCurrSpell_1
                     foundSupRank = true;
@@ -200,7 +199,7 @@ Unit* PlayerControlledAI::FindController()
 
 void PlayerControlledAI::UpdateTarget(Unit* victim)
 {
-    if ((victim->isCharmed() && victim->GetCharmerGuid() == me->GetCharmerGuid()) || me->isFeared() || me->IsPolymorphed())
+    if ((victim->IsCharmed() && victim->GetCharmerGuid() == me->GetCharmerGuid()) || me->IsFeared() || me->IsPolymorphed())
     {
         me->AttackStop();
         me->CastStop();
@@ -209,7 +208,7 @@ void PlayerControlledAI::UpdateTarget(Unit* victim)
 
     Unit* controller = FindController();
 
-    bool isNewVictim = me->getVictim() != victim;
+    bool isNewVictim = me->GetVictim() != victim;
 
     if (isNewVictim)
         me->Attack(victim, true);
@@ -246,15 +245,15 @@ void PlayerControlledAI::UpdateTarget(Unit* victim)
         }
         else
         {
-            bool inMeleeRange = me->IsWithinMeleeRange(victim);
-            if ( (bIsMelee && inMeleeRange) || (!bIsMelee && !me->IsMoving() && me->IsWithinDist(victim, 30.0f)))
+            bool inMeleeRange = me->CanReachWithMeleeAutoAttack(victim);
+            if ((bIsMelee && inMeleeRange) || (!bIsMelee && !me->IsMoving() && me->IsWithinDist(victim, 30.0f)))
             {
                 me->GetMotionMaster()->Clear();
-                if (bIsMelee && !me->HasInArc(0.2f, victim))
+                if (bIsMelee && !me->HasInArc(victim, 0.2f))
                 {
                     me->SetFacingToObject(victim);
                 }
-                else if (!me->HasInArc(0.5f, victim))
+                else if (!me->HasInArc(victim, 0.5f))
                 {
                     me->SetFacingToObject(victim);
                 }
@@ -262,7 +261,7 @@ void PlayerControlledAI::UpdateTarget(Unit* victim)
             else
             {
                 // melee not in melee range or nonmoving caster not in caster range
-                if (!me->isInRoots() && !me->IsMoving())
+                if (!me->IsInRoots() && !me->IsMoving())
                 {
                     me->GetMotionMaster()->Clear();
                     me->GetMotionMaster()->MoveChase(victim);
@@ -276,15 +275,15 @@ PlayerControlledAI::~PlayerControlledAI()
 {
 }
 
-void PlayerControlledAI::UpdateAI(const uint32 uiDiff)
+void PlayerControlledAI::UpdateAI(uint32 const uiDiff)
 {
-    if (me->IsDeleted() || !me->IsInWorld() || !me->isAlive())
+    if (me->IsDeleted() || !me->IsInWorld() || !me->IsAlive())
     {
         me->RemoveAI();
         return;
     }
 
-    Unit* victim = NULL;
+    Unit* victim = nullptr;
     CharmInfo* charmInfo = me->GetCharmInfo();
     Unit* controller = FindController();
 
@@ -293,7 +292,7 @@ void PlayerControlledAI::UpdateAI(const uint32 uiDiff)
     {
         Player* Pcontroller = ((Player*)controller);
 
-        if (!Pcontroller->isAlive())
+        if (!Pcontroller->IsAlive())
         {
             me->RemoveCharmAuras();
             // Note that we CANNOT continue after this point since this object has been deleted
@@ -305,19 +304,19 @@ void PlayerControlledAI::UpdateAI(const uint32 uiDiff)
         if (charmInfo)
         {
             if (charmInfo->HasReactState(REACT_PASSIVE))
-                victim = me->getVictim();
+                victim = me->GetVictim();
             else if (charmInfo->HasReactState(REACT_DEFENSIVE) || charmInfo->HasReactState(REACT_AGGRESSIVE))
             {
-                victim = me->getVictim();
+                victim = me->GetVictim();
                 if (!victim || (victim == Pcontroller))
-                    victim = Pcontroller->getVictim();
+                    victim = Pcontroller->GetVictim();
             }
         }
         else
         {
-            victim = me->getVictim();
+            victim = me->GetVictim();
             if (!victim || (victim == Pcontroller))
-                victim = Pcontroller->getVictim();
+                victim = Pcontroller->GetVictim();
         }
 
         if (!victim || (victim == me))
@@ -329,14 +328,14 @@ void PlayerControlledAI::UpdateAI(const uint32 uiDiff)
     {
         Creature* Ccontroller = controller ? controller->ToCreature() : nullptr;
 
-        // Unit * victim = controller-> getVictim ();
+        // Unit* victim = controller-> getVictim ();
         // Ivina <Nostalrius>: chooses the target randomly and not always the target of the controller.
         victim = Ccontroller ? Ccontroller->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0) : me->SelectNearestTarget(50.0f);
-        if (Unit* v2 = me->getVictim())
-            if (me->canAttack(v2, false))
+        if (Unit* v2 = me->GetVictim())
+            if (me->CanAttack(v2, false))
                 victim = v2;
 
-        if (Ccontroller && (!Ccontroller->isAlive() || !Ccontroller->isInCombat()))
+        if (Ccontroller && (!Ccontroller->IsAlive() || !Ccontroller->IsInCombat()))
         {
             me->RemoveCharmAuras();
             // Note that we CANNOT continue after this point since this object has been deleted
@@ -357,7 +356,7 @@ void PlayerControlledAI::UpdateAI(const uint32 uiDiff)
 
         if (uiGlobalCD < uiDiff)
         {
-            if (me->getClass() == CLASS_HUNTER)
+            if (me->GetClass() == CLASS_HUNTER)
             {
                 float dist = me->GetDistance(victim);
                 if (dist > 10.0f)
@@ -379,23 +378,23 @@ void PlayerControlledAI::UpdateAI(const uint32 uiDiff)
                     return;
 
                 uint32 spellId = usableSpells[urand(0, usableSpells.size() - 1)];
-                SpellEntry const *spellInfo = sSpellMgr.GetSpellEntry(spellId);
+                SpellEntry const* spellInfo = sSpellMgr.GetSpellEntry(spellId);
                 
                 // If its a positive spell we prioritize controller, if he's out of range,
                 // ourself, otherwise it will probably not be cast.
                 Unit* spellTarget = victim;
-                if (controller && IsPositiveSpell(spellInfo, me, controller))
+                if (controller && spellInfo->IsPositiveSpell(me, controller))
                     spellTarget = controller;
-                else if (IsPositiveSpell(spellInfo, me, me))
+                else if (spellInfo->IsPositiveSpell(me, me))
                     spellTarget = me;
 
                 if (spellInfo)
                 {
-                    if (CanCastSpell(spellTarget, spellInfo, false, false) == CAST_OK)
+                    if (CanCastSpell(spellTarget, spellInfo, false, false))
                     {
                         me->CastSpell(spellTarget, spellId, false);
                         uiGlobalCD = 1500;
-                        if(!bIsMelee)
+                        if (!bIsMelee)
                             me->SetCasterChaseDistance(25.0f);
                     }
                     else

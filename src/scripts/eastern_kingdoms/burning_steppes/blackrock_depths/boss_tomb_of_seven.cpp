@@ -27,7 +27,7 @@ EndScriptData */
 enum
 {
     FACTION_NEUTRAL             = 734,
-    FACTION_HOSTILE             = 754,
+    FACTION_HOSTILE             = 54,
 
     SPELL_SMELT_DARK_IRON       = 14891,
     SPELL_LEARN_SMELT           = 14894,
@@ -115,7 +115,7 @@ struct boss_doomrelAI : public ScriptedAI
     uint8 m_uiDwarfRound;
     bool m_bHasSummoned;
 
-    void Reset()
+    void Reset() override
     {
         m_uiShadowVolley_Timer = 10000;
         m_uiImmolate_Timer = 18000;
@@ -127,13 +127,13 @@ struct boss_doomrelAI : public ScriptedAI
         m_bHasSummoned = false;
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, FAIL);
     }
 
-    void JustDied(Unit *victim)
+    void JustDied(Unit *victim) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, DONE);
@@ -141,7 +141,7 @@ struct boss_doomrelAI : public ScriptedAI
         //m_creature->SummonGameObject ( 169243, 1274.655640f, -283.507874f, -78.219254f, 2.365980, 0, 0, 0, 0, 0);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             pSummoned->AI()->AttackStart(pTarget);
@@ -166,30 +166,30 @@ struct boss_doomrelAI : public ScriptedAI
             case 6:
                 return m_creature;
         }
-        return NULL;
+        return nullptr;
     }
 
     void CallToFight(bool bStartFight)
     {
         if (Creature* pDwarf = GetDwarfForPhase(m_uiDwarfRound))
         {
-            if (bStartFight && pDwarf->isAlive())
+            if (bStartFight && pDwarf->IsAlive())
             {
                 pDwarf->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PLAYER);
-                pDwarf->setFaction(FACTION_HOSTILE);
+                pDwarf->SetFactionTemplateId(FACTION_HOSTILE);
                 pDwarf->SetInCombatWithZone();              // attackstart
             }
             else
             {
-                if (!pDwarf->isAlive() || pDwarf->isDead())
+                if (!pDwarf->IsAlive() || pDwarf->IsDead())
                     pDwarf->Respawn();
 
-                pDwarf->setFaction(FACTION_NEUTRAL);
+                pDwarf->SetFactionTemplateId(FACTION_NEUTRAL);
             }
         }
     }
 
-    void UpdateAI(const uint32 diff)
+    void UpdateAI(uint32 const diff) override
     {
         if (m_pInstance)
         {
@@ -211,9 +211,9 @@ struct boss_doomrelAI : public ScriptedAI
                     {
                         if (Creature* pDwarf = GetDwarfForPhase(m_uiDwarfRound - 1))
                         {
-                            if (pDwarf->isAlive())
+                            if (pDwarf->IsAlive())
                             {
-                                if (!pDwarf->SelectHostileTarget() || !pDwarf->getVictim())
+                                if (!pDwarf->SelectHostileTarget() || !pDwarf->GetVictim())
                                 {
                                     if (m_pInstance)
                                         m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, FAIL);
@@ -239,13 +239,13 @@ struct boss_doomrelAI : public ScriptedAI
             }
         }
 
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         //ShadowVolley_Timer
         if (m_uiShadowVolley_Timer < diff)
         {
-            DoCastSpellIfCan(m_creature->getVictim(), SPELL_SHADOWBOLTVOLLEY);
+            DoCastSpellIfCan(m_creature->GetVictim(), SPELL_SHADOWBOLTVOLLEY);
             m_uiShadowVolley_Timer = 12000;
         }
         else
@@ -265,7 +265,7 @@ struct boss_doomrelAI : public ScriptedAI
         //CurseOfWeakness_Timer
         if (m_uiCurseOfWeakness_Timer < diff)
         {
-            DoCastSpellIfCan(m_creature->getVictim(), SPELL_CURSEOFWEAKNESS);
+            DoCastSpellIfCan(m_creature->GetVictim(), SPELL_CURSEOFWEAKNESS);
             m_uiCurseOfWeakness_Timer = 45000;
         }
         else
@@ -326,7 +326,7 @@ bool GossipSelect_boss_doomrel(Player* pPlayer, Creature* pCreature, uint32 uiSe
 
 void AddSC_boss_tomb_of_seven()
 {
-    Script *newscript;
+    Script* newscript;
 
     newscript = new Script;
     newscript->Name = "boss_gloomrel";

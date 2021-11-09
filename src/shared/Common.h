@@ -85,15 +85,16 @@
 #include <queue>
 #include <sstream>
 #include <algorithm>
+#include <chrono>
+
+typedef std::chrono::system_clock Clock;
+typedef std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> TimePoint;
 
 #include "Errors.h"
 #include "LockedQueue.h"
-#include "Threading.h"
 
 #include <ace/Basic_Types.h>
 #include <ace/Guard_T.h>
-#include <ace/RW_Thread_Mutex.h>
-#include <ace/Thread_Mutex.h>
 #include <ace/OS_NS_arpa_inet.h>
 
 // Old ACE versions (pre-ACE-5.5.4) not have this type (add for allow use at Unix side external old ACE versions)
@@ -152,7 +153,7 @@ typedef off_t ACE_OFF_T;
 
 inline float finiteAlways(float f) { return finite(f) ? f : 0.0f; }
 
-#define atol(a) strtoul( a, NULL, 10)
+#define atol(a) strtoul(a, nullptr, 10)
 
 #define STRINGIZE(a) #a
 
@@ -182,10 +183,10 @@ enum AccountTypes
 {
     SEC_PLAYER         = 0,
     SEC_MODERATOR      = 1,
-    SEC_MODERATOR_CONF = 2,
+    SEC_TICKETMASTER   = 2,
     SEC_GAMEMASTER     = 3,
     SEC_BASIC_ADMIN    = 4,
-    SEC_DEVELOPPER     = 5,
+    SEC_DEVELOPER      = 5,
     SEC_ADMINISTRATOR  = 6,
     SEC_CONSOLE        = 7                                  // must be always last in list, accounts must have less security level always also
 };
@@ -235,7 +236,7 @@ enum DBLocaleConstant : int
 #define MAX_DBC_LOCALE 8
 #define MAX_LOCALE 9
 
-LocaleConstant GetLocaleByName(const std::string& name);
+LocaleConstant GetLocaleByName(std::string const& name);
 LocaleConstant GetDbcLocaleFromDbLocale(DBLocaleConstant localeIndex);
 
 extern char const* localeNames[MAX_LOCALE];
@@ -250,9 +251,9 @@ struct LocaleNameStr
 extern LocaleNameStr const fullLocaleNameList[];
 
 //operator new[] based version of strdup() function! Release memory by using operator delete[] !
-inline char * mangos_strdup(const char * source)
+inline char* mangos_strdup(char const* source)
 {
-    char * dest = new char[strlen(source) + 1];
+    char* dest = new char[strlen(source) + 1];
     strcpy(dest, source);
     return dest;
 }

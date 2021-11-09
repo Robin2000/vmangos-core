@@ -25,19 +25,14 @@
 #include "Common.h"
 #include "Platform/Define.h"
 #include "Policies/Singleton.h"
-#include <ace/Thread_Mutex.h>
-#include <ace/RW_Thread_Mutex.h>
 #include "Policies/ThreadingModel.h"
-
-#include "UpdateData.h"
-
 #include "GridDefines.h"
 #include "Object.h"
 #include "Player.h"
 #include "Corpse.h"
 #include "Transport.h"
-#include "MapNodes/MasterPlayer.h"
-#include "MapNodes/AbstractPlayer.h"
+#include "Chat/MasterPlayer.h"
+#include "Chat/AbstractPlayer.h"
 
 #include <set>
 #include <list>
@@ -52,9 +47,9 @@ class HashMapHolder
     public:
 
         typedef std::unordered_map<ObjectGuid, T*>   MapType;
-        typedef ACE_RW_Thread_Mutex LockType;
-        typedef ACE_Read_Guard<LockType> ReadGuard;
-        typedef ACE_Write_Guard<LockType> WriteGuard;
+        typedef std::shared_timed_mutex LockType;
+        typedef std::shared_lock<LockType> ReadGuard;
+        typedef std::unique_lock<LockType> WriteGuard;
 
         static void Insert(T* o)
         {
@@ -72,7 +67,7 @@ class HashMapHolder
         {
             ReadGuard guard(i_lock);
             typename MapType::iterator itr = m_objectMap.find(guid);
-            return (itr != m_objectMap.end()) ? itr->second : NULL;
+            return (itr != m_objectMap.end()) ? itr->second : nullptr;
         }
 
         static MapType& GetContainer() { return m_objectMap; }
@@ -88,14 +83,14 @@ class HashMapHolder
         static MapType  m_objectMap;
 };
 
-class MANGOS_DLL_DECL ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, MaNGOS::ClassLevelLockable<ObjectAccessor, ACE_Thread_Mutex> >
+class ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, MaNGOS::ClassLevelLockable<ObjectAccessor, std::mutex> >
 {
     friend class MaNGOS::OperatorNew<ObjectAccessor>;
 
     ObjectAccessor();
     ~ObjectAccessor();
-    ObjectAccessor(const ObjectAccessor &);
-    ObjectAccessor& operator=(const ObjectAccessor &);
+    ObjectAccessor(ObjectAccessor const&);
+    ObjectAccessor& operator=(ObjectAccessor const&);
 
     public:
         typedef std::unordered_map<ObjectGuid, Corpse*> Player2CorpsesMapType;
@@ -107,21 +102,21 @@ class MANGOS_DLL_DECL ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, 
         // Player access
         static Player* FindPlayer(ObjectGuid guid);         // if need player at specific map better use Map::GetPlayer
         static Player* FindPlayerNotInWorld(ObjectGuid guid);
-        static Player* FindPlayerByName(const char *name);
-        static Player* FindPlayerByNameNotInWorld(const char *name);
+        static Player* FindPlayerByName(char const* name);
+        static Player* FindPlayerByNameNotInWorld(char const* name);
 
         static MasterPlayer* FindMasterPlayer(ObjectGuid guid);
-        static MasterPlayer* FindMasterPlayer(const char* name);
+        static MasterPlayer* FindMasterPlayer(char const* name);
 
         /**
          * @brief These functions will attempt to return a Player* if available.
          * Else they will try to return a MasterPlayer*.
-         * Otherwise, they return NULL
+         * Otherwise, they return nullptr
          * @param guid
          * @return IPlayerPointer
          */
         static PlayerPointer FindPlayerPointer(ObjectGuid guid);
-        static PlayerPointer FindPlayerPointer(const char* name);
+        static PlayerPointer FindPlayerPointer(char const* name);
 
         static void KickPlayer(ObjectGuid guid);
 
@@ -140,27 +135,27 @@ class MANGOS_DLL_DECL ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, 
         // Corpse access
         Corpse* GetCorpseForPlayerGUID(ObjectGuid guid);
         static Corpse* GetCorpseInMap(ObjectGuid guid, uint32 mapid);
-        void RemoveCorpse(Corpse *corpse);
+        void RemoveCorpse(Corpse* corpse);
         void AddCorpse(Corpse* corpse);
         void AddCorpsesToGrid(GridPair const& gridpair,GridType& grid,Map* map);
         void ConvertCorpseForPlayer(ObjectGuid player_guid, Player* looter = nullptr);
         void RemoveOldCorpses();
 
         // For call from Player/Corpse AddToWorld/RemoveFromWorld only
-        void AddObject(Corpse *object) { HashMapHolder<Corpse>::Insert(object); }
-        void AddObject(Player *object);
+        void AddObject(Corpse* object) { HashMapHolder<Corpse>::Insert(object); }
+        void AddObject(Player* object);
         void AddObject(Transport* object) { HashMapHolder<Transport>::Insert(object); }
         void AddObject(MasterPlayer* object);
-        void RemoveObject(Corpse *object) { HashMapHolder<Corpse>::Remove(object); }
-        void RemoveObject(Player *object);
+        void RemoveObject(Corpse* object) { HashMapHolder<Corpse>::Remove(object); }
+        void RemoveObject(Player* object);
         void RemoveObject(Transport* object) { HashMapHolder<Transport>::Remove(object); }
-        void RemoveObject(MasterPlayer *object);
+        void RemoveObject(MasterPlayer* object);
 
     private:
         Player2CorpsesMapType   i_player2corpse;
 
-        typedef ACE_Thread_Mutex LockType;
-        typedef MaNGOS::GeneralLock<LockType > Guard;
+        using LockType = std::mutex;
+        using Guard = MaNGOS::GeneralLock<LockType>;
 
         LockType i_playerGuard;
         LockType i_corpseGuard;

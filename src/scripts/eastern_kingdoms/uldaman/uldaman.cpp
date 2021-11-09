@@ -23,7 +23,6 @@ EndScriptData */
 
 /* ContentData
 mob_jadespine_basilisk
-npc_lore_keeper_of_norgannon
 EndContentData */
 
 #include "scriptPCH.h"
@@ -79,12 +78,12 @@ struct mob_stone_keeperAI : public ScriptedAI
     
     uint32 m_uiTrample_Timer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiTrample_Timer = urand(4000, 9000);
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         if (Unit* target = me->SelectNearestHostileUnitInAggroRange(true))
         {
@@ -96,21 +95,21 @@ struct mob_stone_keeperAI : public ScriptedAI
             instance->SetData(ULDAMAN_ENCOUNTER_STONE_KEEPERS, FAIL);
     }
 
-    void JustDied(Unit* pWho)
+    void JustDied(Unit* pWho) override
     {
         if (instance)
             instance->SetData(ULDAMAN_ENCOUNTER_STONE_KEEPERS, IN_PROGRESS);
     }
 
-    void UpdateAI(const uint32 diff)
+    void UpdateAI(uint32 const diff) override
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
         {
             return;
         }
         if (m_uiTrample_Timer < diff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_TRAMPLE) == CAST_OK)
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_TRAMPLE) == CAST_OK)
             {
                 m_uiTrample_Timer = urand(4000, 10000);
             }
@@ -140,15 +139,15 @@ struct mob_jadespine_basiliskAI : public ScriptedAI
 
     uint32 Cslumber_Timer;
 
-    void Reset()
+    void Reset() override
     {
         Cslumber_Timer = 2000;
     }
 
-    void UpdateAI(const uint32 diff)
+    void UpdateAI(uint32 const diff) override
     {
         //Return since we have no target
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
         {
             return;
         }
@@ -157,15 +156,15 @@ struct mob_jadespine_basiliskAI : public ScriptedAI
         if (Cslumber_Timer < diff)
         {
             //Cast
-            // DoCastSpellIfCan(m_creature->getVictim(),SPELL_CRYSTALLINE_SLUMBER);
-            m_creature->CastSpell(m_creature->getVictim(), SPELL_CRYSTALLINE_SLUMBER, false);
+            // DoCastSpellIfCan(m_creature->GetVictim(),SPELL_CRYSTALLINE_SLUMBER);
+            m_creature->CastSpell(m_creature->GetVictim(), SPELL_CRYSTALLINE_SLUMBER, false);
 
             //Stop attacking target thast asleep and pick new target
             Cslumber_Timer = 28000;
 
             Unit* Target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_TOPAGGRO, 0);
 
-            if (!Target || Target == m_creature->getVictim())
+            if (!Target || Target == m_creature->GetVictim())
             {
                 Target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
             }
@@ -186,113 +185,12 @@ CreatureAI* GetAI_mob_jadespine_basilisk(Creature* pCreature)
     return new mob_jadespine_basiliskAI(pCreature);
 }
 
-/*######
-## npc_lore_keeper_of_norgannon
-######*/
-
-bool GossipHello_npc_lore_keeper_of_norgannon(Player* pPlayer, Creature* pCreature)
-{
-    if (pPlayer->GetQuestStatus(2278) == QUEST_STATUS_INCOMPLETE)
-    {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000217), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"Who are the Earthen?"
-    }
-
-//    pPlayer->SEND_GOSSIP_MENU(1079, pCreature->GetGUID());
-
-    pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetObjectGuid());
-
-    return true;
-}
-
-bool GossipSelect_npc_lore_keeper_of_norgannon(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
-{
-    switch (uiAction)
-    {
-        case GOSSIP_ACTION_INFO_DEF+1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000218), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"What is a \"subterranean being matrix\"?"
-            pPlayer->SEND_GOSSIP_MENU(1080, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+2:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000219), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);//"What are the anomalies you speak of?"
-            pPlayer->SEND_GOSSIP_MENU(1081, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+3:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000220), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);//"What is a resilient foundation of construction?"
-            pPlayer->SEND_GOSSIP_MENU(1082, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+4:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000221), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);//"So... the Earthen were made out of stone?"
-            pPlayer->SEND_GOSSIP_MENU(1083, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+5:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000222), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);//"Anything else I should know about the Earthen?"
-            pPlayer->SEND_GOSSIP_MENU(1084, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+6:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000223), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);//"I think I understand the Creators' design intent for the Earthen now. What are the Earthen's anomalies that you spoke of earlier?"
-            pPlayer->SEND_GOSSIP_MENU(1085, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+7:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000224), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);//"What high-stress environments would cause the Earthen to destabilize?"
-            pPlayer->SEND_GOSSIP_MENU(1086, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+8:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000225), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);//"What happens when the Earthen destabilize?"
-            pPlayer->SEND_GOSSIP_MENU(1087, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+9:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000226), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);//"Troggs?! Are the troggs you mention the same as the ones in the world today?"
-            pPlayer->SEND_GOSSIP_MENU(1088, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+10:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000227), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);//"You mentioned two results when the Earthen destabilize. What is the second?"
-            pPlayer->SEND_GOSSIP_MENU(1089, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+11:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000228), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);//"Dwarves!!! Now you're telling me that dwarves originally came from the Earthen?!"
-            pPlayer->SEND_GOSSIP_MENU(1090, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+12:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000229), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);//"These dwarves are the same ones today, yes? Do the dwarves maintain any other links to the Earthen?"
-            pPlayer->SEND_GOSSIP_MENU(1091, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+13:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000230), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);//"Who are the Creators?"
-            pPlayer->SEND_GOSSIP_MENU(1092, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+14:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000231), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 15);//"This is a lot to think about."
-            pPlayer->SEND_GOSSIP_MENU(1093, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+15:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000232), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 16);//"I will access the discs now."
-            pPlayer->SEND_GOSSIP_MENU(1094, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF+16:
-            pPlayer->CLOSE_GOSSIP_MENU();
-            pPlayer->AreaExploredOrEventHappens(2278);
-            break;
-    }
-    return true;
-}
-
-#define QUEST_HIDDEN_CHAMBER 2240
-
-bool OnTrigger_at_map_chamber(Player* pPlayer, const AreaTriggerEntry *at)
-{
-    if (pPlayer->GetQuestStatus(QUEST_HIDDEN_CHAMBER) == QUEST_STATUS_INCOMPLETE)
-    {
-        pPlayer->AreaExploredOrEventHappens(QUEST_HIDDEN_CHAMBER);
-    }
-    return true;
-}
-
 struct AnnoraAI : public ScriptedAI
 {
     AnnoraAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         m_creature->SetVisibility(VISIBILITY_OFF);
-        m_creature->setFaction(FACTION_STONED);
+        m_creature->SetFactionTemplateId(FACTION_STONED);
         m_uiNbScorpion = 0;
         isSpawned = false;
         Reset();
@@ -301,15 +199,15 @@ struct AnnoraAI : public ScriptedAI
     uint32 m_uiNbScorpion;
     bool isSpawned;
 
-    void Reset()
+    void Reset() override
     {
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(uint32 const uiDiff) override
     {
         if (!isSpawned)
         {
@@ -319,7 +217,7 @@ struct AnnoraAI : public ScriptedAI
             GetCreatureListWithEntryInGrid(m_EscortList, m_creature, 7078, 30.0f);
             for (const auto& it : m_EscortList)
             {
-                if (it->isAlive())
+                if (it->IsAlive())
                 {
                     m_uiNbScorpion++;
                 }
@@ -334,7 +232,7 @@ struct AnnoraAI : public ScriptedAI
             }
         }
 
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
         {
             return;
         }
@@ -357,7 +255,7 @@ enum
 
 void AddSC_uldaman()
 {
-    Script *newscript;
+    Script* newscript;
 
     newscript = new Script;
     newscript->Name = "mob_annora";
@@ -376,12 +274,6 @@ void AddSC_uldaman()
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name = "npc_lore_keeper_of_norgannon";
-    newscript->pGossipHello = &GossipHello_npc_lore_keeper_of_norgannon;
-    newscript->pGossipSelect = &GossipSelect_npc_lore_keeper_of_norgannon;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
     newscript->Name = "go_keystone_chamber";
     newscript->pGOHello = &GOHello_go_keystone_chamber;
     newscript->RegisterSelf();
@@ -389,10 +281,5 @@ void AddSC_uldaman()
     newscript = new Script;
     newscript->Name = "event_awaken_stone_keeper";
     newscript->pProcessEventId = &ProcessEventId_event_awaken_stone_keeper;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name = "at_map_chamber";
-    newscript->pAreaTrigger = &OnTrigger_at_map_chamber;
     newscript->RegisterSelf();
 }

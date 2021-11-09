@@ -23,13 +23,11 @@
 #include "Player.h"
 #include "BattleGround.h"
 #include "BattleGroundWS.h"
-#include "Creature.h"
 #include "GameObject.h"
 #include "ObjectMgr.h"
 #include "BattleGroundMgr.h"
 #include "WorldPacket.h"
 #include "Language.h"
-#include "MapManager.h"
 #include "World.h"
 
 BattleGroundWS::BattleGroundWS()
@@ -108,7 +106,7 @@ void BattleGroundWS::StartingEventOpenDoors()
     SpawnEvent(WS_EVENT_FLAG_H, 0, true, true);
 }
 
-void BattleGroundWS::AddPlayer(Player *plr)
+void BattleGroundWS::AddPlayer(Player* plr)
 {
     BattleGround::AddPlayer(plr);
     //create score and add it to map, default values are set in constructor
@@ -155,7 +153,7 @@ void BattleGroundWS::RespawnFlagAfterDrop(Team team)
 
     PlaySoundToAll(BG_WS_SOUND_FLAGS_RESPAWNED);
 
-    GameObject *obj = GetBgMap()->GetGameObject(GetDroppedFlagGuid(team));
+    GameObject* obj = GetBgMap()->GetGameObject(GetDroppedFlagGuid(team));
     if (obj)
         obj->Delete();
     else
@@ -175,14 +173,13 @@ void BattleGroundWS::ForceFlagAreaTrigger(Team team)
     HandleAreaTrigger(oppositeFlagKeeper, atEntry->id);
 }
 
-void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
+void BattleGroundWS::EventPlayerCapturedFlag(Player* Source)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
 
     Team winner = TEAM_NONE;
 
-    Source->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
     if (Source->GetTeam() == ALLIANCE)
     {
         if (!IsHordeFlagPickedup())
@@ -247,7 +244,7 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
         m_FlagsTimer[GetOtherTeamIndex(GetTeamIndexByTeamId(Source->GetTeam()))] = BG_WS_FLAG_RESPAWN_TIME;
 }
 
-void BattleGroundWS::EventPlayerDroppedFlag(Player *Source)
+void BattleGroundWS::EventPlayerDroppedFlag(Player* Source)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
     {
@@ -324,7 +321,7 @@ void BattleGroundWS::EventPlayerDroppedFlag(Player *Source)
     }
 }
 
-void BattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* target_obj)
+void BattleGroundWS::EventPlayerClickedOnFlag(Player* Source, GameObject* target_obj)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
@@ -432,10 +429,9 @@ void BattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* target
         return;
 
     SendMessageToAll(message_id, type, Source);
-    Source->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
 }
 
-void BattleGroundWS::RemovePlayer(Player *plr, ObjectGuid guid)
+void BattleGroundWS::RemovePlayer(Player* plr, ObjectGuid guid)
 {
     // sometimes flag aura not removed :(
     if (IsAllianceFlagPickedup() && m_FlagKeepers[BG_TEAM_ALLIANCE] == guid)
@@ -478,7 +474,7 @@ void BattleGroundWS::UpdateTeamScore(Team team)
         UpdateWorldState(BG_WS_FLAG_CAPTURES_HORDE, GetTeamScore(team));
 }
 
-void BattleGroundWS::HandleAreaTrigger(Player *Source, uint32 Trigger)
+void BattleGroundWS::HandleAreaTrigger(Player* Source, uint32 Trigger)
 {
     // this is wrong way to implement these things. On official it done by gameobject spell cast.
     if (GetStatus() != STATUS_IN_PROGRESS)
@@ -589,17 +585,17 @@ void BattleGroundWS::EndBattleGround(Team winner)
     BattleGround::EndBattleGround(winner);
 }
 
-void BattleGroundWS::HandleKillPlayer(Player *player, Player *killer)
+void BattleGroundWS::HandleKillPlayer(Player* pVictim, Player* pKiller)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
 
-    EventPlayerDroppedFlag(player);
+    EventPlayerDroppedFlag(pVictim);
 
-    BattleGround::HandleKillPlayer(player, killer);
+    BattleGround::HandleKillPlayer(pVictim, pKiller);
 }
 
-void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
+void BattleGroundWS::UpdatePlayerScore(Player* Source, uint32 type, uint32 value)
 {
 
     BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetObjectGuid());

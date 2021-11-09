@@ -46,9 +46,6 @@ enum
     SPELL_TRASH                 = 3391,
     SPELL_HATCH                 = 24083,                    //visual
     SPELL_AGGRANDIR             = 24109,
-
-    //The Spider Spells
-    SPELL_LEVELUP               = 24312                     //visual
 };
 
 struct boss_marliAI : public ScriptedAI
@@ -79,7 +76,7 @@ struct boss_marliAI : public ScriptedAI
 
     uint32 m_uiDefaultModel;
 
-    void Reset()
+    void Reset() override
     {
         m_uiPoisonVolley_Timer = 15000;
         m_uiSpawnSpider_Timer = 20000;
@@ -105,17 +102,32 @@ struct boss_marliAI : public ScriptedAI
             sLog.outDebug("boss_marli, no Eggs with the entry %u were found", GO_EGG);
         else
         {
-            for (std::list<GameObject*>::iterator iter = lSpiderEggs.begin(); iter != lSpiderEggs.end(); ++iter)
+            for (const auto& pGo : lSpiderEggs)
             {
-                if ((*iter)->GetGoState() == GO_STATE_ACTIVE)
-                    (*iter)->SetGoState(GO_STATE_READY);
+                if (pGo->GetGoState() == GO_STATE_ACTIVE)
+                    pGo->SetGoState(GO_STATE_READY);
             }
         }
+
+        // World of Warcraft Client Patch 1.8.0 (2005-10-11)
+        // - High Priestess Mar'li will now despawn her summoned spiders when 
+        //   she returns from combat.
+        if (sWorld.GetWowPatch() >= WOW_PATCH_108)
+        {
+            std::list<Creature*> lSummonedSpiders;
+            GetCreatureListWithEntryInGrid(lSummonedSpiders, m_creature, NPC_SPAWN_OF_MARLI, DEFAULT_VISIBILITY_INSTANCE);
+            for (const auto& pSpider : lSummonedSpiders)
+            {
+                if (pSpider->IsTemporarySummon())
+                    static_cast<TemporarySummon*>(pSpider)->UnSummon();
+            }
+        }
+
         // Annule les changements de buffs de transition de phases.
         m_creature->ResetStats();
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
 
@@ -150,16 +162,16 @@ struct boss_marliAI : public ScriptedAI
         else
         {
             lEggs.sort(ObjectDistanceOrder(m_creature));
-            for (std::list<GameObject*>::iterator iter = lEggs.begin(); iter != lEggs.end(); ++iter)
+            for (const auto& pEgg : lEggs)
             {
-                if ((*iter)->GetGoState() == (GO_STATE_READY))
-                    return (*iter);
+                if (pEgg->GetGoState() == (GO_STATE_READY))
+                    return pEgg;
             }
         }
-        return NULL;
+        return nullptr;
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_SPAWN_OF_MARLI)
         {
@@ -168,15 +180,18 @@ struct boss_marliAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_MARLI, DONE);
+
+        // Remove a Hakkar Power stack.
+        m_creature->CastSpell(m_creature, SPELL_HAKKAR_POWER_DOWN, true);
     }
 
-    void SpellHitTarget(Unit* pCaster, const SpellEntry* pSpell)
+    void SpellHitTarget(Unit* pCaster, SpellEntry const* pSpell) override
     {
         if (!pCaster)
             return;
@@ -186,13 +201,13 @@ struct boss_marliAI : public ScriptedAI
             if (pCaster->GetTypeId() != TYPEID_PLAYER)
                 return;
 
-            m_creature->getThreatManager().modifyThreatPercent(pCaster, -100);
+            m_creature->GetThreatManager().modifyThreatPercent(pCaster, -100);
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(uint32 const uiDiff) override
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         // Troll
@@ -200,7 +215,7 @@ struct boss_marliAI : public ScriptedAI
         {
             if (m_uiPoisonVolley_Timer < uiDiff)
             {
-                DoCastSpellIfCan(m_creature->getVictim(), SPELL_POISONVOLLEY);
+                DoCastSpellIfCan(m_creature->GetVictim(), SPELL_POISONVOLLEY);
                 m_uiPoisonVolley_Timer = urand(10000, 20000);
             }
             else
@@ -208,7 +223,7 @@ struct boss_marliAI : public ScriptedAI
 
             if (m_uiDrainLife_Timer < uiDiff)
             {
-                DoCastSpellIfCan(m_creature->getVictim(), SPELL_DRAIN_LIFE);
+                DoCastSpellIfCan(m_creature->GetVictim(), SPELL_DRAIN_LIFE);
                 m_uiDrainLife_Timer = urand(20000, 50000);
             }
             else
@@ -247,7 +262,7 @@ struct boss_marliAI : public ScriptedAI
         {
             if (!m_bHasWebbed && m_uiWebs_Timer < uiDiff)
             {
-                DoCastSpellIfCan(m_creature->getVictim(), SPELL_ENVELOPINGWEBS);
+                DoCastSpellIfCan(m_creature->GetVictim(), SPELL_ENVELOPINGWEBS);
                 m_uiWebs_Timer = urand(10000, 15000);
                 m_uiCharge_Timer = 1000;
                 m_bHasWebbed = true;
@@ -266,13 +281,13 @@ struct boss_marliAI : public ScriptedAI
                     m_bHasWebbed = false;
                     /*
                         DoResetThreat();
-                        Unit* pTarget = NULL;
+                        Unit* pTarget = nullptr;
                         uint8 i = 0 ;
                         while (i < 5)                               // max 3 tries to get a random target with power_mana
                         {
                             ++i;                                    //not aggro leader
                             pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM,0);
-                            if (pTarget && pTarget->getPowerType() == POWER_MANA)
+                            if (pTarget && pTarget->GetPowerType() == POWER_MANA)
                                 i=5;
                         }
                     */
@@ -284,7 +299,7 @@ struct boss_marliAI : public ScriptedAI
 
             if (m_uiCorrosivePoison_Timer < uiDiff)
             {
-                DoCastSpellIfCan(m_creature->getVictim(), SPELL_CORROSIVE_POISON);
+                DoCastSpellIfCan(m_creature->GetVictim(), SPELL_CORROSIVE_POISON);
                 m_uiCorrosivePoison_Timer = urand(25000, 35000);
             }
             else
@@ -301,7 +316,7 @@ struct boss_marliAI : public ScriptedAI
                 DoScriptText(SAY_TRANSFORM, m_creature);
                 DoCastSpellIfCan(m_creature, SPELL_SPIDER_FORM);
 
-                const CreatureInfo *cinfo = m_creature->GetCreatureInfo();
+                CreatureInfo const *cinfo = m_creature->GetCreatureInfo();
                 m_creature->SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->dmg_min + ((cinfo->dmg_min / 100) * 35)));
                 m_creature->SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->dmg_max + ((cinfo->dmg_max / 100) * 35)));
                 m_creature->UpdateDamagePhysical(BASE_ATTACK);
@@ -319,7 +334,7 @@ struct boss_marliAI : public ScriptedAI
 
                 m_creature->SetDisplayId(m_uiDefaultModel);
 
-                const CreatureInfo *cinfo = m_creature->GetCreatureInfo();
+                CreatureInfo const *cinfo = m_creature->GetCreatureInfo();
                 m_creature->SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->dmg_min + ((cinfo->dmg_min / 100) * 1)));
                 m_creature->SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->dmg_max + ((cinfo->dmg_max / 100) * 1)));
                 m_creature->UpdateDamagePhysical(BASE_ATTACK);
@@ -334,46 +349,11 @@ struct boss_marliAI : public ScriptedAI
 
         if (m_uiTrash_Timer < uiDiff)
         {
-            DoCastSpellIfCan(m_creature->getVictim(), SPELL_TRASH);
+            DoCastSpellIfCan(m_creature->GetVictim(), SPELL_TRASH);
             m_uiTrash_Timer = urand(10000, 20000);
         }
         else
             m_uiTrash_Timer -= uiDiff;
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-//Spawn of Marli
-struct mob_spawn_of_marliAI : public ScriptedAI
-{
-    mob_spawn_of_marliAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        Reset();
-        m_pInstance = (ScriptedInstance*)m_creature->GetInstanceData();
-    }
-
-    ScriptedInstance* m_pInstance;
-    uint32 m_uiLevelUp_Timer;
-
-    void Reset()
-    {
-        m_uiLevelUp_Timer = 3000;
-    }
-
-    void UpdateAI(const uint32 uiDiff)
-    {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
-            return;
-
-        if (m_uiLevelUp_Timer < uiDiff)
-        {
-            DoCastSpellIfCan(m_creature, SPELL_LEVELUP);
-            m_creature->SetLevel(m_creature->getLevel() + 1);
-            m_uiLevelUp_Timer = 3000;
-        }
-        else
-            m_uiLevelUp_Timer -= uiDiff;
 
         DoMeleeAttackIfReady();
     }
@@ -384,11 +364,6 @@ CreatureAI* GetAI_boss_marli(Creature* pCreature)
     return new boss_marliAI(pCreature);
 }
 
-CreatureAI* GetAI_mob_spawn_of_marli(Creature* pCreature)
-{
-    return new mob_spawn_of_marliAI(pCreature);
-}
-
 void AddSC_boss_marli()
 {
     Script* newscript;
@@ -396,10 +371,5 @@ void AddSC_boss_marli()
     newscript = new Script;
     newscript->Name = "boss_marli";
     newscript->GetAI = &GetAI_boss_marli;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name = "mob_spawn_of_marli";
-    newscript->GetAI = &GetAI_mob_spawn_of_marli;
     newscript->RegisterSelf();
 }

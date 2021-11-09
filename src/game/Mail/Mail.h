@@ -153,7 +153,7 @@ class MailSender
 class MailReceiver
 {
     public:                                                 // Constructors
-        explicit MailReceiver(ObjectGuid receiver_guid) : m_receiver(NULL), m_receiver_guid(receiver_guid) {}
+        explicit MailReceiver(ObjectGuid receiver_guid) : m_receiver(nullptr), m_receiver_guid(receiver_guid) {}
         MailReceiver(Player* receiver);
         MailReceiver(Player* receiver, ObjectGuid receiver_guid);
     public:                                                 // Accessors
@@ -200,9 +200,7 @@ class MailDraft
         * @param a boolean specifying whether the mail needs items or not.
         *
         */
-        explicit MailDraft(uint16 mailTemplateId, bool need_items = true)
-            : m_mailTemplateId(mailTemplateId), m_mailTemplateItemsNeed(need_items), m_bodyId(0), m_money(0), m_COD(0)
-        {}
+        explicit MailDraft(uint16 mailTemplateId, bool need_items = true, LocaleConstant locale_idx = LOCALE_enUS);
         /**
          * Creates a new MailDraft object using subject text and content text id.
          *
@@ -282,8 +280,8 @@ class MailDraft
  */
 struct MailItemInfo
 {
-    uint32 item_guid;                                       ///< the GUID of the item.
-    uint32 item_template;                                   ///< the ID of the template of the item.
+    uint32 itemGuid;                                        ///< the item instance GUID
+    uint32 itemId;                                          ///< the item template ID
 };
 
 typedef std::vector<MailItemInfo> MailItemInfoVec;
@@ -337,11 +335,11 @@ struct Mail
      * @param item_template the ID of the template of the item.
      *
      */
-    void AddItem(uint32 itemGuidLow, uint32 item_template)
+    void AddItem(uint32 itemGuidLow, uint32 itemId)
     {
         MailItemInfo mii;
-        mii.item_guid = itemGuidLow;
-        mii.item_template = item_template;
+        mii.itemGuid = itemGuidLow;
+        mii.itemId = itemId;
         items.push_back(mii);
         has_items = true;
     }
@@ -356,11 +354,11 @@ struct Mail
      * @returns true if the item was removed, or false if no item with that GUID was found.
      *
      */
-    bool RemoveItem(uint32 item_guid)
+    bool RemoveItem(uint32 itemGuid)
     {
         for(MailItemInfoVec::iterator itr = items.begin(); itr != items.end(); ++itr)
         {
-            if(itr->item_guid == item_guid)
+            if (itr->itemGuid == itemGuid)
             {
                 items.erase(itr);
                 return true;

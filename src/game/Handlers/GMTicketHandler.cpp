@@ -27,10 +27,10 @@
 #include "ObjectAccessor.h"
 #include "Player.h"
 #include "Chat.h"
-#include "SpellAuras.h"
 #include "World.h"
+#include "Opcodes.h"
 
-void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & /*recv_data*/)
+void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket& /*recv_data*/)
 {
     SendQueryTimeResponse();
 
@@ -42,10 +42,10 @@ void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & /*recv_data*/)
             sTicketMgr->SendTicket(this, ticket);
     }
     else
-        sTicketMgr->SendTicket(this, NULL);
+        sTicketMgr->SendTicket(this, nullptr);
 }
 
-void WorldSession::HandleGMTicketUpdateTextOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGMTicketUpdateTextOpcode(WorldPacket& recv_data)
 {
     uint8 type;
     std::string ticketText;
@@ -75,7 +75,7 @@ void WorldSession::HandleGMTicketUpdateTextOpcode(WorldPacket & recv_data)
     SendPacket(&data);
 }
 
-void WorldSession::HandleGMTicketDeleteTicketOpcode(WorldPacket & /*recv_data*/)
+void WorldSession::HandleGMTicketDeleteTicketOpcode(WorldPacket& /*recv_data*/)
 {
     if (GmTicket* ticket = sTicketMgr->GetTicketByPlayer(GetPlayer()->GetGUID()))
     {
@@ -86,7 +86,7 @@ void WorldSession::HandleGMTicketDeleteTicketOpcode(WorldPacket & /*recv_data*/)
         sWorld.SendGMTicketText(LANG_COMMAND_TICKETPLAYERABANDON, GetPlayer()->GetName(), ticket->GetId());
 
         sTicketMgr->CloseTicket(ticket->GetId(), GetPlayer()->GetGUID());
-        sTicketMgr->SendTicket(this, NULL);
+        sTicketMgr->SendTicket(this, nullptr);
     }
 }
 
@@ -111,14 +111,14 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket& recvData)
         uint8 ticketType;
         uint32 mapId;
         float x, y, z;
-        std::string ticketText = "";
-        std::string reservedForFutureUse = "";
+        std::string ticketText;
+        std::string reservedForFutureUse;
 
         recvData >> ticketType >> mapId >> x >> y >> z;                        // last check 2.4.3
         recvData >> ticketText;
         recvData >> reservedForFutureUse;
 
-        if (GetPlayer()->getLevel() < sWorld.getConfig(CONFIG_UINT32_GMTICKETS_MINLEVEL))
+        if (GetPlayer()->GetLevel() < sWorld.getConfig(CONFIG_UINT32_GMTICKETS_MINLEVEL))
         {
             ChatHandler(this).PSendSysMessage("You can't use the ticket system before level %u", sWorld.getConfig(CONFIG_UINT32_GMTICKETS_MINLEVEL));
             return;
@@ -145,7 +145,7 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket& recvData)
     SendPacket(&data);
 }
 
-void WorldSession::HandleGMTicketSystemStatusOpcode(WorldPacket & /*recv_data*/)
+void WorldSession::HandleGMTicketSystemStatusOpcode(WorldPacket& /*recv_data*/)
 {
     // Note: This only disables the ticket UI at client side and is not fully reliable
     // are we sure this is a uint32? Should ask Zor
@@ -180,7 +180,7 @@ void WorldSession::HandleGMSurveySubmitOpcode(WorldPacket& recvData)
             continue;
 
         static SqlStatementID insSubSurvey;
-        SqlStatement stmt = CharacterDatabase.CreateStatement(insSubSurvey, "INSERT INTO gm_subsurveys (surveyId, subsurveyId, rank, comment) VALUES (?, ?, ?, ?)");
+        SqlStatement stmt = CharacterDatabase.CreateStatement(insSubSurvey, "INSERT INTO `gm_subsurveys` (`survey_id`, `subsurvey_id`, `rank`, `comment`) VALUES (?, ?, ?, ?)");
         stmt.addUInt32(nextSurveyID);
         stmt.addUInt32(subSurveyId);
         stmt.addUInt32(rank);
@@ -192,7 +192,7 @@ void WorldSession::HandleGMSurveySubmitOpcode(WorldPacket& recvData)
     recvData >> comment;
 
     static SqlStatementID insSurvey;
-    SqlStatement stmt = CharacterDatabase.CreateStatement(insSurvey, "INSERT INTO gm_surveys (guid, surveyId, mainSurvey, overallComment, createTime) VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(NOW()))");
+    SqlStatement stmt = CharacterDatabase.CreateStatement(insSurvey, "INSERT INTO `gm_surveys` (`guid`, `survey_id`, `main_survey`, `overall_comment`, `create_time`) VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(NOW()))");
     stmt.addUInt32(GetPlayer()->GetGUIDLow());
     stmt.addUInt32(nextSurveyID);
     stmt.addUInt32(mainSurvey);

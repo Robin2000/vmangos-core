@@ -1,12 +1,8 @@
 #include "Database/DatabaseEnv.h"
-#include "World.h"
 #include "Log.h"
-#include "ProgressBar.h"
 #include "Policies/SingletonImp.h"
-#include "Player.h"
 #include "Item.h"
 #include "AuctionHouseMgr.h"
-#include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "AuctionHouseBotMgr.h"
 #include "Config/Config.h"
@@ -47,7 +43,7 @@ void AuctionHouseBotMgr::Load()
     uint32 count = 0;
     BarGoLink bar(result->GetRowCount());
 
-    Field *fields;
+    Field* fields;
     do
     {
         bar.step();
@@ -96,7 +92,7 @@ void AuctionHouseBotMgr::Update(bool force /* = false */)
     if (!(m_config->enable || force))
         return;
 
-    if (m_items.size() == 0 ||  /*m_config->botguid==0 ||*/ m_config->botaccount == 0)
+    if (m_items.empty() ||  /*m_config->botguid==0 ||*/ m_config->botaccount == 0)
     {
         sLog.outError("AHBot::Update() : Bad config or empty table.");
         return;
@@ -132,7 +128,7 @@ void AuctionHouseBotMgr::AddItem(AuctionHouseBotEntry e, AuctionHouseObject *auc
         return;
     }
 
-    Item* item = Item::CreateItem(e.item, 1, nullptr);
+    Item* item = Item::CreateItem(e.item, 1);
     if (!item)
     {
         sLog.outInfo("AHBot::AddItem() : Cannot create item.");

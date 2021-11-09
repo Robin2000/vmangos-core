@@ -23,7 +23,8 @@
 #define MANGOS_FORMULAS_H
 
 #include "World.h"
-#include "ObjectMgr.h"
+#include "Creature.h"
+#include "Player.h"
 
 namespace MaNGOS
 {
@@ -91,101 +92,93 @@ namespace MaNGOS
             }
             return 0;
         }
-        inline uint32 BaseGain(uint32 pl_level, uint32 mob_level)
+
+        inline uint32 BaseGain(uint32 ownerLevel, uint32 unitLevel, uint32 mob_level)
         {
-            const uint32 nBaseExp = 45;
-            return (pl_level * 5 + nBaseExp) * BaseGainLevelFactor(pl_level, mob_level);
+            uint32 const nBaseExp = 45;
+            return (ownerLevel * 5 + nBaseExp) * BaseGainLevelFactor(unitLevel, mob_level);
         }
 
-        inline uint32 Gain(Player *pl, Unit *u)
+        inline uint32 Gain(Unit* pUnit, Creature* pCreature)
         {
-            if (Creature* pCreature = ToCreature(u))
+            if (pCreature->GetUInt32Value(UNIT_CREATED_BY_SPELL) &&
+               ((pCreature->GetCreatureInfo()->type == CREATURE_TYPE_CRITTER) ||
+                (pCreature->GetCreatureInfo()->type == CREATURE_TYPE_NOT_SPECIFIED) ||
+                (pCreature->GetCreatureInfo()->type == CREATURE_TYPE_TOTEM) ||
+                (pCreature->GetCreatureInfo()->health_min <= 50)))
+                return 0;
+
+            if (pCreature->HasUnitState(UNIT_STAT_NO_KILL_REWARD))
+                return 0;
+
+            
+            uint32 ownerLevel = pUnit->GetLevel();
+            uint32 unitLevel = pUnit->GetLevel();
+            if (pUnit->IsPet())
             {
-                // Some objects and totems are marked as pets, need some aditional checks
-                bool isPet = pCreature->IsPet() &&
-                    pCreature->GetCreatureInfo()->type != CREATURE_TYPE_CRITTER &&
-                    pCreature->GetCreatureInfo()->type != CREATURE_TYPE_NOT_SPECIFIED &&
-                    pCreature->GetCreatureInfo()->type != CREATURE_TYPE_TOTEM &&
-                    pCreature->GetCreatureInfo()->health_min > 50;
+                if (Unit* pOwner = pUnit->GetOwner())
+                {
+                    ownerLevel = pOwner->GetLevel();
 
-                if (pCreature->GetUInt32Value(UNIT_CREATED_BY_SPELL) && !isPet)
-                    return 0;
+                    // World of Warcraft Client Patch 1.7.0 (2005-09-13)
+                    // - Hunter pets now gain experience based on the level difference between
+                    //   them and their target rather than the difference between the Hunters
+                    //   and their target.This will make it much easier to level up a low
+                    //   level pet.Keep in mind that the Hunter must still kill creatures
+                    //   from which he / she will gain experience.
+                    if (sWorld.GetWowPatch() < WOW_PATCH_107)
+                        unitLevel = pOwner->GetLevel();
+                }
+            }
 
-                if (pCreature->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_XP_AT_KILL)
-                    return 0;
+            float xp_gain = BaseGain(ownerLevel, unitLevel, pCreature->GetLevel());
+            if (!xp_gain)
+                return 0;
 
-                if (pCreature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NO_KILL_REWARD))
-                    return 0;
-
-                uint32 xp_gain = BaseGain(pl->getLevel(), u->getLevel());
-                if (!xp_gain)
-                    return 0;
-
-                if (pCreature->IsElite())
+            if (pCreature->IsElite())
+            {
+                if (pCreature->GetMap()->IsNonRaidDungeon())
+                    xp_gain *= 2.5;
+                else
                     xp_gain *= 2;
 
-                if (isPet)
-                    xp_gain *= 0.75f;
-
-                xp_gain *= pCreature->GetCreatureInfo()->xp_multiplier;
-                xp_gain *= pCreature->GetXPModifierDueToDamageOrigin();
-
-                return (uint32)(xp_gain*sWorld.getConfig(CONFIG_FLOAT_RATE_XP_KILL));
+                xp_gain *= sWorld.getConfig(CONFIG_FLOAT_RATE_XP_KILL_ELITE);
             }
-            
-            return 0;
-        }
 
-        inline uint32 PetGain(Pet *pet, Unit *u)
-        {
-            bool isPet = u->GetTypeId() == TYPEID_UNIT && u->IsPet() &&
-                ((Creature*)u)->GetCreatureInfo()->type != CREATURE_TYPE_CRITTER &&
-                ((Creature*)u)->GetCreatureInfo()->type != CREATURE_TYPE_NOT_SPECIFIED &&
-                ((Creature*)u)->GetCreatureInfo()->type != CREATURE_TYPE_TOTEM &&
-                ((Creature*)u)->GetCreatureInfo()->health_min > 50;
-
-            if(u->GetTypeId()==TYPEID_UNIT && (
-                (u->GetUInt32Value(UNIT_CREATED_BY_SPELL) && !isPet) ||
-                (((Creature*)u)->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_XP_AT_KILL) ||
-                u->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NO_KILL_REWARD)))
-                return 0;
-
-            uint32 xp_gain= BaseGain(pet->getLevel(), u->getLevel());
-            if( xp_gain == 0 )
-                return 0;
-
-            if(u->GetTypeId()==TYPEID_UNIT && ((Creature*)u)->IsElite())
-                xp_gain *= 2;
-
-            if(isPet)
+            if (pCreature->IsPet())
                 xp_gain *= 0.75f;
 
-            return (uint32)(xp_gain*sWorld.getConfig(CONFIG_FLOAT_RATE_XP_KILL));
+            xp_gain *= pCreature->GetCreatureInfo()->xp_multiplier;
+            xp_gain *= pCreature->GetXPModifierDueToDamageOrigin();
+
+            Player* pPlayer = pUnit->GetCharmerOrOwnerPlayerOrPlayerItself();
+            float personalRate = pPlayer ? pPlayer->GetPersonalXpRate() : -1.0f;
+
+            if (personalRate >= 0.0f)
+                xp_gain *= personalRate;
+            else
+                xp_gain *= sWorld.getConfig(CONFIG_FLOAT_RATE_XP_KILL);
+
+            return std::nearbyint(xp_gain);
         }
 
-        inline float xp_in_group_rate(uint32 count, bool isRaid)
+        inline float xp_in_group_rate(uint32 count, bool /*isRaid*/)
         {
-            if(isRaid)
+            // TODO: this formula is completely guesswork only based on a logical assumption
+            switch (count)
             {
-                // FIX ME: must apply decrease modifiers dependent from raid size
-                return 1.0f;
-            }
-            else
-            {
-                switch(count)
-                {
-                    case 0:
-                    case 1:
-                    case 2:
-                        return 1.0f;
-                    case 3:
-                        return 1.166f;
-                    case 4:
-                        return 1.3f;
-                    case 5:
-                    default:
-                        return 1.4f;
-                }
+                case 0:
+                case 1:
+                case 2:
+                    return 1.0f;
+                case 3:
+                    return 1.166f;
+                case 4:
+                    return 1.3f;
+                case 5:
+                    return 1.4f;
+                default:
+                    return std::max(1.f - count * 0.05f, 0.01f);
             }
         }
     }

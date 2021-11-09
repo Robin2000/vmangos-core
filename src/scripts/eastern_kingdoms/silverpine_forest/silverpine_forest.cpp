@@ -17,95 +17,42 @@
 /* ScriptData
 SDName: Silverpine_Forest
 SD%Complete: 100
-SDComment: Quest support: 435, 452, 1886
+SDComment: Quest support: 435, 452
 SDCategory: Silverpine Forest
 EndScriptData */
 
 /* ContentData
-npc_astor_hadren
 npc_deathstalker_erland
 npc_deathstalker_faerleia
 EndContentData */
 
 #include "scriptPCH.h"
-
-/*######
-## npc_astor_hadren
-######*/
-
-struct npc_astor_hadrenAI : public ScriptedAI
-{
-    npc_astor_hadrenAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        Reset();
-    }
-
-    void Reset()
-    {
-        m_creature->setFaction(68);
-    }
-
-    void JustDied(Unit *who)
-    {
-        m_creature->setFaction(68);
-    }
-};
-
-CreatureAI* GetAI_npc_astor_hadren(Creature *_creature)
-{
-    return new npc_astor_hadrenAI(_creature);
-}
-
-bool GossipHello_npc_astor_hadren(Player* pPlayer, Creature* pCreature)
-{
-    if (pPlayer->GetQuestStatus(1886) == QUEST_STATUS_INCOMPLETE)
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000214), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//"You're Astor Hadren, right?"
-
-    pPlayer->SEND_GOSSIP_MENU(623, pCreature->GetGUID());
-
-    return true;
-}
-
-bool GossipSelect_npc_astor_hadren(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
-{
-    switch (uiAction)
-    {
-        case GOSSIP_ACTION_INFO_DEF + 1:
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000215), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);//"You've got something I need, Astor. And I'll be taking it now."
-            pPlayer->SEND_GOSSIP_MENU(624, pCreature->GetGUID());
-            break;
-        case GOSSIP_ACTION_INFO_DEF + 2:
-            pPlayer->CLOSE_GOSSIP_MENU();
-            pCreature->setFaction(21);
-            ((npc_astor_hadrenAI*)pCreature->AI())->AttackStart(pPlayer);
-            break;
-    }
-    return true;
-}
+#include "Group.h"
 
 /*#####
 ## npc_deathstalker_erland
 #####*/
 
-enum
+enum DeathstalkerErlandData
 {
-    SAY_START_1         = -1000306,
-    SAY_START_2         = -1000307,
-    SAY_AGGRO_1         = -1000308,
-    SAY_AGGRO_2         = -1000309,
-    SAY_AGGRO_3         = -1000310,
-    SAY_PROGRESS        = -1000311,
-    SAY_END             = -1000312,
-    SAY_RANE            = -1000313,
-    SAY_RANE_REPLY      = -1000314,
-    SAY_CHECK_NEXT      = -1000315,
-    SAY_QUINN           = -1000316,
-    SAY_QUINN_REPLY     = -1000317,
-    SAY_BYE             = -1000318,
+    SAY_START_1         = 481,
+    SAY_START_2         = 482,
+    SAY_AGGRO_1         = 543,
+    SAY_AGGRO_2         = 544,
+    SAY_AGGRO_3         = 541,
+    SAY_PROGRESS        = 483,
+    SAY_END             = 484,
+    SAY_RANE            = 534,
+    SAY_RANE_REPLY      = 535,
+    SAY_CHECK_NEXT      = 536,
+    SAY_QUINN           = 537,
+    SAY_QUINN_REPLY     = 539,
+    SAY_BYE             = 538,
 
     QUEST_ERLAND        = 435,
     NPC_RANE            = 1950,
-    NPC_QUINN           = 1951
+    NPC_QUINN           = 1951,
+    FACTION_ESCORTEE    = 232
 };
 
 struct npc_deathstalker_erlandAI : public npc_escortAI
@@ -120,7 +67,7 @@ struct npc_deathstalker_erlandAI : public npc_escortAI
     uint64 uiRaneGUID;
     uint64 uiQuinnGUID;
 
-    void MoveInLineOfSight(Unit* pUnit)
+    void MoveInLineOfSight(Unit* pUnit) override
     {
         if (HasEscortState(STATE_ESCORT_ESCORTING))
         {
@@ -139,7 +86,7 @@ struct npc_deathstalker_erlandAI : public npc_escortAI
         npc_escortAI::MoveInLineOfSight(pUnit);
     }
 
-    void WaypointReached(uint32 i)
+    void WaypointReached(uint32 i) override
     {
         Player* pPlayer = GetPlayerForEscort();
 
@@ -178,7 +125,7 @@ struct npc_deathstalker_erlandAI : public npc_escortAI
         }
     }
 
-    void Reset()
+    void Reset() override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
         {
@@ -187,7 +134,7 @@ struct npc_deathstalker_erlandAI : public npc_escortAI
         }
     }
 
-    void Aggro(Unit* who)
+    void Aggro(Unit* who) override
     {
         switch (urand(0, 2))
         {
@@ -204,11 +151,12 @@ struct npc_deathstalker_erlandAI : public npc_escortAI
     }
 };
 
-bool QuestAccept_npc_deathstalker_erland(Player* pPlayer, Creature* pCreature, const Quest* pQuest)
+bool QuestAccept_npc_deathstalker_erland(Player* pPlayer, Creature* pCreature, Quest const* pQuest)
 {
     if (pQuest->GetQuestId() == QUEST_ERLAND)
     {
         DoScriptText(SAY_START_1, pCreature);
+        pCreature->SetFactionTemporary(FACTION_ESCORTEE, TEMPFACTION_RESTORE_RESPAWN);
 
         if (npc_deathstalker_erlandAI* pEscortAI = dynamic_cast<npc_deathstalker_erlandAI*>(pCreature->AI()))
             pEscortAI->Start(false, pPlayer->GetGUID(), pQuest);
@@ -225,15 +173,15 @@ CreatureAI* GetAI_npc_deathstalker_erland(Creature* pCreature)
 ## npc_deathstalker_faerleia
 #####*/
 
-enum
+enum DeathstalkerFaerleiaData
 {
     QUEST_PYREWOOD_AMBUSH    = 452,
 
     // cast it after every wave
     SPELL_DRINK_POTION       = 3359,
 
-    SAY_START                = -1000553,
-    SAY_COMPLETED            = -1000554,
+    SAY_START                = 542,
+    SAY_COMPLETED            = 545,
 
     // 1st wave
     NPC_COUNCILMAN_SMITHERS  = 2060,
@@ -275,8 +223,9 @@ struct npc_deathstalker_faerleiaAI : ScriptedAI
         m_bEventStarted = false;
     }
 
-    void Reset() override
+    void Reset() override 
     {
+        m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
     }
 
     uint64 m_uiPlayerGUID;
@@ -304,16 +253,32 @@ struct npc_deathstalker_faerleiaAI : ScriptedAI
         m_bEventStarted = false;
     }
 
-    void JustRespawned() override
+    void FailQuestForPlayerOrGroup()
     {
-        m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        if (Player* pPlayer = m_creature->GetMap()->GetPlayer(m_uiPlayerGUID))
+        {
+            if (Group* pGroup = pPlayer->GetGroup())
+            {
+                for (GroupReference* pRef = pGroup->GetFirstMember(); pRef != nullptr; pRef = pRef->next())
+                {
+                    if (Player* pMember = pRef->getSource())
+                    {
+                        if (pMember->GetQuestStatus(QUEST_PYREWOOD_AMBUSH) == QUEST_STATUS_INCOMPLETE)
+                            pMember->FailQuest(QUEST_PYREWOOD_AMBUSH);
+                    }
+                }
+            }
+            else
+            {
+                if (pPlayer->GetQuestStatus(QUEST_PYREWOOD_AMBUSH) == QUEST_STATUS_INCOMPLETE)
+                    pPlayer->FailQuest(QUEST_PYREWOOD_AMBUSH);
+            }
+        }
     }
 
     void JustDied(Unit* /*pKiller*/) override
     {
-        if (Player* pPlayer = m_creature->GetMap()->GetPlayer(m_uiPlayerGUID))
-            pPlayer->SendQuestFailed(QUEST_PYREWOOD_AMBUSH);
-
+        FailQuestForPlayerOrGroup();
         FinishEvent();
     }
 
@@ -366,7 +331,7 @@ struct npc_deathstalker_faerleiaAI : ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff) override
+    void UpdateAI(uint32 const uiDiff) override
     {
         if (m_bEventStarted && !m_uiSummonCount)
         {
@@ -402,14 +367,14 @@ struct npc_deathstalker_faerleiaAI : ScriptedAI
                 m_uiWaveTimer -= uiDiff;
         }
 
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         DoMeleeAttackIfReady();
     }
 };
 
-bool QuestAccept_npc_deathstalker_faerleia(Player* pPlayer, Creature* pCreature, const Quest* pQuest)
+bool QuestAccept_npc_deathstalker_faerleia(Player* pPlayer, Creature* pCreature, Quest const* pQuest)
 {
     if (pQuest->GetQuestId() == QUEST_PYREWOOD_AMBUSH)
     {
@@ -430,7 +395,7 @@ CreatureAI* GetAI_npc_deathstalker_faerleia(Creature* pCreature)
  * Pyrewood Council support
  */
 
-enum
+enum CouncilmanData
 {
     NPC_FAERLEIA        = 2058
 };
@@ -442,10 +407,7 @@ struct npc_councilmanAI : ScriptedAI
         npc_councilmanAI::Reset();
     }
 
-    void Reset() override
-    {
-
-    }
+    void Reset() override { }
 
     void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
@@ -471,11 +433,7 @@ CreatureAI* GetAI_npc_councilman(Creature* pCreature)
     return new npc_councilmanAI(pCreature);
 }
 
-/*
- *
- */
-
-enum
+enum HumanWorgenData
 {
     PYREWOOD_WATCHER       = 1891,
     MOONRAGE_WATCHER       = 1892,
@@ -496,7 +454,7 @@ enum
     SPELL_DISARM           = 6713,
     SPELL_EXPOSE_WEAKNESS  = 7140,
     SPELL_SHOOT_PYREWOOD   = 6660,
-    SPELL_LESSER_HEAL      = 2053,
+    SPELL_LESSER_HEAL      = 2053
 };
 
 //#define DEBUG_WORGEN_TRANSFO
@@ -552,7 +510,7 @@ struct npc_human_worgenAI : public ScriptedAI
     {
         return m_creature->GetEntry() == m_uiWorgenEntry;
     }
-    void Reset()
+    void Reset() override
     {
         m_bIsInDefenseStance     = false;
         m_uiShieldBlock_Timer    = 3000;
@@ -567,7 +525,7 @@ struct npc_human_worgenAI : public ScriptedAI
 #endif
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(uint32 const uiDiff) override
     {
         time_t rawtime;
         time(&rawtime);
@@ -621,7 +579,7 @@ struct npc_human_worgenAI : public ScriptedAI
                 m_uiWolfSound_Timer -= uiDiff;
         }
 
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         switch (m_creature->GetEntry())
@@ -666,7 +624,7 @@ struct npc_human_worgenAI : public ScriptedAI
             case PYREWOOD_TAILOR:
                 if (m_uiBackstab_Timer < uiDiff)
                 {
-                    if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_BACKSTAB) == CAST_OK)
+                    if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_BACKSTAB) == CAST_OK)
                         m_uiBackstab_Timer = 8100;
                 }
                 else
@@ -674,7 +632,7 @@ struct npc_human_worgenAI : public ScriptedAI
 
                 if (m_uiDisarm_Timer < uiDiff)
                 {
-                    if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_DISARM) == CAST_OK)
+                    if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_DISARM) == CAST_OK)
                         m_uiDisarm_Timer = 7100;
                 }
                 else
@@ -682,7 +640,7 @@ struct npc_human_worgenAI : public ScriptedAI
 
                 if (m_uiExposeWeakness_Timer < uiDiff)
                 {
-                    if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_EXPOSE_WEAKNESS) == CAST_OK)
+                    if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_EXPOSE_WEAKNESS) == CAST_OK)
                         m_uiExposeWeakness_Timer = 9100;
                 }
                 else
@@ -702,68 +660,6 @@ CreatureAI* GetAI_npc_human_worgen(Creature *_creature)
     return new npc_human_worgenAI(_creature);
 }
 
-/*
- * Dusty Spellbooks
- */
-
-enum
-{
-    NPC_MOONRAGE_DARKRUNNER     = 1770,
-
-    QUEST_ARUGAL_FOLLY          = 422,
-};
-
-struct go_dusty_spellbooksAI : GameObjectAI
-{
-    explicit go_dusty_spellbooksAI(GameObject* pGo) : GameObjectAI(pGo)
-    {
-        m_bJustUsed = false;
-        m_uiJustUsedTimer = 0;
-    }
-
-    bool m_bJustUsed;
-    uint32 m_uiJustUsedTimer;
-
-    bool OnUse(Unit* pCaster) override
-    {
-        auto pPlayer = pCaster->ToPlayer();
-
-        if (!pPlayer) return true;
-
-        if (!(pPlayer->GetQuestStatus(QUEST_ARUGAL_FOLLY) == QUEST_STATUS_INCOMPLETE)) return true;
-
-        if (!m_bJustUsed)
-        {
-            if (auto pCreature = me->SummonCreature(NPC_MOONRAGE_DARKRUNNER, 875.38f, 1232.43f, 52.6f, 3.16f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 90000))
-            {
-                pCreature->MonsterSay(pPlayer->GetSession()->GetMangosString(-2000385));//The Sons of Arugal will rise against all who challenge the power of the Moonrage!
-                pCreature->AddThreat(pCaster);
-                m_bJustUsed = true;
-                m_uiJustUsedTimer = 1000;
-            }            
-        }
-
-        return true;
-    }
-
-    void UpdateAI(uint32 const uiDiff) override
-    {
-        if (!m_bJustUsed) return;
-
-        if (m_uiJustUsedTimer < uiDiff)
-        {
-            m_bJustUsed = false;
-        }
-        else
-            m_uiJustUsedTimer -= uiDiff;
-    }
-};
-
-GameObjectAI* GetAI_go_dusty_spellbooks(GameObject* pGo)
-{
-    return new go_dusty_spellbooksAI(pGo);
-}
-
 void AddSC_silverpine_forest()
 {
     Script* newscript;
@@ -771,13 +667,6 @@ void AddSC_silverpine_forest()
     newscript = new Script;
     newscript->Name = "npc_human_worgen";
     newscript->GetAI = &GetAI_npc_human_worgen;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name = "npc_astor_hadren";
-    newscript->pGossipHello =  &GossipHello_npc_astor_hadren;
-    newscript->pGossipSelect = &GossipSelect_npc_astor_hadren;
-    newscript->GetAI = &GetAI_npc_astor_hadren;
     newscript->RegisterSelf();
 
     newscript = new Script;
@@ -795,10 +684,5 @@ void AddSC_silverpine_forest()
     newscript = new Script;
     newscript->Name = "npc_councilman";
     newscript->GetAI = &GetAI_npc_councilman;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name = "go_dusty_spellbooks";
-    newscript->GOGetAI = &GetAI_go_dusty_spellbooks;
     newscript->RegisterSelf();
 }

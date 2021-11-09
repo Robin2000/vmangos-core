@@ -16,30 +16,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <ace/Singleton.h>
-#include <ace/Thread_Mutex.h>
 #include <ace/Log_Msg.h>
 
 #include "DelayExecutor.h"
+#include "Policies/SingletonImp.h"
+#include "Policies/ThreadingModel.h"
+
+
+using DelayExecutorLock = MaNGOS::ClassLevelLockable<DelayExecutor, std::mutex>;
+INSTANTIATE_SINGLETON_2(DelayExecutor, DelayExecutorLock);
+INSTANTIATE_CLASS_MUTEX(DelayExecutor, std::mutex);
 
 DelayExecutor* DelayExecutor::instance()
 {
-    return ACE_Singleton<DelayExecutor, ACE_Thread_Mutex>::instance();
+    return &MaNGOS::Singleton<DelayExecutor, DelayExecutorLock>::Instance();
 }
 
 DelayExecutor::DelayExecutor()
-    : activated_(false), pre_svc_hook_(0), post_svc_hook_(0)
+    : pre_svc_hook_(0), post_svc_hook_(0), activated_(false)
 {
 }
 
 DelayExecutor::~DelayExecutor()
 {
-    if (pre_svc_hook_)
-        delete pre_svc_hook_;
-
-    if (post_svc_hook_)
-        delete post_svc_hook_;
-
+    delete pre_svc_hook_;
+    delete post_svc_hook_;
     deactivate();
 }
 
@@ -85,11 +86,8 @@ int DelayExecutor::activate(int num_threads, ACE_Method_Request* pre_svc_hook, A
     if (num_threads < 1)
         return -1;
 
-    if (pre_svc_hook_)
-        delete pre_svc_hook_;
-
-    if (post_svc_hook_)
-        delete post_svc_hook_;
+    delete pre_svc_hook_;
+    delete post_svc_hook_;
 
     pre_svc_hook_ = pre_svc_hook;
     post_svc_hook_ = post_svc_hook;
@@ -106,7 +104,7 @@ int DelayExecutor::activate(int num_threads, ACE_Method_Request* pre_svc_hook, A
 
 int DelayExecutor::execute(ACE_Method_Request* new_req)
 {
-    if (new_req == NULL)
+    if (new_req == nullptr)
         return -1;
 
     if (queue_.enqueue(new_req, (ACE_Time_Value*)&ACE_Time_Value::zero) == -1)

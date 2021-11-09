@@ -26,9 +26,7 @@ EndScriptData */
 
 enum
 {
-    EMOTE_GENERIC_WING_BUFFET   = -1469032,
-    EMOTE_GENERIC_SHADOW_FLAME  = -1469033,
-    EMOTE_GENERIC_FRENZY        = -1000002,
+    EMOTE_GENERIC_FRENZY        = 1191,
 
     SPELL_SHADOW_FLAME          = 22539,
     SPELL_WING_BUFFET           = 23339,
@@ -50,14 +48,14 @@ struct boss_flamegorAI : public ScriptedAI
     uint32 m_uiWingBuffetTimer;
     uint32 m_uiFrenzyTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiShadowFlameTimer = 16000;                        // These times are probably wrong
         m_uiWingBuffetTimer = 30000;
         m_uiFrenzyTimer = 10000;
     }
 
-    void Aggro(Unit* /*pWho*/)
+    void Aggro(Unit* /*pWho*/) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_FLAMEGOR, IN_PROGRESS);
@@ -65,42 +63,39 @@ struct boss_flamegorAI : public ScriptedAI
         m_creature->SetInCombatWithZone();
     }
 
-    void JustDied(Unit* /*pKiller*/)
+    void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_FLAMEGOR, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_FLAMEGOR, FAIL);
     }
 
-    void SpellHitTarget(Unit* pCaster, const SpellEntry* pSpell)
+    void SpellHitTarget(Unit* pCaster, SpellEntry const* pSpell) override
     {
         if (pSpell->Id == SPELL_WING_BUFFET)
         {
             if (!pCaster || pCaster->GetTypeId() != TYPEID_PLAYER)
                 return;
-            if (m_creature->getThreatManager().getThreat(pCaster))
-                m_creature->getThreatManager().modifyThreatPercent(pCaster, -50);
+            if (m_creature->GetThreatManager().getThreat(pCaster))
+                m_creature->GetThreatManager().modifyThreatPercent(pCaster, -50);
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(uint32 const uiDiff) override
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         // Shadow Flame Timer
         if (m_uiShadowFlameTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SHADOW_FLAME) == CAST_OK)
-            {
-                DoScriptText(EMOTE_GENERIC_SHADOW_FLAME, m_creature);
                 m_uiShadowFlameTimer = 16000;
-            }
         }
         else
             m_uiShadowFlameTimer -= uiDiff;
@@ -108,11 +103,8 @@ struct boss_flamegorAI : public ScriptedAI
         // Wing Buffet Timer
         if (m_uiWingBuffetTimer < uiDiff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_WING_BUFFET) == CAST_OK)
-            {
-                DoScriptText(EMOTE_GENERIC_WING_BUFFET, m_creature);
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_WING_BUFFET) == CAST_OK)
                 m_uiWingBuffetTimer = 30000;
-            }
         }
         else
             m_uiWingBuffetTimer -= uiDiff;
@@ -129,7 +121,7 @@ struct boss_flamegorAI : public ScriptedAI
         else
             m_uiFrenzyTimer -= uiDiff;
 
-        if (m_creature->isAttackReady() && !urand(0, 2))
+        if (m_creature->IsAttackReady() && !urand(0, 2))
             DoCastSpellIfCan(m_creature, SPELL_THRASH);
 
         DoMeleeAttackIfReady();
@@ -142,7 +134,7 @@ CreatureAI* GetAI_boss_flamegor(Creature* pCreature)
 
 void AddSC_boss_flamegor()
 {
-    Script *newscript;
+    Script* newscript;
     newscript = new Script;
     newscript->Name = "boss_flamegor";
     newscript->GetAI = &GetAI_boss_flamegor;

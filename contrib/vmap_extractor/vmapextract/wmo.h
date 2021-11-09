@@ -28,13 +28,17 @@
 #include "loadlib/loadlib.h"
 
 // MOPY flags
-#define WMO_MATERIAL_NOCAMCOLLIDE    0x01
-#define WMO_MATERIAL_DETAIL          0x02
-#define WMO_MATERIAL_NO_COLLISION    0x04
-#define WMO_MATERIAL_HINT            0x08
-#define WMO_MATERIAL_RENDER          0x10
-#define WMO_MATERIAL_COLLIDE_HIT     0x20
-#define WMO_MATERIAL_WALL_SURFACE    0x40
+enum MopyFlags
+{
+    WMO_MATERIAL_UNK01          = 0x01,
+    WMO_MATERIAL_NOCAMCOLLIDE   = 0x02,
+    WMO_MATERIAL_DETAIL         = 0x04,
+    WMO_MATERIAL_COLLISION      = 0x08,
+    WMO_MATERIAL_HINT           = 0x10,
+    WMO_MATERIAL_RENDER         = 0x20,
+    WMO_MATERIAL_WALL_SURFACE   = 0x40, // Guessed
+    WMO_MATERIAL_COLLIDE_HIT    = 0x80
+};
 
 class WMOInstance;
 class WMOManager;
@@ -66,6 +70,13 @@ public:
     void init(std::string fname, MPQFile &f);
 };
 
+struct WMODoodadSet
+{
+    char name[0x14]; // set name
+    int start; // index of first doodad instance in this set
+    uint32 size; // number of doodad instances in this set
+    int unused; // unused? (always 0)
+};
 
 class WMORoot
 {
@@ -74,6 +85,9 @@ class WMORoot
         unsigned int col;
         float bbcorn1[3];
         float bbcorn2[3];
+
+        std::vector<WMODoodadSet> doodadsets;
+        std::vector<char> GroupNames;
 
         WMORoot(std::string& filename);
         ~WMORoot();
@@ -109,14 +123,6 @@ struct WMOLiquidVert
     float height;
 };
 
-struct WMODoodadSet
-{
-    char name[0x14]; // set name
-    int start; // index of first doodad instance in this set
-    uint32 size; // number of doodad instances in this set
-    int unused; // unused? (always 0)
-};
-
 class WMOGroup
 {
     public:
@@ -145,6 +151,7 @@ class WMOGroup
         char* LiquBytes;
         uint32 liquflags;
 
+        int doodadset; //used for converting a wmo model with a specific doodadset
         int nDoodads;
         short* doodads;
 
@@ -155,6 +162,9 @@ class WMOGroup
         int ConvertToVMAPGroupWmo(FILE* output, WMORoot* rootWMO, bool pPreciseVectorData);
         void WriteDoodadsTriangles(FILE* output, int indexShift);
         void WriteDoodadsVertices(FILE* output);
+        void WriteDoodadsTriangles(FILE* output, int indexShift, WMORoot* rootWMO);
+        void WriteDoodadsVertices(FILE* output, WMORoot* rootWMO);
+        bool ShouldSkip(WMORoot const& root) const;
     private:
         std::string filename;
         char outfilename;
@@ -172,7 +182,7 @@ class WMOInstance
         Vec3D pos;
         Vec3D pos2, pos3, rot;
         uint32 indx, id, d2, d3;
-        int doodadset;
+        int16 doodadset;
 
         WMOInstance(MPQFile& f, const char* WmoInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE* pDirfile);
 

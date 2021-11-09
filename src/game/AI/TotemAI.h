@@ -24,28 +24,22 @@
 
 #include "CreatureAI.h"
 #include "ObjectGuid.h"
-#include "Timer.h"
 #include "Totem.h"
 
 class Creature;
 class Totem;
 
-enum
-{
-    NPC_TOTEM_GLEBE = 5925,
-};
-
-class MANGOS_DLL_DECL TotemAI : public CreatureAI
+class TotemAI : public CreatureAI
 {
     public:
 
-        explicit TotemAI(Creature *c);
+        explicit TotemAI(Creature* c);
 
-        void MoveInLineOfSight(Unit *) override { };
-        void AttackStart(Unit *) override { };
+        void MoveInLineOfSight(Unit*) override { };
+        void AttackStart(Unit*) override { };
 
-        void UpdateAI(const uint32);
-        static int Permissible(const Creature *);
+        void UpdateAI(uint32 const) override;
+        static int Permissible(Creature const*);
 
     private:
         ObjectGuid m_victimGuid;

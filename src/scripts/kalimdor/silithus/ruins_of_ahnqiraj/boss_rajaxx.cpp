@@ -23,7 +23,11 @@ EndScriptData */
 
 
 #include "scriptPCH.h"
+#include "CreatureGroups.h"
+#include "Group.h"
 #include "ruins_of_ahnqiraj.h"
+
+#define GOSSIP_START  "Let's find out."
 
 enum
 {
@@ -48,7 +52,7 @@ enum
     SAY_KILLS_ANDOROV   =   -1509016,
 
     SAY_AQ_WAR_START    =   -1509017, // Yell when realm complete quest 8743 for world event
-    EMOTE_FRENZY        =   -1000001,
+    EMOTE_FRENZY        =   7797,
 
     // General Rajaxx
     SPELL_DISARM            =   6713,
@@ -79,19 +83,7 @@ enum
 #endif
 
 #define ANDOROV_WAYPOINT_MAX  7
-#define OOC_BETWEEN_WAVE 1000
-
-struct RespawnAndEvadeHelper
-{
-    explicit RespawnAndEvadeHelper(Creature* _pCreature) : pCreature(_pCreature) {}
-    void operator()() const
-    {
-        if (!pCreature->isAlive())
-            pCreature->Respawn();
-        pCreature->AI()->EnterEvadeMode();
-    }
-    Creature* pCreature;
-};
+#define OOC_BETWEEN_WAVE 5000
 
 struct boss_rajaxxAI : public ScriptedAI
 {
@@ -112,7 +104,7 @@ struct boss_rajaxxAI : public ScriptedAI
     uint32 m_uiNextWaveIndex;
     bool m_bHasEnraged;
 
-    void Reset()
+    void Reset() override
     {
         // Rajaxx's spells
         m_uiResetAggro_Timer = 20000;
@@ -126,7 +118,7 @@ struct boss_rajaxxAI : public ScriptedAI
         m_uiNextWave_Timer = 0;
         m_uiNextWaveIndex = 0;
 
-        if (m_pInstance && m_creature->isAlive())
+        if (m_pInstance && m_creature->IsAlive())
         {
             for (uint8 waveIndex = 0; waveIndex < WAVE_MAX; ++waveIndex)
                 ResetWave(waveIndex);
@@ -136,12 +128,11 @@ struct boss_rajaxxAI : public ScriptedAI
 
     void ResetWave(uint8 waveIndex)
     {
-        if (!m_pInstance || !m_creature->isAlive())
+        if (!m_pInstance || !m_creature->IsAlive())
             return;
         if (waveIndex >= WAVE_MAX)
             return;
 
-        DEBUG_EMOTE_YELL(m_creature, "DEBUG : Wave Reset");
         uint64 leaderGUID = GetLeaderGuidFromWaveIndex(waveIndex);
         if (Creature* pLeader = m_pInstance->GetCreature(leaderGUID))
             if (CreatureGroup* group = pLeader->GetCreatureGroup())
@@ -161,7 +152,7 @@ struct boss_rajaxxAI : public ScriptedAI
                 uint64 leaderGUID = GetLeaderGuidFromWaveIndex(waveInd);
                 if (Creature* pLeader = m_pInstance->GetCreature(leaderGUID))
                 {
-                    if (pLeader->isAlive())
+                    if (pLeader->IsAlive())
                         pLeader->SetInCombatWithZone();
                 }
             }
@@ -223,7 +214,7 @@ struct boss_rajaxxAI : public ScriptedAI
         return m_pInstance->GetData64(data);
     }
 
-    void Aggro(Unit* pPuller)
+    void Aggro(Unit* pPuller) override
     {
         m_creature->SetInCombatWithZone();
 
@@ -231,7 +222,7 @@ struct boss_rajaxxAI : public ScriptedAI
             m_pInstance->SetData(TYPE_RAJAXX, IN_PROGRESS);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (!m_pInstance)
             return;
@@ -247,13 +238,13 @@ struct boss_rajaxxAI : public ScriptedAI
         OnKillReputationReward();
     }
 
-    void KilledUnit(Unit *pKilled)
+    void KilledUnit(Unit *pKilled) override
     {
-//        if (!m_creature->isInCombat())
+//        if (!m_creature->IsInCombat())
 //            DoScriptText(SAY_DEAGGRO, m_creature, pKilled);
     }
 
-    void DamageTaken(Unit* pDoneBy, uint32 &uiDamage)
+    void DamageTaken(Unit* pDoneBy, uint32 &uiDamage) override
     {
         // Frenzy
         if (!m_bHasEnraged && ((m_creature->GetHealth() * 100) / m_creature->GetMaxHealth()) < 30)
@@ -272,10 +263,7 @@ struct boss_rajaxxAI : public ScriptedAI
             return false;
 
         // Count of dead mobs per wave is managed by instance script
-        if (m_pInstance->GetData(m_uiNextWaveIndex - 1 + WAVE_OFFSET) == 0)
-            return true;
-
-        return false;
+        return m_pInstance->GetData(m_uiNextWaveIndex - 1 + WAVE_OFFSET) == 0;
     }
 
     void OnKillReputationReward()
@@ -288,15 +276,15 @@ struct boss_rajaxxAI : public ScriptedAI
         std::list<Creature*> helpers;
         GetCreatureListWithEntryInGrid(helpers, m_creature, { 15473, 15478, 15471, 987001 }, 400.0f);
         
-        if (!helpers.size())
+        if (helpers.empty())
             return;
         int alive = 0;
-        for (auto it : helpers)
-            if (it->isAlive()) ++alive;
+        for (const auto it : helpers)
+            if (it->IsAlive()) ++alive;
 
         if (Player* pLootRecepient = m_creature->GetLootRecipient()) {
             if (Group* pGroup = pLootRecepient->GetGroup()) {
-                for (GroupReference *itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
+                for (GroupReference *itr = pGroup->GetFirstMember(); itr != nullptr; itr = itr->next())
                 {
                     Player* pGroupGuy = itr->getSource();
                     if (!pGroupGuy || !pGroupGuy->IsInWorld())
@@ -313,21 +301,20 @@ struct boss_rajaxxAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(uint32 const uiDiff) override
     {
         // Waves launcher
         if (m_pInstance && (m_pInstance->GetData(TYPE_RAJAXX) == IN_PROGRESS))
         {
             if (IsCurrentWaveDead())
                 m_uiNextWave_Timer += uiDiff;
-            else
-                m_uiNextWave_Timer = 0;
 
             if (m_uiNextWaveIndex < WAVE_MAX)
             {
-                if ((m_uiWave_Timer < uiDiff) || (m_uiNextWave_Timer > OOC_BETWEEN_WAVE))
+                if (m_uiWave_Timer < uiDiff || m_uiNextWave_Timer > OOC_BETWEEN_WAVE)
                 {
                     StartWave(m_uiNextWaveIndex);
+                    m_uiNextWave_Timer = 0;
                     m_uiNextWaveIndex++;
                     m_uiWave_Timer = DELAY_BETWEEN_WAVE;
                 }
@@ -345,16 +332,16 @@ struct boss_rajaxxAI : public ScriptedAI
             }
         }
 
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         // ThunderCrash
         if (m_uiThunderCrash_Timer < uiDiff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_THUNDERCRASH) == CAST_OK)
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_THUNDERCRASH) == CAST_OK)
             {
                 m_uiThunderCrash_Timer = urand(18000, 22000);
-                m_creature->getThreatManager().modifyThreatPercent(m_creature->getVictim(), -100);
+                m_creature->GetThreatManager().modifyThreatPercent(m_creature->GetVictim(), -100);
                 if (Unit* victim = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     m_creature->AI()->AttackStart(victim);
             }
@@ -366,8 +353,8 @@ struct boss_rajaxxAI : public ScriptedAI
         if (m_uiResetAggro_Timer < uiDiff)
         {
             m_uiResetAggro_Timer = urand(15000, 17000);
-            DoScriptText(SAY_DEAGGRO, m_creature, m_creature->getVictim());
-            m_creature->getThreatManager().modifyThreatPercent(m_creature->getVictim(), -100);
+            DoScriptText(SAY_DEAGGRO, m_creature, m_creature->GetVictim());
+            m_creature->GetThreatManager().modifyThreatPercent(m_creature->GetVictim(), -100);
         }
         else
             m_uiResetAggro_Timer -= uiDiff;
@@ -375,7 +362,7 @@ struct boss_rajaxxAI : public ScriptedAI
         /* Trash */
         if (m_uiTrash_Timer < uiDiff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_TRASH) == CAST_OK)
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_TRASH) == CAST_OK)
                 m_uiTrash_Timer = urand(19000, 23000);
         }
         else
@@ -384,7 +371,7 @@ struct boss_rajaxxAI : public ScriptedAI
         // Disarm
         if (m_uiDisarm_Timer < uiDiff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_DISARM) == CAST_OK)
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_DISARM) == CAST_OK)
                 m_uiDisarm_Timer = 15000;
         }
         else
@@ -398,17 +385,14 @@ struct boss_rajaxxAQWarAI : public boss_rajaxxAI
 {
     boss_rajaxxAQWarAI(Creature* pCreature) : boss_rajaxxAI(pCreature)
     {
-        pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_PASSIVE);
+        pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_IMMUNE_TO_NPC);
 
         DoScriptText(SAY_AQ_WAR_START, m_creature);
     }
 
-    void UpdateAI(const uint32 uiDiff) override
-    {
-        return;
-    }
+    void UpdateAI(uint32 const /*uiDiff*/) override {}
 
-    bool FillLoot(Loot* loot, Player* looter) const
+    bool FillLoot(Loot* loot, Player* looter) const override
     {
         return true; // Do nothing. No loot drop out here.
     }
@@ -428,7 +412,7 @@ struct npc_andorovAI : public ScriptedAI
     uint32 m_uiBash_Timer;
     uint32 m_uiStrike_Timer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiCommandAura_Timer = 10000;
         m_uiBash_Timer = 5000;
@@ -439,21 +423,21 @@ struct npc_andorovAI : public ScriptedAI
             m_pInstance->SetData(TYPE_GENERAL_ANDOROV, NOT_STARTED);
     }
 
-    void JustDied(Unit *pKiller)
+    void JustDied(Unit *pKiller) override
     {
         if (!m_pInstance)
             return;
 
         if (Creature* pRajaxx = m_pInstance->GetCreature(m_pInstance->GetData64(DATA_RAJAXX)))
         {
-            if (pRajaxx->isAlive())
+            if (pRajaxx->IsAlive())
                 DoScriptText(SAY_KILLS_ANDOROV, pRajaxx);
         }
 
         m_pInstance->SetData(TYPE_GENERAL_ANDOROV, FAIL);
     }
 
-    void MovementInform(uint32 uiType, uint32 uiPointId)
+    void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         DEBUG_EMOTE_YELL(m_creature, "DEBUG : Move inform");
         if (uiType != WAYPOINT_MOTION_TYPE)
@@ -504,7 +488,7 @@ struct npc_andorovAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(uint32 const uiDiff) override
     {
         if (!m_pInstance)
             return;
@@ -514,13 +498,13 @@ struct npc_andorovAI : public ScriptedAI
                 m_pInstance->GetData(TYPE_GENERAL_ANDOROV) == NOT_STARTED)
             StartEvent();
 
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->GetVictim())
             return;
 
         // Bash
         if (m_uiBash_Timer < uiDiff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_BASH) == CAST_OK)
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_BASH) == CAST_OK)
                 m_uiBash_Timer = 30000;
         }
         else
@@ -529,7 +513,7 @@ struct npc_andorovAI : public ScriptedAI
         // Strike
         if (m_uiStrike_Timer < uiDiff)
         {
-            if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_STRIKE) == CAST_OK)
+            if (DoCastSpellIfCan(m_creature->GetVictim(), SPELL_STRIKE) == CAST_OK)
                 m_uiStrike_Timer = 15000;
         }
         else
@@ -546,33 +530,13 @@ struct npc_andorovAI : public ScriptedAI
 
         DoMeleeAttackIfReady();
     }
-};
 
-bool GossipHello_npc_andorov(Player* pPlayer, Creature* pCreature)
-{
-    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, pPlayer->GetSession()->GetMangosString(-2000404), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);//Let's find out.
-    pPlayer->SEND_GOSSIP_MENU(14442, pCreature->GetGUID());
-
-    return true;
-}
-
-bool GossipSelect_npc_andorov(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
-{
-    switch (uiAction)
+    void OnScriptEventHappened(uint32 uiEvent, uint32 uiData, WorldObject* pInvoker) override
     {
-        case GOSSIP_ACTION_INFO_DEF + 1:
-            pPlayer->CLOSE_GOSSIP_MENU();
-            ((npc_andorovAI*)pCreature->AI())->StartEvent();
-            break;
-        case GOSSIP_ACTION_TRADE:
-            pPlayer->SEND_VENDORLIST(pCreature->GetGUID());
-            break;
-        default:
-            break;
+        if (pInvoker && pInvoker->IsPlayer())
+            StartEvent();
     }
-
-    return true;
-}
+};
 
 CreatureAI* GetAI_boss_rajaxx(Creature* pCreature)
 {
@@ -594,8 +558,6 @@ void AddSC_boss_rajaxx()
     newscript = new Script;
     newscript->Name = "npc_andorov";
     newscript->GetAI = &GetAI_npc_andorov;
-    newscript->pGossipHello = &GossipHello_npc_andorov;
-    newscript->pGossipSelect = &GossipSelect_npc_andorov;
     newscript->RegisterSelf();
 
     newscript = new Script;

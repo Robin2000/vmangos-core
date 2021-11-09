@@ -24,17 +24,24 @@
 
 #include "CreatureAI.h"
 
-class MANGOS_DLL_DECL ReactorAI : public CreatureAI
+class Creature;
+
+class ReactorAI : public CreatureAI
 {
     public:
 
-        explicit ReactorAI(Creature *c) : CreatureAI(c) {}
+        explicit ReactorAI(Creature* c);
 
-        void MoveInLineOfSight(Unit *) override { };
-        void AttackStart(Unit *) override;
-        void UpdateAI(const uint32) override;
+        void MoveInLineOfSight(Unit*) override;
+        void AttackStart(Unit*) override;
+        void UpdateAI(uint32 const) override;
+        void JustRespawned() override;
 
-        static int Permissible(const Creature *);
+        bool CanSummonGuards() const { return m_bCanSummonGuards; }
+
+        static int Permissible(Creature const*);
+    private:
+        bool m_bCanSummonGuards;
 };
 
 #endif

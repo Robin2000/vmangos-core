@@ -8,18 +8,19 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required(VERSION 2.6...3.20)
 
-project( MoveMapGen )
+project(MoveMapGen)
 
 ADD_DEFINITIONS(-DMMAP_GENERATOR -DDEBUG)
 
 # zlib
-ADD_DEFINITIONS( -DNO_vsnprintf )
+ADD_DEFINITIONS(-DNO_vsnprintf)
 
-if(!WIN32)
-	ADD_DEFINITIONS("-ggdb")
-	ADD_DEFINITIONS("-O3")
+if(NOT MSVC)
+    ADD_DEFINITIONS("-Wall")
+    #ADD_DEFINITIONS("-ggdb")
+    ADD_DEFINITIONS("-O3")
 endif()
 
 include_directories(
@@ -27,6 +28,7 @@ include_directories(
     ../../src/shared
     ../../src/game
     ../../src/game/vmap
+    ../../src/game/Maps
     ../../src/game/Commands
     ../../dep/include/g3dlite
     ../../src/framework
@@ -50,7 +52,7 @@ SET_TARGET_PROPERTIES (MoveMapGen PROPERTIES FOLDER Extractors)
 
 target_link_libraries(MoveMapGen 
                         vmap 
-                        detour
+                        Detour
                         Recast
                         ${ACE_LIBRARIES}
                         shared

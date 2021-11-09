@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <cstdio>
 
-#ifdef WIN32
+#ifdef _WIN32
 #define snprintf _snprintf
 #endif
 
@@ -58,7 +58,7 @@ void fixnamen(char* name, size_t len)
         }
     }
     //extension in lowercase
-    for (size_t i = len - 3; i < len; i++)
+    for (size_t i = len - 4; i < len; i++) //offset set to 4 wmoN - TODO: there is no wmo with more than 9 doodadsets, but if there where - we should improve this logic.
         name[i] |= 0x20;
 }
 
@@ -138,8 +138,6 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY, StringSet& failed
                 char* buf = new char[size];
                 ADT.read(buf, size);
                 char* p = buf;
-                int t = 0;
-                ModelInstansName = new string[size];
                 while (p < buf + size)
                 {
                     fixnamen(p, strlen(p));
@@ -149,7 +147,7 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY, StringSet& failed
 
                     std::string fixedName;
                     ExtractSingleModel(path, fixedName, failedPaths);
-                    ModelInstansName[t++] = fixedName;
+                    ModelInstanceNames.emplace_back(fixedName);
 
                     p = p + strlen(p) + 1;
                 }
@@ -163,8 +161,6 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY, StringSet& failed
                 char* buf = new char[size];
                 ADT.read(buf, size);
                 char* p = buf;
-                int q = 0;
-                WmoInstansName = new string[size];
                 while (p < buf + size)
                 {
                     string path(p);
@@ -172,7 +168,7 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY, StringSet& failed
                     fixnamen(s, strlen(s));
                     fixname2(s, strlen(s));
                     p = p + strlen(p) + 1;
-                    WmoInstansName[q++] = s;
+                    WmoInstanceNames.emplace_back(s);
                 }
                 delete[] buf;
             }
@@ -187,9 +183,8 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY, StringSet& failed
                 {
                     uint32 id;
                     ADT.read(&id, 4);
-                    ModelInstance inst(ADT, ModelInstansName[id].c_str(), map_num, tileX, tileY, dirfile);
+                    ModelInstance inst(ADT, ModelInstanceNames[id].c_str(), map_num, tileX, tileY, dirfile);
                 }
-                delete[] ModelInstansName;
             }
         }
         else if (!strcmp(fourcc, "MODF"))
@@ -201,9 +196,8 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY, StringSet& failed
                 {
                     uint32 id;
                     ADT.read(&id, 4);
-                    WMOInstance inst(ADT, WmoInstansName[id].c_str(), map_num, tileX, tileY, dirfile);
+                    WMOInstance inst(ADT, WmoInstanceNames[id].c_str(), map_num, tileX, tileY, dirfile);
                 }
-                delete[] WmoInstansName;
             }
         }
         //======================

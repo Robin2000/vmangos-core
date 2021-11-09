@@ -101,7 +101,7 @@ struct CommonInitializer
     }
 };
 
-void MoveSpline::init_spline(const MoveSplineInitArgs& args)
+void MoveSpline::init_spline(MoveSplineInitArgs const& args)
 {
     const SplineBase::EvaluationMode modes[2] = {SplineBase::ModeLinear, SplineBase::ModeCatmullrom};
     if (args.flags.cyclic)
@@ -136,7 +136,7 @@ void MoveSpline::init_spline(const MoveSplineInitArgs& args)
     point_Idx = spline.first();
 }
 
-void MoveSpline::Initialize(const MoveSplineInitArgs& args)
+void MoveSpline::Initialize(MoveSplineInitArgs const& args)
 {
     splineflags = args.flags;
     facing = args.facing;
@@ -145,11 +145,12 @@ void MoveSpline::Initialize(const MoveSplineInitArgs& args)
     time_passed = 0;
     transportGuid = args.transportGuid;
     last_point_sent_Idx = -1;
+    m_uninterruptible = args.uninterruptible;
 
     init_spline(args);
 }
 
-MoveSpline::MoveSpline() : m_Id(0), time_passed(0), point_Idx(0), point_Idx_offset(0), transportGuid(0), mvtOrigin("Unknown"), last_point_sent_Idx(-1)
+MoveSpline::MoveSpline() : m_Id(0), transportGuid(0), time_passed(0), point_Idx(0), last_point_sent_Idx(-1), point_Idx_offset(0), mvtOrigin("Unknown"), m_uninterruptible(false)
 {
     splineflags.done = true;
 }

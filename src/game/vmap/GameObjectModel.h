@@ -24,7 +24,6 @@
 #include <G3D/AABox.h>
 #include <G3D/Ray.h>
 #include "DBCStructure.h"
-#include "GameObject.h"
 
 #include "Platform/Define.h"
 
@@ -33,6 +32,7 @@ namespace VMAP
     class WorldModel;
 }
 
+class GameObject;
 
 class GameObjectModel
 {
@@ -43,27 +43,27 @@ class GameObjectModel
         //G3D::Vector3 iRot;
         float iInvScale;
         float iScale;
-        VMAP::WorldModel* iModel;
+        std::shared_ptr<VMAP::WorldModel> iModel;
 
-        GameObjectModel() : collision_enabled(false), iModel(NULL), iInvScale(0), iScale(0) {}
-        bool initialize(const GameObject* const pGo, const GameObjectDisplayInfoEntry* info);
+        GameObjectModel() : collision_enabled(false), iInvScale(0), iScale(0), iModel(nullptr) {}
+        bool initialize(GameObject const* const pGo, GameObjectDisplayInfoEntry const* pDisplayInfo);
 
     public:
         std::string name;
 
-        const G3D::AABox& getBounds() const { return iBound; }
+        G3D::AABox const& getBounds() const { return iBound; }
 
         ~GameObjectModel();
 
-        const G3D::Vector3& getPosition() const { return iPos;}
+        G3D::Vector3 const& getPosition() const { return iPos;}
 
         /** Enables\disables collision. */
         void disable() { collision_enabled = false;}
         void enable(bool enabled) { collision_enabled = enabled;}
 
-        bool intersectRay(const G3D::Ray& Ray, float& MaxDist, bool StopAtFirstHit) const;
+        bool intersectRay(G3D::Ray const& ray, float& MaxDist, bool StopAtFirstHit) const;
 
-        static GameObjectModel* construct(const GameObject* const pGo);
+        static GameObjectModel* construct(GameObject const* const pGo);
 
         bool Relocate(GameObject const& go);
 };

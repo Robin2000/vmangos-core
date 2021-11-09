@@ -28,17 +28,14 @@
 #include "Util.h"
 #include "Auth/Sha1.h"
 #include "World.h"
-#include "Chat.h"
 #include "WorldSession.h"
-#include "Chat.h"
 #include "MasterPlayer.h"
 #include "Anticheat.h"
-
-extern DatabaseType LoginDatabase;
+#include "SRP6/SRP6.h"
 
 INSTANTIATE_SINGLETON_1(AccountMgr);
 
-AccountMgr::AccountMgr() : _banlistUpdateTimer(0)
+AccountMgr::AccountMgr() : m_banlistUpdateTimer(0)
 {}
 
 AccountMgr::~AccountMgr()
@@ -57,27 +54,40 @@ AccountOpResult AccountMgr::CreateAccount(std::string username, std::string pass
         return AOR_NAME_ALREDY_EXIST;                       // username does already exist
     }
 
-    if (!LoginDatabase.PExecute("INSERT INTO account(username,sha_pass_hash,joindate) VALUES('%s','%s',NOW())", username.c_str(), CalculateShaPassHash(username, password).c_str()))
+    SRP6 srp;
+    srp.CalculateVerifier(CalculateShaPassHash(username, password));
+    const char* s_hex = srp.GetSalt().AsHexStr();
+    const char* v_hex = srp.GetVerifier().AsHexStr();
+
+    bool update_sv = LoginDatabase.PExecute(
+        "INSERT INTO account(`username`, `v`, `s`, `joindate`) VALUES('%s','%s','%s',NOW())",
+        username.c_str(), v_hex, s_hex);
+
+    OPENSSL_free((void*)s_hex);
+    OPENSSL_free((void*)v_hex);
+
+    if (!update_sv)
         return AOR_DB_INTERNAL_ERROR;                       // unexpected error
-    LoginDatabase.Execute("INSERT INTO realmcharacters (realmid, acctid, numchars) SELECT realmlist.id, account.id, 0 FROM realmlist,account LEFT JOIN realmcharacters ON acctid=account.id WHERE acctid IS NULL");
+    LoginDatabase.Execute(
+        "INSERT INTO `realmcharacters` (`realmid`, `acctid`, `numchars`) SELECT `realmlist`.`id`, `account`.`id`, 0 FROM `realmlist`, `account` LEFT JOIN `realmcharacters` ON `acctid`=`account`.`id` WHERE `acctid` IS NULL");
 
     return AOR_OK;                                          // everything's fine
 }
 
 AccountOpResult AccountMgr::DeleteAccount(uint32 accid)
 {
-    QueryResult *result = LoginDatabase.PQuery("SELECT 1 FROM account WHERE id='%u'", accid);
+    QueryResult* result = LoginDatabase.PQuery("SELECT 1 FROM `account` WHERE `id`='%u'", accid);
     if (!result)
         return AOR_NAME_NOT_EXIST;                          // account doesn't exist
     delete result;
 
     // existing characters list
-    result = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE account='%u'", accid);
+    result = CharacterDatabase.PQuery("SELECT `guid` FROM `characters` WHERE `account`='%u'", accid);
     if (result)
     {
         do
         {
-            Field *fields = result->Fetch();
+            Field* fields = result->Fetch();
             uint32 guidlo = fields[0].GetUInt32();
             ObjectGuid guid = ObjectGuid(HIGHGUID_PLAYER, guidlo);
 
@@ -91,13 +101,13 @@ AccountOpResult AccountMgr::DeleteAccount(uint32 accid)
     }
 
     // table realm specific but common for all characters of account for realm
-    CharacterDatabase.PExecute("DELETE FROM character_tutorial WHERE account = '%u'", accid);
+    CharacterDatabase.PExecute("DELETE FROM `character_tutorial` WHERE `account` = '%u'", accid);
 
     LoginDatabase.BeginTransaction();
 
     bool res =
-        LoginDatabase.PExecute("DELETE FROM account WHERE id='%u'", accid) &&
-        LoginDatabase.PExecute("DELETE FROM realmcharacters WHERE acctid='%u'", accid);
+        LoginDatabase.PExecute("DELETE FROM `account` WHERE `id`='%u'", accid) &&
+        LoginDatabase.PExecute("DELETE FROM `realmcharacters` WHERE `acctid`='%u'", accid);
 
     LoginDatabase.CommitTransaction();
 
@@ -110,7 +120,7 @@ AccountOpResult AccountMgr::DeleteAccount(uint32 accid)
 //#DEPRECATED: Not used anywhere, should we delete?
 AccountOpResult AccountMgr::ChangeUsername(uint32 accid, std::string new_uname, std::string new_passwd)
 {
-    QueryResult *result = LoginDatabase.PQuery("SELECT 1 FROM account WHERE id='%u'", accid);
+    QueryResult* result = LoginDatabase.PQuery("SELECT 1 FROM `account` WHERE `id`='%u'", accid);
     if (!result)
         return AOR_NAME_NOT_EXIST;                          // account doesn't exist
     delete result;
@@ -124,11 +134,24 @@ AccountOpResult AccountMgr::ChangeUsername(uint32 accid, std::string new_uname, 
     normalizeString(new_uname);
     normalizeString(new_passwd);
 
+    SRP6 srp;
+
+    srp.CalculateVerifier(CalculateShaPassHash(new_uname, new_passwd));
+
     std::string safe_new_uname = new_uname;
     LoginDatabase.escape_string(safe_new_uname);
 
-    if (!LoginDatabase.PExecute("UPDATE account SET v='0',s='0',username='%s',sha_pass_hash='%s' WHERE id='%u'", safe_new_uname.c_str(),
-                                CalculateShaPassHash(new_uname, new_passwd).c_str(), accid))
+    const char* s_hex = srp.GetSalt().AsHexStr();
+    const char* v_hex = srp.GetVerifier().AsHexStr();
+
+    bool update_sv = LoginDatabase.PExecute(
+        "UPDATE `account` SET `v`='%s', `s`='%s', `username`='%s' WHERE `id`='%u'",
+        v_hex, s_hex, safe_new_uname.c_str(), accid);
+
+    OPENSSL_free((void*)s_hex);
+    OPENSSL_free((void*)v_hex);
+
+    if (!update_sv)
         return AOR_DB_INTERNAL_ERROR;                       // unexpected error
 
     return AOR_OK;
@@ -136,7 +159,7 @@ AccountOpResult AccountMgr::ChangeUsername(uint32 accid, std::string new_uname, 
 
 AccountOpResult AccountMgr::ChangePassword(uint32 accid, std::string new_passwd, std::string username)
 {
-    if (username == "")
+    if (username.empty())
     {
         if (!GetName(accid, username))
             return AOR_NAME_NOT_EXIST;
@@ -149,9 +172,22 @@ AccountOpResult AccountMgr::ChangePassword(uint32 accid, std::string new_passwd,
 
     normalizeString(new_passwd);
 
+    SRP6 srp;
+
+    srp.CalculateVerifier(CalculateShaPassHash(username, new_passwd));
+
+    const char* s_hex = srp.GetSalt().AsHexStr();
+    const char* v_hex = srp.GetVerifier().AsHexStr();
+
+    bool update_sv = LoginDatabase.PExecute(
+        "UPDATE `account` SET `v`='%s', `s`='%s' WHERE `id`='%u'",
+        v_hex, s_hex, accid);
+
+    OPENSSL_free((void*)s_hex);
+    OPENSSL_free((void*)v_hex);
+
     // also reset s and v to force update at next realmd login
-    if (!LoginDatabase.PExecute("UPDATE account SET v='0', s='0', sha_pass_hash='%s' WHERE id='%u'",
-                                CalculateShaPassHash(username, new_passwd).c_str(), accid))
+    if (!update_sv)
         return AOR_DB_INTERNAL_ERROR;                       // unexpected error
 
     return AOR_OK;
@@ -160,7 +196,7 @@ AccountOpResult AccountMgr::ChangePassword(uint32 accid, std::string new_passwd,
 uint32 AccountMgr::GetId(std::string username)
 {
     LoginDatabase.escape_string(username);
-    QueryResult *result = LoginDatabase.PQuery("SELECT id FROM account WHERE username = '%s'", username.c_str());
+    QueryResult* result = LoginDatabase.PQuery("SELECT `id` FROM `account` WHERE `username` = '%s'", username.c_str());
     if (!result)
         return 0;
     else
@@ -173,7 +209,7 @@ uint32 AccountMgr::GetId(std::string username)
 
 void AccountMgr::Load()
 {
-    _accountSecurity.clear();
+    m_accountSecurity.clear();
 
     std::unique_ptr<QueryResult> result(LoginDatabase.PQuery("SELECT `id`, `gmlevel` FROM `account_access` WHERE (`RealmID` = '%u' OR `RealmID`='-1')", realmID));
 
@@ -187,7 +223,7 @@ void AccountMgr::Load()
         return;
     }
 
-    Field *fields = nullptr;
+    Field* fields = nullptr;
     BarGoLink bar(result->GetRowCount());
     do
     {
@@ -200,21 +236,21 @@ void AccountMgr::Load()
         case SEC_PLAYER:
             break;
         case SEC_MODERATOR:
-        case SEC_MODERATOR_CONF:
+        case SEC_TICKETMASTER:
         case SEC_GAMEMASTER:
         case SEC_BASIC_ADMIN:
-        case SEC_DEVELOPPER:
+        case SEC_DEVELOPER:
         case SEC_ADMINISTRATOR:
             // Peut etre deja dans la liste ? On prend le plus haut gmlevel.
-            if (_accountSecurity.find(accountId) == _accountSecurity.end() ||
-                _accountSecurity[accountId] < secu)
-                _accountSecurity[accountId] = secu;
+            if (m_accountSecurity.find(accountId) == m_accountSecurity.end() ||
+                m_accountSecurity[accountId] < secu)
+                m_accountSecurity[accountId] = secu;
             break;
         }
     } while (result->NextRow());
 
     sLog.outString();
-    sLog.outString(">> %u GM ranks loaded for realm %u", _accountSecurity.size(), realmID);
+    sLog.outString(">> %u GM ranks loaded for realm %u", m_accountSecurity.size(), realmID);
     sLog.outString();
     LoadAccountBanList();
     LoadIPBanList();
@@ -222,22 +258,22 @@ void AccountMgr::Load()
 
 AccountTypes AccountMgr::GetSecurity(uint32 acc_id)
 {
-    std::map<uint32, AccountTypes>::const_iterator it = _accountSecurity.find(acc_id);
-    if (it == _accountSecurity.end())
+    std::map<uint32, AccountTypes>::const_iterator it = m_accountSecurity.find(acc_id);
+    if (it == m_accountSecurity.end())
         return SEC_PLAYER;
     return it->second;
 }
 
 void AccountMgr::SetSecurity(uint32 accId, AccountTypes sec)
 {
-    _accountSecurity[accId] = sec;
-    LoginDatabase.PExecute("DELETE FROM account_access WHERE RealmID=%u AND id=%u", realmID, accId);
-    LoginDatabase.PExecute("INSERT INTO account_access SET RealmID=%u, id=%u, gmlevel=%u", realmID, accId, sec);
+    m_accountSecurity[accId] = sec;
+    LoginDatabase.PExecute("DELETE FROM `account_access` WHERE `RealmID`=%u AND `id`=%u", realmID, accId);
+    LoginDatabase.PExecute("INSERT INTO `account_access` SET `RealmID`=%u, `id`=%u, `gmlevel`=%u", realmID, accId, sec);
 }
 
 bool AccountMgr::GetName(uint32 acc_id, std::string &name)
 {
-    QueryResult *result = LoginDatabase.PQuery("SELECT username FROM account WHERE id = '%u'", acc_id);
+    QueryResult* result = LoginDatabase.PQuery("SELECT `username` FROM `account` WHERE `id` = '%u'", acc_id);
     if (result)
     {
         name = (*result)[0].GetCppString();
@@ -252,10 +288,10 @@ bool AccountMgr::GetName(uint32 acc_id, std::string &name)
 uint32 AccountMgr::GetCharactersCount(uint32 acc_id)
 {
     // check character count
-    QueryResult *result = CharacterDatabase.PQuery("SELECT COUNT(guid) FROM characters WHERE account = '%u'", acc_id);
+    QueryResult* result = CharacterDatabase.PQuery("SELECT COUNT(`guid`) FROM `characters` WHERE `account` = '%u'", acc_id);
     if (result)
     {
-        Field *fields = result->Fetch();
+        Field* fields = result->Fetch();
         uint32 charcount = fields[0].GetUInt32();
         delete result;
         return charcount;
@@ -266,7 +302,7 @@ uint32 AccountMgr::GetCharactersCount(uint32 acc_id)
 
 bool AccountMgr::CheckPassword(uint32 accid, std::string passwd, std::string username)
 {
-    if (username == "")
+    if (username.empty())
     {
         if (!GetName(accid, username))
             return false;
@@ -276,11 +312,22 @@ bool AccountMgr::CheckPassword(uint32 accid, std::string passwd, std::string use
 
     normalizeString(passwd);
 
-    QueryResult *result = LoginDatabase.PQuery("SELECT 1 FROM account WHERE id='%u' AND sha_pass_hash='%s'", accid, CalculateShaPassHash(username, passwd).c_str());
+    QueryResult* result = LoginDatabase.PQuery("SELECT `s`, `v` FROM `account` WHERE `id`='%u'", accid);
     if (result)
     {
+        Field* fields = result->Fetch();
+        SRP6 srp;
+
+        bool calcv = srp.CalculateVerifier(
+            CalculateShaPassHash(username, passwd), fields[0].GetCppString().c_str());
+
+        if (calcv && srp.ProofVerifier(fields[1].GetCppString()))
+        {
+            delete result;
+            return true;
+        }
+
         delete result;
-        return true;
     }
 
     return false;
@@ -288,15 +335,16 @@ bool AccountMgr::CheckPassword(uint32 accid, std::string passwd, std::string use
 
 bool AccountMgr::normalizeString(std::string& utf8str)
 {
-    wchar_t wstr_buf[MAX_ACCOUNT_STR + 1];
-
-    size_t wstr_len = MAX_ACCOUNT_STR;
-    if (!Utf8toWStr(utf8str, wstr_buf, wstr_len))
+    std::wstring wstr_buf;
+    if (!Utf8toWStr(utf8str, wstr_buf))
         return false;
 
-    std::transform(&wstr_buf[0], wstr_buf + wstr_len, &wstr_buf[0], wcharToUpperOnlyLatin);
+    if (wstr_buf.size() > MAX_ACCOUNT_STR)
+        return false;
 
-    return WStrToUtf8(wstr_buf, wstr_len, utf8str);
+    std::transform(wstr_buf.begin(), wstr_buf.end(), wstr_buf.begin(), wcharToUpperOnlyLatin);
+
+    return WStrToUtf8(wstr_buf, utf8str);
 }
 
 std::string AccountMgr::CalculateShaPassHash(std::string& name, std::string& password)
@@ -316,14 +364,14 @@ std::string AccountMgr::CalculateShaPassHash(std::string& name, std::string& pas
 
 void AccountMgr::Update(uint32 diff)
 {
-    if (_banlistUpdateTimer < diff)
+    if (m_banlistUpdateTimer < diff)
     {
-        _banlistUpdateTimer = sWorld.getConfig(CONFIG_UINT32_BANLIST_RELOAD_TIMER) * 1000;
+        m_banlistUpdateTimer = sWorld.getConfig(CONFIG_UINT32_BANLIST_RELOAD_TIMER) * 1000;
         LoadIPBanList(true);
         //LoadAccountBanList(true);
     }
     else
-        _banlistUpdateTimer -= diff;
+        m_banlistUpdateTimer -= diff;
 }
 
 void AccountMgr::LoadIPBanList(bool silent)
@@ -346,25 +394,24 @@ void AccountMgr::LoadIPBanList(bool silent)
         return;
     }
 
-    _ipBanned.clear();
-    Field *fields = nullptr;
+    m_ipBanned.clear();
     std::unique_ptr<BarGoLink> bar = silent ? nullptr : std::make_unique<BarGoLink>(banresult->GetRowCount());
     do
     {
         if (bar)
             bar->step();
-        Field *fields = banresult->Fetch();
+        Field* fields = banresult->Fetch();
         uint32 unbandate = fields[1].GetUInt32();
         uint32 bandate = fields[2].GetUInt32();
         if (unbandate == bandate)
             unbandate = 0xFFFFFFFF;
-        _ipBanned[fields[0].GetString()] = unbandate;
+        m_ipBanned[fields[0].GetString()] = unbandate;
     } while (banresult->NextRow());
 
     if (!silent)
     {
         sLog.outString();
-        sLog.outString(">> Loaded %u ip bans", _ipBanned.size());
+        sLog.outString(">> Loaded %u ip bans", m_ipBanned.size());
     }
 }
 
@@ -388,48 +435,43 @@ void AccountMgr::LoadAccountBanList(bool silent)
         return;
     }
 
-    _accountBanned.clear();
-    Field *fields = nullptr;
+    m_accountBanned.clear();
     std::unique_ptr<BarGoLink> bar = silent ? nullptr : std::make_unique<BarGoLink>(banresult->GetRowCount());
     do
     {
         if (bar)
             bar->step();
-        Field *fields = banresult->Fetch();
+        Field* fields = banresult->Fetch();
         uint32 unbandate = fields[1].GetUInt32();
         uint32 bandate = fields[2].GetUInt32();
         if (unbandate == bandate)
             unbandate = 0xFFFFFFFF;
-        _accountBanned[fields[0].GetUInt32()] = unbandate;
+        m_accountBanned[fields[0].GetUInt32()] = unbandate;
     } while (banresult->NextRow());
 
     if (!silent)
     {
         sLog.outString();
-        sLog.outString(">> Loaded %u account bans", _accountBanned.size());
+        sLog.outString(">> Loaded %u account bans", m_accountBanned.size());
     }
 }
 
 bool AccountMgr::IsIPBanned(std::string const& ip) const
 {
-    std::map<std::string, uint32>::const_iterator it = _ipBanned.find(ip);
-    if (it == _ipBanned.end() || it->second < time(NULL))
-        return false;
-    return true;
+    std::map<std::string, uint32>::const_iterator it = m_ipBanned.find(ip);
+    return !(it == m_ipBanned.end() || it->second < time(nullptr));
 }
 
 bool AccountMgr::IsAccountBanned(uint32 acc) const
 {
-    std::map<uint32, uint32>::const_iterator it = _accountBanned.find(acc);
-    if (it == _accountBanned.end() || it->second < time(NULL))
-        return false;
-    return true;
+    std::map<uint32, uint32>::const_iterator it = m_accountBanned.find(acc);
+    return !(it == m_accountBanned.end() || it->second < time(nullptr));
 }
 
 bool AccountMgr::CheckInstanceCount(uint32 accountId, uint32 instanceId, uint32 maxCount)
 {
-    AccountInstanceEnterTimesMap::iterator it = _instanceEnterTimes.find(accountId);
-    if (it == _instanceEnterTimes.end())
+    AccountInstanceEnterTimesMap::iterator it = m_instanceEnterTimes.find(accountId);
+    if (it == m_instanceEnterTimes.end())
         return true;
     InstanceEnterTimesMap& enterTimes = it->second;
     InstanceEnterTimesMap::iterator it2 = enterTimes.find(instanceId);
@@ -437,7 +479,7 @@ bool AccountMgr::CheckInstanceCount(uint32 accountId, uint32 instanceId, uint32 
         return true;
     if (enterTimes.size() < maxCount)
         return true;
-    time_t now = time(NULL);
+    time_t now = time(nullptr);
     for (it2 = enterTimes.begin(); it2 != enterTimes.end(); ++it2)
         if (it2->second + 3600 < now)
         {
@@ -449,12 +491,12 @@ bool AccountMgr::CheckInstanceCount(uint32 accountId, uint32 instanceId, uint32 
 
 void AccountMgr::AddInstanceEnterTime(uint32 accountId, uint32 instanceId, time_t enterTime)
 {
-    AccountInstanceEnterTimesMap::iterator it = _instanceEnterTimes.find(accountId);
-    if (it == _instanceEnterTimes.end())
+    AccountInstanceEnterTimesMap::iterator it = m_instanceEnterTimes.find(accountId);
+    if (it == m_instanceEnterTimes.end())
     {
         InstanceEnterTimesMap resetTimes;
         resetTimes[instanceId] = enterTime;
-        _instanceEnterTimes[accountId] = resetTimes;
+        m_instanceEnterTimes[accountId] = resetTimes;
         return;
     }
     it->second[instanceId] = enterTime;
@@ -463,15 +505,15 @@ void AccountMgr::AddInstanceEnterTime(uint32 accountId, uint32 instanceId, time_
 // Anticheat
 void AccountPersistentData::WhisperedBy(MasterPlayer* whisperer)
 {
-    WhispersMap::iterator it = _whisperTargets.find(whisperer->GetGUIDLow());
-    if (it != _whisperTargets.end())
+    WhispersMap::iterator it = m_whisperTargets.find(whisperer->GetGUIDLow());
+    if (it != m_whisperTargets.end())
         it->second.score = 0;
 }
 
 uint32 AccountPersistentData::CountWhispersTo(MasterPlayer* from, MasterPlayer* player)
 {
     sAccountMgr.GetAccountPersistentData(player->GetSession()->GetAccountId()).WhisperedBy(from);
-    WhisperData& data = _whisperTargets[player->GetGUIDLow()];
+    WhisperData& data = m_whisperTargets[player->GetGUIDLow()];
     ++data.whispers_count;
     if (data.whispers_count == 1)
         data.score = GetWhisperScore(from, player);
@@ -480,7 +522,7 @@ uint32 AccountPersistentData::CountWhispersTo(MasterPlayer* from, MasterPlayer* 
 
 bool AccountPersistentData::CanWhisper(MasterPlayer* player) const
 {
-    return sAnticheatLib->CanWhisper(*this, player);
+    return sAnticheatMgr->CanWhisper(*this, player);
 }
 
 uint32 AccountPersistentData::GetWhisperScore(MasterPlayer* from, MasterPlayer* target) const
@@ -499,19 +541,19 @@ uint32 AccountPersistentData::GetWhisperScore(MasterPlayer* from, MasterPlayer* 
 
 void AccountPersistentData::JustMailed(uint32 toAccount)
 {
-    _mailsSent[toAccount] = time(NULL);
+    m_mailsSent[toAccount] = time(nullptr);
 }
 
 bool AccountPersistentData::CanMail(uint32 targetAccount)
 {
     // Already sent a mail to this guy => OK
-    if (_mailsSent.find(targetAccount) != _mailsSent.end())
+    if (m_mailsSent.find(targetAccount) != m_mailsSent.end())
         return true;
 
     uint32 totalScore = 0;
-    time_t lastNonExpired = time(NULL) - sWorld.getConfig(CONFIG_UINT32_MAILSPAM_EXPIRE_SECS);
-    for (auto it = _mailsSent.begin(); it != _mailsSent.end(); ++it)
-        if (it->second >= lastNonExpired)
+    time_t lastNonExpired = time(nullptr) - sWorld.getConfig(CONFIG_UINT32_MAILSPAM_EXPIRE_SECS);
+    for (const auto& it : m_mailsSent)
+        if (it.second >= lastNonExpired)
             totalScore++;
     uint32 allowedScore = sWorld.getConfig(CONFIG_UINT32_MAILSPAM_MAX_MAILS);
     return totalScore < allowedScore;
